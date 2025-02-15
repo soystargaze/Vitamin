@@ -157,6 +157,14 @@ public class WallJumpModule implements Listener {
     private void performWallJump(Player player, BlockFace wallFace) {
         Vector jumpVector = new Vector(0, this.wall_jump_height, 0);
         addHorizontalVelocity(jumpVector, wallFace, this.wall_jump_distance);
+
+        switch (wallFace) {
+            case NORTH -> jumpVector.setZ(-0.1);
+            case SOUTH -> jumpVector.setZ(0.1);
+            case EAST -> jumpVector.setX(0.1);
+            case WEST -> jumpVector.setX(-0.1);
+        }
+
         player.setVelocity(jumpVector);
     }
 
