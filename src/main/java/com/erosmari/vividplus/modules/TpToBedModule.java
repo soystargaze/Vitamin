@@ -40,8 +40,6 @@ public class TpToBedModule implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-
         Player player = event.getPlayer();
         long now = System.currentTimeMillis();
         long lastClick = lastInteract.getOrDefault(player, 0L);

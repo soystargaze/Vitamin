@@ -21,15 +21,19 @@ public class WallJumpModule implements Listener {
     private final Plugin plugin;
     private final Map<UUID, WallClimbState> playerStates;
     
-    private static final double SLIDE_SPEED = 0.05;
-    private static final double WALL_JUMP_HEIGHT = 0.7;
-    private static final double WALL_JUMP_DISTANCE = 0.42;
-    private static final double WALL_RELEASE_HEIGHT = 0.5;
+    private final double slide_speed;
+    private final double wall_jump_height;
+    private final double wall_jump_distance;
+    private final double wall_release_height;
     private static final int STICK_DELAY_TICKS = 3;
 
     public WallJumpModule(Plugin plugin) {
         this.plugin = plugin;
         this.playerStates = new HashMap<>();
+        this.slide_speed = plugin.getConfig().getDouble("wall-jump.slide-speed", 0.05);
+        this.wall_jump_height = plugin.getConfig().getDouble("wall-jump.wall-jump-height", 0.7);
+        this.wall_jump_distance = plugin.getConfig().getDouble("wall-jump.wall-jump-distance", 0.42);
+        this.wall_release_height = plugin.getConfig().getDouble("wall-jump.wall-release-height", 0.5);
     }
 
     private static class WallClimbState {
@@ -135,7 +139,7 @@ public class WallJumpModule implements Listener {
 
     private void applySlideVelocity(Player player) {
         Vector velocity = player.getVelocity();
-        velocity.setY(-SLIDE_SPEED);
+        velocity.setY(-slide_speed);
         player.setVelocity(velocity);
     }
 
@@ -151,22 +155,22 @@ public class WallJumpModule implements Listener {
     }
 
     private void performWallJump(Player player, BlockFace wallFace) {
-        Vector jumpVector = new Vector(0, WALL_JUMP_HEIGHT, 0);
-        addHorizontalVelocity(jumpVector, wallFace);
+        Vector jumpVector = new Vector(0, this.wall_jump_height, 0);
+        addHorizontalVelocity(jumpVector, wallFace, this.wall_jump_distance);
         player.setVelocity(jumpVector);
     }
 
     private void performWallRelease(Player player) {
-        Vector jumpVector = new Vector(0, WALL_RELEASE_HEIGHT, 0);
+        Vector jumpVector = new Vector(0, wall_release_height, 0);
         player.setVelocity(jumpVector);
     }
 
-    private void addHorizontalVelocity(Vector vector, BlockFace face) {
+    private void addHorizontalVelocity(Vector vector, BlockFace face, double wallJumpDistance) {
         switch (face) {
-            case NORTH -> vector.setZ(WallJumpModule.WALL_JUMP_DISTANCE);
-            case SOUTH -> vector.setZ(-WallJumpModule.WALL_JUMP_DISTANCE);
-            case EAST -> vector.setX(-WallJumpModule.WALL_JUMP_DISTANCE);
-            case WEST -> vector.setX(WallJumpModule.WALL_JUMP_DISTANCE);
+            case NORTH -> vector.setZ(wallJumpDistance);
+            case SOUTH -> vector.setZ(-wallJumpDistance);
+            case EAST -> vector.setX(-wallJumpDistance);
+            case WEST -> vector.setX(wallJumpDistance);
         }
     }
 
@@ -176,11 +180,11 @@ public class WallJumpModule implements Listener {
 
     private BlockFace getWallFace(Player player) {
         Location loc = player.getLocation();
-        
+
         for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST}) {
             Block block = loc.getBlock().getRelative(face);
             Block blockAbove = block.getRelative(BlockFace.UP);
-            
+
             if (isValidWallBlock(block) && isValidWallBlock(blockAbove)) {
                 return face;
             }
@@ -193,11 +197,11 @@ public class WallJumpModule implements Listener {
     }
 
     private void cancelTasks(WallClimbState state) {
-        if (state.slideTask != null) {
+        if (state.slideTask != null && !state.slideTask.isCancelled()) {
             state.slideTask.cancel();
             state.slideTask = null;
         }
-        if (state.stickDelayTask != null) {
+        if (state.stickDelayTask != null && !state.stickDelayTask.isCancelled()) {
             state.stickDelayTask.cancel();
             state.stickDelayTask = null;
         }
