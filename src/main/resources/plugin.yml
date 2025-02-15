@@ -1,0 +1,7 @@
+name: VividPlus
+version: '1.0.0-SNAPSHOT'
+main: com.erosmari.vividplus.VividPlus
+api-version: '1.21'
+load: STARTUP
+authors: [Eros Marí]
+website: https://erosmari.com

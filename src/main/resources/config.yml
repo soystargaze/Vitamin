@@ -1,0 +1,50 @@
+# __     ___       _     _
+# \ \   / (_)_   _(_) __| |  _
+#  \ \ / /| \ \ / / |/ _` |_| |_
+#   \ V / | |\ V /| | (_| |_   _|
+#    \_/  |_| \_/ |_|\__,_| |_|
+
+# Support: https://erosmari.com/discord
+# Documentation: https://github.com/soystargaze/VividPlus
+# Version: 1.0.0
+
+# Plugin settings
+# Language of the plugin
+language: "en_us"
+
+# Async thread pool size
+settings:
+  async_thread_pool_size: 4
+
+# Enable or disable modules
+module:
+  auto_tool: true # Automatically switch to the correct tool when breaking blocks
+  carry_on: true # Shift + Right Click to pick up entities and chests
+  double_jump: true # Double jump by pressing space twice
+  elevator: true # Craft an elevator block to teleport up and down
+  elytra_armor: true # Elytra gives armor like a chest plate
+  enchants_back: true # Enchants are returned when disenchanting with a grindstone and has empty books
+  fire_aspect_tools: true # Drop's smelting when the tool has Fire Aspect I (50%) and Fire Aspect II (100%)
+  invisible_item_frames: true # Right-click an item frame with an empty hand to make it invisible/visible
+  leaf_decay: true # Leaves decay when the log is removed
+  pet_protection: true # Prevents pets from taking damage from the owner
+  player_xp_to_books: true # Shift + Right Click with an empty book to store all your XP
+  seed_replanter: true # Right-Click a fully grown crop to harvest and replant it
+  silk_spawners: true # Mine spawners with a silk touch pickaxe to get the spawner
+  sponge_with_lava: true # Sponges can absorb lava
+  totem_from_inventory: true # The totem of undying works from the inventory too
+  void_totem: true # The totem of undying works in the void
+  tp_to_bed_with_compass: true # Right-click with a compass to teleport to your respawn point
+  unlock_all_recipes: true # Unlocks all recipes when you join the server
+  tree_vein_miner: true # Just works when the tool is enchanted with Efficiency V
+  vein_miner: true # Just works when the tool is enchanted with Efficiency V
+  villager_follow_emeralds: true # Villagers follow you when you hold an emerald
+  wall_jump: true # Shift to wall jump. You can climb up or slide down walls
+
+# Carry On settings
+carry_on:
+  max_weight: 100
+
+# Elytra Armor settings
+elytra_armor:
+  value: 11.0 # Value of a netherite chest plate

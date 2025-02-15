@@ -1,0 +1,56 @@
+plugin:
+  prefix: "<color:#d4d4d4>[</color><gradient:#4CAF50:#CDDC39>Vivid+</gradient><color:#d4d4d4>]</color> "
+  dynamic_color: "<color:#4CAF50>" # The color applied to {0}, {1}, etc. in translations
+  separator: "<gradient:#4CAF50:#CDDC39><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#4CAF50:#CDDC39>Vivid+</gradient>"
+  version: "version: {0}"
+  author: "by {0}"
+  enabled: "Vivid+ enabled successfully."
+  disabled: "Vivid+ disabled successfully."
+  language_loaded: "Language loaded: {0}.yml ({1} translations)"
+items:
+  registered: "Registered Vivid+'s items successfully."
+events:
+  registered: "Events registered successfully."
+commands:
+  registered: "Commands registered successfully."
+  usage: "Usage: /vividplus <args>"
+  reload:
+    success: "Vivid+ reloaded successfully."
+    error: "An error occurred while reloading Vivid+."
+
+module:
+  enabled: "Module {0}: <green>enabled"
+  disabled: "Module {0}: <red>disabled"
+
+elevator:
+  item_name: "<gold>Elevator</gold>"
+  cannot_open: "<red>You cannot open the elevator!</red>"
+
+xpbook:
+    item_name: "XP Book with <gold>{0}</gold> XP"
+    created: "XP Book created with <gold>{0}</gold> XP!"
+    used: "XP Book used to give <gold>{0}</gold> XP!"
+
+carry_on:
+  cannot_pickup_players: "<red>You cannot pick up players!</red>"
+  cannot_pickup_entity: "<red>This entity cannot be picked up!</red>"
+  entity_too_heavy: "<red>This entity is too heavy to carry!</red>"
+  picked_up_entity: "<green>You have picked up an entity (Weight: {0}/{1})</green>"
+  entity_dropped: "<gold>You have released the entity.</gold>"
+
+  picked_up_block: "<green>You have picked up a block of <yellow>{0}</yellow>.</green>"
+  placed_block: "<gold>You have placed the block.</gold>"
+
+void_totem:
+  activated: "Void Totem activated! Teleporting to safety..."
+  cooldown: "You must wait before using another Void Totem!"
+  no_totem: "You need a Totem of Undying to survive the void!"
+  teleport_safe: "You have been teleported to a safe location."
+  teleport_spawn: "No safe location found nearby. Teleported to world spawn."
+
+tpcompass:
+  already_teleporting: "<yellow>You are already teleporting!"
+  cancelled: "<red>Teleportation cancelled!"
+  channeling: "Channeling teleportation: {0} seconds left..."
+  success: "Teleported to your respawn point!"
