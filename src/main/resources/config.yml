@@ -48,3 +48,10 @@ carry_on:
 # Elytra Armor settings
 elytra_armor:
   value: 11.0 # Value of a netherite chest plate
+
+# Wall Jump settings
+wall_jump:
+  slide_speed: 0.05
+  jump_height: 0.7
+  jump_distance: 0.42
+  release_height: 0.5

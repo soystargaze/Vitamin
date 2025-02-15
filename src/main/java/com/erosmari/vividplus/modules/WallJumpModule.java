@@ -23,7 +23,7 @@ public class WallJumpModule implements Listener {
     
     private static final double SLIDE_SPEED = 0.05;
     private static final double WALL_JUMP_HEIGHT = 0.7;
-    private static final double WALL_JUMP_DISTANCE = 0.4;
+    private static final double WALL_JUMP_DISTANCE = 0.42;
     private static final double WALL_RELEASE_HEIGHT = 0.5;
     private static final int STICK_DELAY_TICKS = 3;
 
