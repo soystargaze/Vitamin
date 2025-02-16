@@ -92,7 +92,7 @@ public class TpToBedModule implements Listener {
                 player.getWorld().spawnParticle(Particle.SONIC_BOOM, currentLocation, 1, 1.0, 1.0, 1.0, 0);
 
                 if (ticks % 20 == 0) {
-                    int secondsLeft = 3 - (ticks / 20);
+                    int secondsLeft = plugin.getConfig().getInt("tp_with_compass.channeling_time", 3) - (ticks / 20);
                     if (secondsLeft > 0) {
                         player.sendActionBar((TranslationHandler.getPlayerMessage("tpcompass.channeling", secondsLeft)));
                     }
