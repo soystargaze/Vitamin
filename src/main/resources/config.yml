@@ -63,3 +63,7 @@ tp_with_compass:
 # Double Jump settings
 double_jump:
   jump_boost: 0.5
+
+# Enchants Back settings
+enchants_back:
+  max_returned: 5 # Maximum number of enchants returned

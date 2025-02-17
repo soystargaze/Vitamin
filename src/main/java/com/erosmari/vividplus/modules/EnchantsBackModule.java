@@ -18,7 +18,10 @@ import java.util.Map;
 
 public class EnchantsBackModule implements Listener {
 
+    private final JavaPlugin plugin;
+
     public EnchantsBackModule(JavaPlugin plugin) {
+        this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -33,32 +36,36 @@ public class EnchantsBackModule implements Listener {
 
         if (inputItem == null || inputItem.getEnchantments().isEmpty()) return;
 
-        int enchantmentCount = inputItem.getEnchantments().size();
-        int bookCount = countBooks(player.getInventory());
+        int maxReturnedEnchantments = plugin.getConfig().getInt("enchants_back.max_returned", inputItem.getEnchantments().size());
 
-        if (bookCount < enchantmentCount) {
+        int enchantmentCount = inputItem.getEnchantments().size();
+        int enchantmentsToProcess = Math.min(enchantmentCount, maxReturnedEnchantments);
+
+        int bookCount = countBooks(player.getInventory());
+        if (bookCount < enchantmentsToProcess) {
             return;
         }
 
         int freeSlots = getFreeInventorySlots(player.getInventory());
-        if (freeSlots < enchantmentCount) {
+        if (freeSlots < enchantmentsToProcess) {
             return;
         }
 
         try {
+            int processed = 0;
             for (Map.Entry<Enchantment, Integer> entry : inputItem.getEnchantments().entrySet()) {
+                if (processed >= enchantmentsToProcess) break;
                 Enchantment enchantment = entry.getKey();
                 int level = entry.getValue();
 
                 if (createEnchantedBook(player, enchantment, level)) {
                     removeOneBook(player);
+                    processed++;
                 } else {
                     return;
                 }
             }
-
             player.updateInventory();
-
         } catch (Exception ignored) {
         }
     }
