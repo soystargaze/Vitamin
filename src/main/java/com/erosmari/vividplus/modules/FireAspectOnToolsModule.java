@@ -1,6 +1,7 @@
 package com.erosmari.vividplus.modules;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -15,14 +16,19 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.view.AnvilView;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("ALL")
 public class FireAspectOnToolsModule implements Listener {
 
     private final JavaPlugin plugin;
     private final Map<Material, Material> smeltMap;
+    // Conjunto para evitar procesar dos veces el mismo bloque.
+    private final Set<Location> processedBlocks = ConcurrentHashMap.newKeySet();
 
     public FireAspectOnToolsModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -70,7 +76,6 @@ public class FireAspectOnToolsModule implements Listener {
                 if (esm.hasStoredEnchant(Enchantment.FIRE_ASPECT)) {
                     int level = esm.getStoredEnchantLevel(Enchantment.FIRE_ASPECT);
                     ItemStack result = left.clone();
-
                     result.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, level);
                     event.setResult(result);
 
@@ -86,29 +91,52 @@ public class FireAspectOnToolsModule implements Listener {
         Player player = event.getPlayer();
         ItemStack tool = player.getInventory().getItemInMainHand();
         Material blockType = event.getBlock().getType();
+        Location blockLocation = event.getBlock().getLocation();
 
         if (!isValidBreak(blockType, tool)) {
             return;
         }
 
+        // Evitar procesar dos veces el mismo bloque
+        if (processedBlocks.contains(blockLocation)) {
+            plugin.getLogger().info("Bloque en " + blockLocation + " ya procesado, ignorando.");
+            return;
+        }
+        processedBlocks.add(blockLocation);
+        // Remover la ubicación del conjunto en el siguiente tick
+        Bukkit.getScheduler().runTaskLater(plugin, () -> processedBlocks.remove(blockLocation), 1L);
+
+        // Cancelar siempre los drops naturales
+        event.setDropItems(false);
+
         int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
         if (fireAspectLevel == 1) {
             if (Math.random() < 0.4) {
-                event.setDropItems(false);
                 processBlockDrop(event, tool);
+            } else {
+                dropNaturalItems(event, tool);
             }
-        }
-        else if (fireAspectLevel >= 2) {
-            event.setDropItems(false);
+        } else if (fireAspectLevel >= 2) {
             processBlockDrop(event, tool);
+        }
+    }
+
+    private void dropNaturalItems(BlockBreakEvent event, ItemStack tool) {
+        Collection<ItemStack> naturalDrops = event.getBlock().getDrops(tool);
+        for (ItemStack drop : naturalDrops) {
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), drop);
         }
     }
 
     private void processBlockDrop(BlockBreakEvent event, ItemStack tool) {
         int amount = calculateDropAmount(tool);
         Material resultType = smeltMap.get(event.getBlock().getType());
+        if (resultType == null) {
+            // Si no hay un resultado definido en el mapa, se usa el drop natural
+            dropNaturalItems(event, tool);
+            return;
+        }
         ItemStack smeltedItem = new ItemStack(resultType, amount);
-
         event.getBlock().getWorld().dropItemNaturally(
                 event.getBlock().getLocation(),
                 smeltedItem
@@ -117,6 +145,7 @@ public class FireAspectOnToolsModule implements Listener {
 
     private int calculateDropAmount(ItemStack tool) {
         int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
+        plugin.getLogger().info("Fortune level en herramienta: " + fortuneLevel);
         int dropAmount = 1;
         if (fortuneLevel > 0) {
             dropAmount += fortuneLevel;
