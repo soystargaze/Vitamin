@@ -19,9 +19,10 @@ import java.util.Set;
 public class DoubleJumpModule implements Listener {
 
     private final Set<Player> canDoubleJump = new HashSet<>();
-    private static final double JUMP_BOOST = 0.42;
+    private final double JUMP_BOOST;
 
     public DoubleJumpModule(JavaPlugin plugin) {
+        this.JUMP_BOOST = plugin.getConfig().getDouble("double_jump.jump_boost", 0.42);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 

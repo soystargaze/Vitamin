@@ -59,3 +59,7 @@ wall_jump:
 # TP to Respawn Point with Compass settings
 tp_with_compass:
   channeling_time: 3 # Time in seconds to channel the compass
+
+# Double Jump settings
+double_jump:
+  jump_boost: 0.5
