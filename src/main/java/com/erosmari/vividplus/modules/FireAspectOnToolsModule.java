@@ -27,7 +27,6 @@ public class FireAspectOnToolsModule implements Listener {
 
     private final JavaPlugin plugin;
     private final Map<Material, Material> smeltMap;
-    // Conjunto para evitar procesar dos veces el mismo bloque.
     private final Set<Location> processedBlocks = ConcurrentHashMap.newKeySet();
 
     public FireAspectOnToolsModule(JavaPlugin plugin) {
@@ -97,16 +96,12 @@ public class FireAspectOnToolsModule implements Listener {
             return;
         }
 
-        // Evitar procesar dos veces el mismo bloque
         if (processedBlocks.contains(blockLocation)) {
-            plugin.getLogger().info("Bloque en " + blockLocation + " ya procesado, ignorando.");
             return;
         }
         processedBlocks.add(blockLocation);
-        // Remover la ubicación del conjunto en el siguiente tick
         Bukkit.getScheduler().runTaskLater(plugin, () -> processedBlocks.remove(blockLocation), 1L);
 
-        // Cancelar siempre los drops naturales
         event.setDropItems(false);
 
         int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
@@ -132,7 +127,6 @@ public class FireAspectOnToolsModule implements Listener {
         int amount = calculateDropAmount(tool);
         Material resultType = smeltMap.get(event.getBlock().getType());
         if (resultType == null) {
-            // Si no hay un resultado definido en el mapa, se usa el drop natural
             dropNaturalItems(event, tool);
             return;
         }
@@ -145,7 +139,6 @@ public class FireAspectOnToolsModule implements Listener {
 
     private int calculateDropAmount(ItemStack tool) {
         int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
-        plugin.getLogger().info("Fortune level en herramienta: " + fortuneLevel);
         int dropAmount = 1;
         if (fortuneLevel > 0) {
             dropAmount += fortuneLevel;
