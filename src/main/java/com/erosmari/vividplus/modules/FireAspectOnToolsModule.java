@@ -93,7 +93,7 @@ public class FireAspectOnToolsModule implements Listener {
 
         int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
         if (fireAspectLevel == 1) {
-            if (Math.random() < 0.5) {
+            if (Math.random() < 0.4) {
                 event.setDropItems(false);
                 processBlockDrop(event, tool);
             }
@@ -116,9 +116,9 @@ public class FireAspectOnToolsModule implements Listener {
     }
 
     private int calculateDropAmount(ItemStack tool) {
+        int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
         int dropAmount = 1;
-        if (tool.containsEnchantment(Enchantment.FORTUNE)) {
-            int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
+        if (fortuneLevel > 0) {
             dropAmount += fortuneLevel;
         }
         return dropAmount;
