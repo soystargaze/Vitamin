@@ -8,6 +8,8 @@ import io.papermc.paper.command.brigadier.Commands;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
+import java.util.Set;
+
 @SuppressWarnings("UnstableApiUsage")
 public class ModuleCommand {
 
@@ -23,7 +25,21 @@ public class ModuleCommand {
         return Commands.literal("module")
                 .requires(source -> source.getSender().hasPermission("vividplus.module"))
                 .then(Commands.argument("module", StringArgumentType.word())
+                        .suggests((context, builder) -> {
+                            Set<String> keys = plugin.getConfig().getKeys(false);
+                            for (String key : keys) {
+                                if (key.startsWith("module.")) {
+                                    builder.suggest(key);
+                                }
+                            }
+                            return builder.buildFuture();
+                        })
                         .then(Commands.argument("state", StringArgumentType.word())
+                                .suggests((context, builder) -> {
+                                    builder.suggest("enable");
+                                    builder.suggest("disable");
+                                    return builder.buildFuture();
+                                })
                                 .executes(context -> {
                                     String moduleName = StringArgumentType.getString(context, "module");
                                     String stateArg = StringArgumentType.getString(context, "state");
