@@ -25,7 +25,7 @@ public class VividPlusCommandManager {
 
             registerCommand(commands, "vividplus");
             registerCommand(commands, "vivid");
-            registerCommand(commands, "vi");
+            registerCommand(commands, "vp");
         });
     }
 
@@ -39,6 +39,7 @@ public class VividPlusCommandManager {
                             return 1;
                         })
                         .then(ReloadCommand.register(plugin))
+                        .then(ModuleCommand.register(plugin))
                         .build()
         );
     }
