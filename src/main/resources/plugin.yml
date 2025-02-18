@@ -1,4 +1,4 @@
-name: VividPlus
+name: Vitamin
 version: '1.0.0-SNAPSHOT'
 main: com.erosmari.vitamin.Vitamin
 api-version: '1.21'

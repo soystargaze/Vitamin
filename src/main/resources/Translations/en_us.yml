@@ -1,17 +1,13 @@
-# __     ___       _     _
-# \ \   / (_)_   _(_) __| |  _
-#  \ \ / /| \ \ / / |/ _` |_| |_
-#   \ V / | |\ V /| | (_| |_   _|
-#    \_/  |_| \_/ |_|\__,_| |_|
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
 # Support: https://erosmari.com/discord
 # Version: 1.0.0
 
 plugin:
-  prefix: "<color:#d4d4d4>[</color><gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color><color:#d4d4d4>]</color> "
-  dynamic_color: "<color:#FFF800>" # The color applied to {0}, {1}, etc. in translations
-  separator: "<gradient:#FFA500:#FFF800><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color>"
   version: "version: {0}"
   author: "by {0}"
   enabled: "Vitamin+ enabled successfully."

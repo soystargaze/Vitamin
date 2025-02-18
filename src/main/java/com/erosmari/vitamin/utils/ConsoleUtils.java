@@ -11,12 +11,11 @@ public class ConsoleUtils {
 
         final String LOCAL_TEST_MESSAGE_KEY = "plugin.logo";
         TranslationHandler.registerTemporaryTranslation(LOCAL_TEST_MESSAGE_KEY, "\n" +
-                "__     ___       _     _       \n" +
-                "\\ \\   / (_)_   _(_) __| |  _   \n" +
-                " \\ \\ / /| \\ \\ / / |/ _` |_| |_ \n" +
-                "  \\ V / | |\\ V /| | (_| |_   _|\n" +
-                "   \\_/  |_| \\_/ |_|\\__,_| |_|  " +
-                "\n");
+                "__     ___ _                  _             \n" +
+                "\\ \\   / (_) |_ __ _ _ __ ___ (_)_ __    _   \n" +
+                " \\ \\ / /| | __/ _` | '_ ` _ \\| | '_ \\ _| |_ \n" +
+                "  \\ V / | | || (_| | | | | | | | | | |_   _|\n" +
+                "   \\_/  |_|\\__\\__,_|_| |_| |_|_|_| |_| |_|  ");
         LoggingUtils.logTranslated(LOCAL_TEST_MESSAGE_KEY);
     }
 
