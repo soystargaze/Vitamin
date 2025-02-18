@@ -85,8 +85,8 @@ public class TranslationHandler {
     }
 
     public static Component getPlayerMessage(String key, Object... args) {
-        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[<gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color><gray>] ");
-        String dynamicColor = translations.getOrDefault("plugin.dynamic_color", "<color:#FFA500>");
+        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[<gradient:gold:yellow>Vitamin</gradient><gold>+<gray>] ");
+        String dynamicColor = translations.getOrDefault("plugin.dynamic_color", "<gold>");
         String template = translations.getOrDefault(key, "Translation not found: " + key + "!");
 
         for (int i = 0; i < args.length; i++) {
@@ -108,9 +108,9 @@ public class TranslationHandler {
     }
 
     public static Component getLogMessage(String key, Object... args) {
-        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[<gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color><gray>] ");
+        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[<gradient:gold:yellow>Vitamin</gradient><gold>+<gray>] ");
         String template = translations.getOrDefault(key, "Translation not found: " + key + "!");
-        String dynamicColor = translations.getOrDefault("plugin.dynamic_color", "<color:#FFA500>");
+        String dynamicColor = translations.getOrDefault("plugin.dynamic_color", "<gold>");
 
         for (int i = 0; i < args.length; i++) {
             String coloredArg = dynamicColor + args[i].toString() + "</color>";
