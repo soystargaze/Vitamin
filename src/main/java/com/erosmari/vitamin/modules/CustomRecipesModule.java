@@ -17,7 +17,7 @@ public class CustomRecipesModule implements Listener {
     }
 
     public void registerRecipes() {
-        ItemStack obsidian = new ItemStack(Material.OBSIDIAN);
+        ItemStack obsidian = new ItemStack(Material.OBSIDIAN,2);
         ShapelessRecipe obsidianRecipe = new ShapelessRecipe(new NamespacedKey("vitamin", "obsidian_from_lava_and_ice"), obsidian);
         obsidianRecipe.addIngredient(Material.LAVA_BUCKET);
         obsidianRecipe.addIngredient(Material.PACKED_ICE);
@@ -33,9 +33,9 @@ public class CustomRecipesModule implements Listener {
 
         ItemStack elytra = new ItemStack(Material.ELYTRA);
         ShapedRecipe elytraRecipe = new ShapedRecipe(new NamespacedKey("vitamin", "elytra_from_membrane_and_chestplate"), elytra);
-        elytraRecipe.shape("P P", " L ");
+        elytraRecipe.shape("P P", "P P", " L ");
         elytraRecipe.setIngredient('P', Material.PHANTOM_MEMBRANE);
-        elytraRecipe.setIngredient('L', Material.LEATHER_CHESTPLATE);
+        elytraRecipe.setIngredient('L', Material.NETHERITE_CHESTPLATE);
         Bukkit.addRecipe(elytraRecipe);
 
         ItemStack enchantedGoldenApple = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
@@ -46,10 +46,9 @@ public class CustomRecipesModule implements Listener {
         Bukkit.addRecipe(enchantedAppleRecipe);
 
         ItemStack gildedBlackstone = new ItemStack(Material.GILDED_BLACKSTONE);
-        ShapedRecipe gildedBlackstoneRecipe = new ShapedRecipe(new NamespacedKey("vitamin", "gilded_blackstone"), gildedBlackstone);
-        gildedBlackstoneRecipe.shape("BBB", "BGB", "BBB");
-        gildedBlackstoneRecipe.setIngredient('B', Material.BLACKSTONE);
-        gildedBlackstoneRecipe.setIngredient('G', Material.GOLD_NUGGET);
+        ShapelessRecipe gildedBlackstoneRecipe = new ShapelessRecipe(new NamespacedKey("vitamin", "gilded_blackstone"), gildedBlackstone);
+        gildedBlackstoneRecipe.addIngredient('B', Material.BLACKSTONE);
+        gildedBlackstoneRecipe.addIngredient('G', Material.GOLD_NUGGET);
         Bukkit.addRecipe(gildedBlackstoneRecipe);
 
         ItemStack heartOfTheSea = new ItemStack(Material.HEART_OF_THE_SEA);
@@ -111,7 +110,7 @@ public class CustomRecipesModule implements Listener {
         tuffRecipe.addIngredient(Material.GRAVEL);
         Bukkit.addRecipe(tuffRecipe);
 
-        ItemStack dirtPath = new ItemStack(Material.DIRT_PATH, 6);
+        ItemStack dirtPath = new ItemStack(Material.DIRT_PATH, 3);
         ShapedRecipe dirtPathRecipe = new ShapedRecipe(new NamespacedKey("vitamin", "dirt_path"), dirtPath);
         dirtPathRecipe.shape("DDD");
         dirtPathRecipe.setIngredient('D', Material.DIRT);
@@ -119,9 +118,9 @@ public class CustomRecipesModule implements Listener {
 
         ItemStack reinforcedDeepslate = new ItemStack(Material.REINFORCED_DEEPSLATE);
         ShapedRecipe reinforcedDeepslateRecipe = new ShapedRecipe(new NamespacedKey("vitamin", "reinforced_deepslate"), reinforcedDeepslate);
-        reinforcedDeepslateRecipe.shape("DND", "NDN", "DND");
+        reinforcedDeepslateRecipe.shape(" N ", "NDN", " N ");
         reinforcedDeepslateRecipe.setIngredient('D', Material.DEEPSLATE);
-        reinforcedDeepslateRecipe.setIngredient('N', Material.NETHERITE_INGOT);
+        reinforcedDeepslateRecipe.setIngredient('N', Material.ANCIENT_DEBRIS);
         Bukkit.addRecipe(reinforcedDeepslateRecipe);
     }
 }
