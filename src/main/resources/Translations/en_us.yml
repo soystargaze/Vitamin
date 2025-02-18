@@ -8,10 +8,10 @@
 # Version: 1.0.0
 
 plugin:
-  prefix: "<gray>[<gradient:gold:yellow>Vitamin</gradient><gold>+<gray>] "
+  prefix: "<gray>[</gray><gradient:gold:yellow>Vitamin</gradient><gold>+</gold><gray>]</gray> "
   dynamic_color: "<gold>" # The color applied to {0}, {1}, etc. in translations
   separator: "<gradient:gold:yellow><bold>--------------------------------------------</gradient>"
-  name: "<gradient:gold:yellow>Vitamin</gradient><gold>+"
+  name: "<gradient:gold:yellow>Vitamin</gradient><gold>+</gold>"
   version: "version: {0}"
   author: "by {0}"
   enabled: "Vitamin+ enabled successfully."
