@@ -21,13 +21,12 @@ public class LeafDecayModule implements Listener {
 
     private final JavaPlugin plugin;
     private final int maxRadius;
+    private final int decayTime;
     private static final Set<Material> LOGS = EnumSet.noneOf(Material.class);
     private static final Set<Material> LEAVES = EnumSet.noneOf(Material.class);
 
-    // Variable para saber si el módulo está activado
     public static boolean ENABLED = true;
 
-    // Instancia singleton
     private static LeafDecayModule instance;
 
     static {
@@ -42,7 +41,8 @@ public class LeafDecayModule implements Listener {
 
     public LeafDecayModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.maxRadius = 5;
+        this.maxRadius = plugin.getConfig().getInt("leaf_decay.max_radius", 4);
+        this.decayTime = plugin.getConfig().getInt("leaf_decay.decay_time", 4) * 20;
         instance = this;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -73,6 +73,7 @@ public class LeafDecayModule implements Listener {
         queue.add(start);
         AtomicInteger blocksProcessed = new AtomicInteger(0);
         int distance = 0;
+        Set<Block> leavesToRemove = new HashSet<>();
 
         while (!queue.isEmpty() && distance <= maxRadius) {
             Set<Block> nextQueue = new HashSet<>();
@@ -82,15 +83,17 @@ public class LeafDecayModule implements Listener {
                     return;
                 }
 
-                processNeighbors(block, visited, nextQueue, world, blocksProcessed);
+                processNeighbors(block, visited, nextQueue, world, blocksProcessed, leavesToRemove);
             }
 
             queue = nextQueue;
             distance++;
         }
+
+        scheduleLeafDecay(leavesToRemove);
     }
 
-    private void processNeighbors(Block block, Set<Block> visited, Set<Block> nextQueue, World world, AtomicInteger blocksProcessed) {
+    private void processNeighbors(Block block, Set<Block> visited, Set<Block> nextQueue, World world, AtomicInteger blocksProcessed, Set<Block> leavesToRemove) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 for (int dz = -1; dz <= 1; dz++) {
@@ -106,17 +109,27 @@ public class LeafDecayModule implements Listener {
                         visited.add(neighbor);
                         nextQueue.add(neighbor);
                         blocksProcessed.incrementAndGet();
-
-                        Bukkit.getScheduler().runTask(plugin, () -> {
-                            try {
-                                neighbor.breakNaturally();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        leavesToRemove.add(neighbor);
                     }
                 }
             }
+        }
+    }
+
+    private void scheduleLeafDecay(Set<Block> leaves) {
+        if (leaves.isEmpty()) return;
+
+        int totalLeaves = leaves.size();
+        int interval = Math.max(1, decayTime / totalLeaves);
+        AtomicInteger index = new AtomicInteger(0);
+
+        for (Block leaf : leaves) {
+            int delay = index.getAndIncrement() * interval;
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (leaf.getType().name().endsWith("_LEAVES")) {
+                    leaf.breakNaturally();
+                }
+            }, delay);
         }
     }
 }

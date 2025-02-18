@@ -66,3 +66,8 @@ double_jump:
 # Enchants Back settings
 enchants_back:
   max_returned: 5 # Maximum number of enchants returned
+
+# Leaf Decay settings
+leaf_decay:
+  decay_time: 4 # Time in seconds to decay the leaves
+  max_radius: 4 # Maximum radius to decay the leaves
