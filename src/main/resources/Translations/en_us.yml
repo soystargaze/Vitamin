@@ -8,27 +8,27 @@
 # Version: 1.0.0
 
 plugin:
-  prefix: "<color:#d4d4d4>[</color><gradient:#4CAF50:#CDDC39>Vivid+</gradient><color:#d4d4d4>]</color> "
-  dynamic_color: "<color:#4CAF50>" # The color applied to {0}, {1}, etc. in translations
-  separator: "<gradient:#4CAF50:#CDDC39><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#4CAF50:#CDDC39>Vivid+</gradient>"
+  prefix: "<color:#d4d4d4>[</color><gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color><color:#d4d4d4>]</color> "
+  dynamic_color: "<color:#FFF800>" # The color applied to {0}, {1}, etc. in translations
+  separator: "<gradient:#FFA500:#FFF800><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFF800>Vitamin</gradient><color:#FFA500>+</color>"
   version: "version: {0}"
   author: "by {0}"
-  enabled: "Vivid+ enabled successfully."
-  disabled: "Vivid+ disabled successfully."
+  enabled: "Vitamin+ enabled successfully."
+  disabled: "Vitamin+ disabled successfully."
   language_loaded: "Language loaded: {0}.yml ({1} translations)"
 items:
-  registered: "Registered Vivid+'s items successfully."
+  registered: "Registered Vitamin+'s items successfully."
 events:
   registered: "Events registered successfully."
 commands:
   registered: "Commands registered successfully."
-  usage: "Usage: /vividplus <args>"
+  usage: "Usage: /vitamin <args>"
   reload:
-    success: "Vivid+ reloaded successfully."
-    error: "An error occurred while reloading Vivid+."
+    success: "Vitamin+ reloaded successfully."
+    error: "An error occurred while reloading Vitamin+."
   module:
-    usage: "Usage: /vividplus module <module> <enable|disable>"
+    usage: "Usage: /vitamin module <module> <enable|disable>"
     not_found: "Module not found: {0}"
     changed: "Module {0} {1} successfully."
 
