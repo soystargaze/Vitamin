@@ -41,16 +41,16 @@ elevator:
   cannot_open: "<red>You cannot open the elevator!</red>"
 
 xpbook:
-    item_name: "XP Book with <gold>{0}</gold> XP"
-    created: "XP Book created with <gold>{0}</gold> XP!"
-    used: "XP Book used to give <gold>{0}</gold> XP!"
+    item_name: "XP Book with {0} XP"
+    created: "XP Book created with {0} XP!"
+    used: "XP Book used to give {0} XP!"
 
 carry_on:
   cannot_pickup_players: "<red>You cannot pick up players!</red>"
   cannot_pickup_entity: "<red>This entity cannot be picked up!</red>"
   entity_too_heavy: "<red>This entity is too heavy to carry!</red>"
   picked_up_entity: "<green>You have picked up an entity (Weight: {0}/{1})</green>"
-  entity_dropped: "<gold>You have released the entity.</gold>"
+  entity_dropped: "You have released the entity."
 
   picked_up_block: "<green>You have picked up a block of <yellow>{0}</yellow>.</green>"
   placed_block: "<gold>You have placed the block.</gold>"
