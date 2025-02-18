@@ -1,0 +1,69 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# Support: https://erosmari.com/discord
+# Version: 1.0.0
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500:#FFFF00>" # A cor aplicada a {0}, {1}, etc. nas traduções
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  version: "versão: {0}"
+  author: "por {0}"
+  enabled: "Vitamin+ ativado com sucesso."
+  disabled: "Vitamin+ desativado com sucesso."
+  language_loaded: "Idioma carregado: {0}.yml ({1} traduções)"
+items:
+  registered: "Itens do Vitamin+ registrados com sucesso."
+events:
+  registered: "Eventos registrados com sucesso."
+commands:
+  registered: "Comandos registrados com sucesso."
+  usage: "Uso: /vitamin <args>"
+  reload:
+    success: "Vitamin+ recarregado com sucesso."
+    error: "Ocorreu um erro ao recarregar o Vitamin+."
+  module:
+    usage: "Uso: /vitamin module <módulo> <enable|disable>"
+    not_found: "Módulo não encontrado: {0}"
+    changed: "Módulo {0} {1} com sucesso."
+
+module:
+  enabled: "Módulo {0}: <green>ativado"
+  disabled: "Módulo {0}: <red>desativado"
+
+elevator:
+  item_name: "<gold>Elevador</gold>"
+  cannot_open: "<red>Você não pode abrir o elevador!</red>"
+
+xpbook:
+  item_name: "Livro de XP com {0} XP"
+  created: "Livro de XP criado com {0} XP!"
+  used: "Livro de XP usado para conceder {0} XP!"
+
+carry_on:
+  cannot_pickup_players: "<red>Você não pode pegar jogadores!</red>"
+  cannot_pickup_entity: "<red>Esta entidade não pode ser carregada!</red>"
+  entity_too_heavy: "<red>Esta entidade é muito pesada para carregar!</red>"
+  picked_up_entity: "<green>Você pegou uma entidade (Peso: {0}/{1})</green>"
+  entity_dropped: "Você soltou a entidade."
+
+  picked_up_block: "<green>Você pegou um bloco de <yellow>{0}</yellow>.</green>"
+  placed_block: "<gold>Você colocou o bloco.</gold>"
+
+void_totem:
+  activated: "Tótem do Vazio ativado! Teleportando para um local seguro..."
+  cooldown: "Você deve esperar antes de usar outro Tótem do Vazio!"
+  no_totem: "Você precisa de um Tótem da Imortalidade para sobreviver ao vazio!"
+  teleport_safe: "Você foi teleportado para um local seguro."
+  teleport_spawn: "Nenhum local seguro encontrado próximo. Teleportado para o ponto de spawn do mundo."
+
+tpcompass:
+  already_teleporting: "<yellow>Você já está se teleportando!"
+  cancelled: "<red>Teleporte cancelado!"
+  channeling: "Canalizando teleporte: {0} segundos restantes..."
+  success: "Teleportado para seu ponto de renascimento!"
