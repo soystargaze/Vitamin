@@ -19,6 +19,7 @@ public class ModuleManager {
 
         addModule("module.auto_tool", new AutoToolModule());
         addModule("module.carry_on", new CarryOnModule(plugin));
+        addModule("module.custom_recipes", new CustomRecipesModule(plugin));
         addModule("module.double_jump", new DoubleJumpModule(plugin));
         addModule("module.elevator", new ElevatorModule(plugin));
         addModule("module.elytra_armor", new ElytraArmorModule(plugin));

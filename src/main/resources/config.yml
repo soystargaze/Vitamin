@@ -19,6 +19,7 @@ settings:
 module:
   auto_tool: true # Automatically switch to the correct tool when breaking blocks
   carry_on: true # Shift + Right Click to pick up entities and chests
+  custom_recipes: true # Add custom recipes to the game
   double_jump: true # Double jump by pressing space twice
   elevator: true # Craft an elevator block to teleport up and down
   elytra_armor: true # Elytra gives armor like a chest plate
