@@ -138,14 +138,33 @@ public class AutoToolModule implements Listener {
 
     private int findToolInInventory(Player player, Material[] desiredTools) {
         PlayerInventory inv = player.getInventory();
-        for (Material tool : desiredTools) {
-            for (int slot = 0; slot < inv.getSize(); slot++) {
-                ItemStack item = inv.getItem(slot);
-                if (item != null && item.getType() == tool) {
-                    return slot;
+        int foundSlot = -1;
+        for (int slot = 0; slot < inv.getSize(); slot++) {
+            ItemStack item = inv.getItem(slot);
+            if (item != null) {
+                for (Material tool : desiredTools) {
+                    if (item.getType() == tool) {
+                        foundSlot = slot;
+                        break;
+                    }
+                }
+                if (foundSlot != -1) {
+                    break;
                 }
             }
         }
-        return -1;
+        if (foundSlot == -1) {
+            return -1;
+        }
+        if (foundSlot < 9) {
+            return foundSlot;
+        } else {
+            int hotbarSlot = inv.getHeldItemSlot();
+            ItemStack currentItem = inv.getItem(hotbarSlot);
+            ItemStack bestTool = inv.getItem(foundSlot);
+            inv.setItem(hotbarSlot, bestTool);
+            inv.setItem(foundSlot, currentItem);
+            return hotbarSlot;
+        }
     }
 }
