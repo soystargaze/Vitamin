@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,9 +20,13 @@ public class DoubleJumpModule implements Listener {
 
     private final Set<Player> canDoubleJump = new HashSet<>();
     private final double JUMP_BOOST;
+    private boolean moduleEnabled;
+    private final JavaPlugin plugin;
 
     public DoubleJumpModule(JavaPlugin plugin) {
+        this.plugin = plugin;
         this.JUMP_BOOST = plugin.getConfig().getDouble("double_jump.jump_boost", 0.42);
+        this.moduleEnabled = plugin.getConfig().getBoolean("module.double_jump", true);
     }
 
     @EventHandler
@@ -34,8 +39,32 @@ public class DoubleJumpModule implements Listener {
         }
     }
 
+    public void updateModuleState() {
+        boolean newState = plugin.getConfig().getBoolean("module.double_jump", true);
+        if (newState != moduleEnabled) {
+            moduleEnabled = newState;
+            if (!moduleEnabled) {
+                disableModule();
+            }
+        }
+    }
+
+    public void disableModule() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+                player.setAllowFlight(false);
+                if (player.isFlying()) {
+                    player.setFlying(false);
+                }
+            }
+        }
+        canDoubleJump.clear();
+    }
+
     @EventHandler
     public void onPlayerDoubleJump(PlayerToggleFlightEvent event) {
+        updateModuleState();
+
         Player player = event.getPlayer();
 
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
