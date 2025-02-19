@@ -2,6 +2,7 @@ package com.erosmari.vitamin.commands;
 
 import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.modules.ModuleManager;
+import com.erosmari.vitamin.modules.CustomRecipesModule;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -78,6 +79,13 @@ public class ModuleCommand {
 
         plugin.getConfig().set(key, enable);
         plugin.saveConfig();
+
+        if (key.equalsIgnoreCase("module.custom_recipes") && !enable) {
+            Object moduleInstance = moduleManager.getModule("custom_recipes");
+            if (moduleInstance instanceof CustomRecipesModule) {
+                ((CustomRecipesModule) moduleInstance).unregisterRecipes();
+            }
+        }
 
         moduleManager.reloadModules();
 

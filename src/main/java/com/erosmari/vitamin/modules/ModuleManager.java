@@ -5,10 +5,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ModuleManager {
 
     private final JavaPlugin plugin;
+    private final Map<String, Listener> modules = new HashMap<>();
 
     public ModuleManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -16,6 +19,7 @@ public class ModuleManager {
     }
 
     private void registerModules() {
+        modules.clear();
 
         addModule("module.auto_tool", new AutoToolModule());
         addModule("module.carry_on", new CarryOnModule(plugin));
@@ -43,6 +47,7 @@ public class ModuleManager {
     }
 
     private void addModule(String configPath, Listener module) {
+        modules.put(configPath, module);
         if (plugin.getConfig().getBoolean(configPath, true)) {
             Bukkit.getPluginManager().registerEvents(module, plugin);
             LoggingUtils.logTranslated("module.enabled", configPath);
@@ -55,5 +60,10 @@ public class ModuleManager {
         plugin.reloadConfig();
         HandlerList.unregisterAll(plugin);
         registerModules();
+    }
+
+    public Listener getModule(String moduleName) {
+        String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
+        return modules.get(key);
     }
 }
