@@ -47,9 +47,13 @@ public class DoubleJumpModule implements Listener {
         canDoubleJump.remove(player);
         player.setAllowFlight(false);
 
+        float currentFallDistance = player.getFallDistance();
+
         Vector jumpVelocity = player.getVelocity();
         jumpVelocity.setY(JUMP_BOOST);
         player.setVelocity(jumpVelocity);
+
+        player.setFallDistance(currentFallDistance);
 
         player.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
     }
