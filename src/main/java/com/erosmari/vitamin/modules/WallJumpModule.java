@@ -1,7 +1,6 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -25,15 +24,19 @@ public class WallJumpModule implements Listener {
     private final double wall_jump_height;
     private final double wall_jump_distance;
     private final double wall_release_height;
+    private final String slideParticle;
+    private final String slideSound;
     private static final int STICK_DELAY_TICKS = 3;
 
     public WallJumpModule(Plugin plugin) {
         this.plugin = plugin;
         this.playerStates = new HashMap<>();
-        this.slide_speed = plugin.getConfig().getDouble("wall-jump.slide-speed", 0.05);
-        this.wall_jump_height = plugin.getConfig().getDouble("wall-jump.wall-jump-height", 0.7);
-        this.wall_jump_distance = plugin.getConfig().getDouble("wall-jump.wall-jump-distance", 0.42);
-        this.wall_release_height = plugin.getConfig().getDouble("wall-jump.wall-release-height", 0.5);
+        this.slide_speed = plugin.getConfig().getDouble("wall_jump.slide_speed", 0.05);
+        this.wall_jump_height = plugin.getConfig().getDouble("wall_jump.wall_jump_height", 0.7);
+        this.wall_jump_distance = plugin.getConfig().getDouble("wall_jump.wall_jump_distance", 0.42);
+        this.wall_release_height = plugin.getConfig().getDouble("wall_jump.wall_release_height", 0.5);
+        this.slideParticle = plugin.getConfig().getString("wall_jump.slide_particle", "BLOCK");
+        this.slideSound = plugin.getConfig().getString("wall_jump.slide_sound", "BLOCK_SAND_STEP");
     }
 
     private static class WallClimbState {
@@ -142,10 +145,28 @@ public class WallJumpModule implements Listener {
         velocity.setY(-slide_speed);
         player.setVelocity(velocity);
 
-        player.getWorld().spawnParticle(org.bukkit.Particle.BLOCK, player.getLocation(), 10,
-                0.2, 0.2, 0.2,
-                0.1, player.getLocation().getBlock().getBlockData()
-        );
+        Particle particleType;
+        try {
+            particleType = Particle.valueOf(slideParticle.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            particleType = Particle.BLOCK;
+        }
+
+        if (particleType == Particle.BLOCK) {
+            player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
+                    0.2, 0.2, 0.2, 0.1, player.getLocation().getBlock().getBlockData());
+        } else {
+            player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
+                    0.2, 0.2, 0.2, 0.1);
+        }
+
+        Sound soundType = Registry.SOUND_EVENT.get(NamespacedKey.minecraft(slideSound.toLowerCase()));
+
+        if (soundType == null) {
+            soundType = Sound.BLOCK_SAND_STEP;
+        }
+
+        player.getWorld().playSound(player.getLocation(), soundType, 0.5f, 1.2f);
     }
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {

@@ -53,6 +53,8 @@ elytra_armor:
 # Wall Jump settings
 wall_jump:
   slide_speed: 0.05
+  slide_particle: "BLOCK"
+  slide_sound: "BLOCK_SAND_STEP"
   jump_height: 0.7
   jump_distance: 0.42
   release_height: 0.5
