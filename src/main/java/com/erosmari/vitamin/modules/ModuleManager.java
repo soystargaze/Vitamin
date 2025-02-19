@@ -47,8 +47,8 @@ public class ModuleManager {
     }
 
     private void addModule(String configPath, Listener module) {
-        modules.put(configPath, module);
         if (plugin.getConfig().getBoolean(configPath, true)) {
+            modules.put(configPath, module);
             Bukkit.getPluginManager().registerEvents(module, plugin);
             LoggingUtils.logTranslated("module.enabled", configPath);
         } else {
