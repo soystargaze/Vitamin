@@ -15,7 +15,7 @@ public class Vitamin extends JavaPlugin implements Listener {
     private static Vitamin instance;
     private ModuleManager moduleManager;
     private VitaminCommandManager commandManager;
-    private static final int BSTATS_PLUGIN_ID = 24793;
+    private static final int BSTATS_PLUGIN_ID = 24855;
 
     @SuppressWarnings("CallToPrintStackTrace")
     @Override
