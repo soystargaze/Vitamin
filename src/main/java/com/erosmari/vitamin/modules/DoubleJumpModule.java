@@ -31,6 +31,8 @@ public class DoubleJumpModule implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        updateModuleState();
+
         Player player = event.getPlayer();
 
         if (!moduleEnabled) {
