@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -12,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -30,8 +28,7 @@ public final class ReplanterModule implements Listener {
         CROP_INFO.put(Material.BEETROOTS, new CropInfo(Material.BEETROOT_SEEDS));
     }
 
-    public ReplanterModule(final JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public ReplanterModule() {
     }
 
     @EventHandler

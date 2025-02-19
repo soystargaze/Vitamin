@@ -32,7 +32,6 @@ public class FireAspectOnToolsModule implements Listener {
     public FireAspectOnToolsModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.smeltMap = initializeSmeltMap();
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     private Map<Material, Material> initializeSmeltMap() {

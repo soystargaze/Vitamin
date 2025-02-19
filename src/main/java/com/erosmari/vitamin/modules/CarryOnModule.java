@@ -45,7 +45,6 @@ public class CarryOnModule implements Listener {
         this.maxCarryWeight = plugin.getConfig().getDouble("carry_on.max_weight", 100.0);
         this.storedBlockKey = new NamespacedKey(plugin, "stored_block");
         this.chestPartKey = new NamespacedKey(plugin, "chest_part");
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

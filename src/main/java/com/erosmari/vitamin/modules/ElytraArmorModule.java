@@ -26,7 +26,6 @@ public class ElytraArmorModule implements Listener {
     public ElytraArmorModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.defaultArmorValue = plugin.getConfig().getDouble("elytra_armor.value", 11.0);
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

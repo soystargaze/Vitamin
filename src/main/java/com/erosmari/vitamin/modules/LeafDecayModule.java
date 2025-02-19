@@ -44,7 +44,6 @@ public class LeafDecayModule implements Listener {
         this.maxRadius = plugin.getConfig().getInt("leaf_decay.max_radius", 4);
         this.decayTime = plugin.getConfig().getInt("leaf_decay.decay_time", 4) * 20;
         instance = this;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public static LeafDecayModule getInstance() {

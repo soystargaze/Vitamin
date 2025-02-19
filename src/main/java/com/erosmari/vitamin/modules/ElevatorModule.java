@@ -42,7 +42,6 @@ public class ElevatorModule implements Listener {
     public ElevatorModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.keyElevator = new NamespacedKey(plugin, "elevator");
-        Bukkit.getPluginManager().registerEvents(this, plugin);
         setupWoolToShulkerMap();
         registerRecipe();
     }

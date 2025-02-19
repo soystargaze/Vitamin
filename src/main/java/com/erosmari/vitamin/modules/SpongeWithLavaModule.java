@@ -20,7 +20,6 @@ public class SpongeWithLavaModule implements Listener {
 
     public SpongeWithLavaModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

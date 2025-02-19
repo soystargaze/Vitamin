@@ -23,20 +23,20 @@ public class ModuleManager {
 
         addModule("module.auto_tool", new AutoToolModule());
         addModule("module.carry_on", new CarryOnModule(plugin));
-        addModule("module.custom_recipes", new CustomRecipesModule(plugin));
+        addModule("module.custom_recipes", new CustomRecipesModule());
         addModule("module.double_jump", new DoubleJumpModule(plugin));
         addModule("module.elevator", new ElevatorModule(plugin));
         addModule("module.elytra_armor", new ElytraArmorModule(plugin));
         addModule("module.enchants_back", new EnchantsBackModule(plugin));
         addModule("module.fire_aspect_tools", new FireAspectOnToolsModule(plugin));
-        addModule("module.invisible_item_frames", new InvisibleItemFramesModule(plugin));
+        addModule("module.invisible_item_frames", new InvisibleItemFramesModule());
         addModule("module.leaf_decay", new LeafDecayModule(plugin));
-        addModule("module.pet_protection", new PetOwnerModule(plugin));
+        addModule("module.pet_protection", new PetOwnerModule());
         addModule("module.player_xp_to_books", new PlayerXptoBooksModule(plugin));
-        addModule("module.seed_replanter", new ReplanterModule(plugin));
+        addModule("module.seed_replanter", new ReplanterModule());
         addModule("module.silk_spawners", new SilkSpawnersModule(plugin));
         addModule("module.sponge_with_lava", new SpongeWithLavaModule(plugin));
-        addModule("module.totem_from_inventory", new TotemFromInventoryModule(plugin));
+        addModule("module.totem_from_inventory", new TotemFromInventoryModule());
         addModule("module.void_totem", new VoidTotemModule(plugin));
         addModule("module.tp_to_bed_with_compass", new TpToBedModule(plugin));
         addModule("module.unlock_all_recipes", new UnlockRecipesModule(plugin));

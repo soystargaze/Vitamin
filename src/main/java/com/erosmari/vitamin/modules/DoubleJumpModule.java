@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,7 +22,6 @@ public class DoubleJumpModule implements Listener {
 
     public DoubleJumpModule(JavaPlugin plugin) {
         this.JUMP_BOOST = plugin.getConfig().getDouble("double_jump.jump_boost", 0.42);
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

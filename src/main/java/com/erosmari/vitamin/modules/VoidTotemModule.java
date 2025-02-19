@@ -27,7 +27,6 @@ public class VoidTotemModule implements Listener {
 
     public VoidTotemModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

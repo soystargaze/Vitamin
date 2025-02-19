@@ -31,7 +31,6 @@ public class TpToBedModule implements Listener {
 
     public TpToBedModule(Plugin plugin) {
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

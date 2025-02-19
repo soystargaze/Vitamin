@@ -2,7 +2,6 @@ package com.erosmari.vitamin.modules;
 
 import com.erosmari.vitamin.utils.LoggingUtils;
 import com.erosmari.vitamin.utils.TranslationHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -23,7 +22,6 @@ public class PlayerXptoBooksModule implements Listener {
 
     public PlayerXptoBooksModule(JavaPlugin plugin) {
         this.xpKey = new NamespacedKey(plugin, "xp_amount");
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

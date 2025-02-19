@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -24,7 +23,6 @@ public class SilkSpawnersModule implements Listener {
 
     public SilkSpawnersModule(JavaPlugin plugin) {
         this.spawnerKey = new NamespacedKey(plugin, "mob-type");
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

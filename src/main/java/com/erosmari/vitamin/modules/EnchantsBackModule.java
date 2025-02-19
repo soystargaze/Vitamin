@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -22,7 +21,6 @@ public class EnchantsBackModule implements Listener {
 
     public EnchantsBackModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

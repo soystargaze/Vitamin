@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -8,12 +7,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class InvisibleItemFramesModule implements Listener {
 
-    public InvisibleItemFramesModule(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public InvisibleItemFramesModule() {
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

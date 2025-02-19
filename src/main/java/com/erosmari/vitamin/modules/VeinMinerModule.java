@@ -1,6 +1,5 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -53,8 +52,7 @@ public class VeinMinerModule implements Listener {
         ORES.add(Material.NETHER_GOLD_ORE);
     }
 
-    public VeinMinerModule(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public VeinMinerModule(JavaPlugin ignored) {
     }
 
     @EventHandler

@@ -34,7 +34,6 @@ public class VeinLogModule implements Listener {
 
     public VeinLogModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

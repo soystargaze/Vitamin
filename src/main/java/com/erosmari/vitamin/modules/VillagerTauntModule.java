@@ -26,7 +26,6 @@ public class VillagerTauntModule implements Listener {
 
     public VillagerTauntModule(JavaPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
         startInventoryCheck();
     }
 

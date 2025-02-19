@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +16,7 @@ public class CustomRecipesModule implements Listener {
     private static boolean recipesRegistered = false;
     private final List<NamespacedKey> registeredRecipes = new ArrayList<>();
 
-    public CustomRecipesModule(JavaPlugin plugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+    public CustomRecipesModule() {
         if (!recipesRegistered) {
             registerRecipes();
             recipesRegistered = true;
