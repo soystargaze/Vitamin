@@ -11,8 +11,8 @@
 ## 🍊 Key Features
 
 🛠️ **Full compatibility with PaperMC**  
-⚙️ **Easy configuration:** Manage everything from `config.yml`  
 📦 **Modular system:** Enable or disable each feature as needed  
+⚙️ **Easy configuration:** Manage everything from `config.yml`  
 🧪 **New mechanics:** Features designed to enhance gameplay without breaking the vanilla feel  
 🌍 **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **French**, and **Brazilian Portuguese**
 
