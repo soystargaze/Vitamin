@@ -21,18 +21,46 @@ public class DoubleJumpModule implements Listener {
     private final Set<Player> canDoubleJump = new HashSet<>();
     private final double JUMP_BOOST;
     private boolean moduleEnabled;
-    private final JavaPlugin plugin;
 
     public DoubleJumpModule(JavaPlugin plugin) {
-        this.plugin = plugin;
         this.JUMP_BOOST = plugin.getConfig().getDouble("double_jump.jump_boost", 0.42);
         this.moduleEnabled = plugin.getConfig().getBoolean("module.double_jump", true);
+
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!moduleEnabled) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+                        player.setAllowFlight(false);
+                        if (player.isFlying()) {
+                            player.setFlying(false);
+                        }
+                    }
+                }
+            }
+        }, 20L, 20L); // cada 1 segundo
+    }
+
+    public void setModuleEnabled(boolean enabled) {
+        this.moduleEnabled = enabled;
+        if (!moduleEnabled) {
+            disableModule();
+        }
+    }
+
+    public void disableModule() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+                player.setAllowFlight(false);
+                if (player.isFlying()) {
+                    player.setFlying(false);
+                }
+            }
+        }
+        canDoubleJump.clear();
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        updateModuleState();
-
         Player player = event.getPlayer();
 
         if (!moduleEnabled) {
@@ -51,33 +79,20 @@ public class DoubleJumpModule implements Listener {
         }
     }
 
-    public void updateModuleState() {
-        boolean newState = plugin.getConfig().getBoolean("module.double_jump", true);
-        if (newState != moduleEnabled) {
-            moduleEnabled = newState;
-            if (!moduleEnabled) {
-                disableModule();
-            }
-        }
-    }
+    @EventHandler
+    public void onPlayerDoubleJump(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();
 
-    public void disableModule() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        if (!moduleEnabled) {
+            // Si el módulo está deshabilitado, revocar vuelo
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
                 player.setAllowFlight(false);
                 if (player.isFlying()) {
                     player.setFlying(false);
                 }
             }
+            return;
         }
-        canDoubleJump.clear();
-    }
-
-    @EventHandler
-    public void onPlayerDoubleJump(PlayerToggleFlightEvent event) {
-        updateModuleState();
-
-        Player player = event.getPlayer();
 
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
         if (!canDoubleJump.contains(player)) return;
@@ -87,11 +102,9 @@ public class DoubleJumpModule implements Listener {
         player.setAllowFlight(false);
 
         float currentFallDistance = player.getFallDistance();
-
         Vector jumpVelocity = player.getVelocity();
         jumpVelocity.setY(JUMP_BOOST);
         player.setVelocity(jumpVelocity);
-
         player.setFallDistance(currentFallDistance);
 
         player.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
