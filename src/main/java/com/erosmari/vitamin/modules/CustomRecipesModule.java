@@ -47,8 +47,8 @@ public class CustomRecipesModule implements Listener {
 
         ItemStack gildedBlackstone = new ItemStack(Material.GILDED_BLACKSTONE);
         ShapelessRecipe gildedBlackstoneRecipe = new ShapelessRecipe(new NamespacedKey("vitamin", "gilded_blackstone"), gildedBlackstone);
-        gildedBlackstoneRecipe.addIngredient('B', Material.BLACKSTONE);
-        gildedBlackstoneRecipe.addIngredient('G', Material.GOLD_NUGGET);
+        gildedBlackstoneRecipe.addIngredient(Material.BLACKSTONE);
+        gildedBlackstoneRecipe.addIngredient(Material.GOLD_NUGGET);
         Bukkit.addRecipe(gildedBlackstoneRecipe);
 
         ItemStack heartOfTheSea = new ItemStack(Material.HEART_OF_THE_SEA);
