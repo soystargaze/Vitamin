@@ -145,6 +145,12 @@ public class WallJumpModule implements Listener {
         velocity.setY(-slide_speed);
         player.setVelocity(velocity);
 
+        WallClimbState state = playerStates.get(player.getUniqueId());
+        if (state == null) return;
+
+        BlockFace wallFace = state.wallFace;
+        Block wallBlock = player.getLocation().getBlock().getRelative(wallFace);
+
         Particle particleType;
         try {
             particleType = Particle.valueOf(slideParticle.toUpperCase());
@@ -152,12 +158,14 @@ public class WallJumpModule implements Listener {
             particleType = Particle.BLOCK;
         }
 
-        if (particleType == Particle.BLOCK) {
-            player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
-                    0.2, 0.2, 0.2, 0.1, player.getLocation().getBlock().getBlockData());
-        } else {
-            player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
-                    0.2, 0.2, 0.2, 0.1);
+        if (wallBlock.getType().isSolid()) {
+            if (particleType == Particle.BLOCK) {
+                player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
+                        0.2, 0.2, 0.2, 0.1, wallBlock.getBlockData()); // Usar el bloque de la pared
+            } else {
+                player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
+                        0.2, 0.2, 0.2, 0.1);
+            }
         }
 
         Sound soundType = Registry.SOUND_EVENT.get(NamespacedKey.minecraft(slideSound.toLowerCase()));
@@ -166,7 +174,7 @@ public class WallJumpModule implements Listener {
             soundType = Sound.BLOCK_SAND_STEP;
         }
 
-        player.getWorld().playSound(player.getLocation(), soundType, 0.5f, 1.2f);
+        player.getWorld().playSound(player.getLocation(), soundType, 0.2f, 1.2f);
     }
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {
