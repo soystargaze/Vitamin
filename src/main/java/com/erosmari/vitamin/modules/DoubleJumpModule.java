@@ -33,6 +33,16 @@ public class DoubleJumpModule implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
+        if (!moduleEnabled) {
+            if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
+                player.setAllowFlight(false);
+                if (player.isFlying()) {
+                    player.setFlying(false);
+                }
+            }
+            return;
+        }
+
         if (isOnSolidGround(player)) {
             canDoubleJump.add(player);
             player.setAllowFlight(true);
