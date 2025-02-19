@@ -17,6 +17,8 @@ plugin:
   enabled: "Vitamin+ habilitado correctamente."
   disabled: "Vitamin+ deshabilitado correctamente."
   language_loaded: "Idioma cargado: {0}.yml ({1} traducciones)"
+  enable_error: "Ocurrió un error al habilitar Vitamin+: {0}"
+
 items:
   registered: "Los ítems de Vitamin+ se han registrado correctamente."
 events:

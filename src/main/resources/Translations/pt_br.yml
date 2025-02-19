@@ -17,6 +17,8 @@ plugin:
   enabled: "Vitamin+ ativado com sucesso."
   disabled: "Vitamin+ desativado com sucesso."
   language_loaded: "Idioma carregado: {0}.yml ({1} traduções)"
+  enable_error: "Ocorreu um erro ao ativar o Vitamin+: {0}"
+
 items:
   registered: "Itens do Vitamin+ registrados com sucesso."
 events:
