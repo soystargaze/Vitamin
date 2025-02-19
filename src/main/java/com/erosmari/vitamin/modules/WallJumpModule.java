@@ -141,6 +141,11 @@ public class WallJumpModule implements Listener {
         Vector velocity = player.getVelocity();
         velocity.setY(-slide_speed);
         player.setVelocity(velocity);
+
+        player.getWorld().spawnParticle(org.bukkit.Particle.BLOCK, player.getLocation(), 10,
+                0.2, 0.2, 0.2,
+                0.1, player.getLocation().getBlock().getBlockData()
+        );
     }
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {
