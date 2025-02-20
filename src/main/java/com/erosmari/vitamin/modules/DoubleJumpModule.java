@@ -37,7 +37,7 @@ public class DoubleJumpModule implements Listener {
                     }
                 }
             }
-        }, 20L, 20L); // cada 1 segundo
+        }, 20L, 20L);
     }
 
     public void setModuleEnabled(boolean enabled) {
