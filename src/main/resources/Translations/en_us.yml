@@ -18,10 +18,13 @@ plugin:
   disabled: "Vitamin+ disabled successfully."
   language_loaded: "Language loaded: {0}.yml ({1} translations)"
   enable_error: "An error occurred while enabling Vitamin+: {0}"
+
 items:
   registered: "Registered Vitamin+'s items successfully."
+
 events:
   registered: "Events registered successfully."
+
 commands:
   registered: "Commands registered successfully."
   usage: "Usage: /vitamin <args>"
@@ -42,9 +45,9 @@ elevator:
   cannot_open: "<red>You cannot open the elevator!</red>"
 
 xpbook:
-    item_name: "XP Book with {0} XP"
-    created: "XP Book created with {0} XP!"
-    used: "XP Book used to give {0} XP!"
+  item_name: "XP Book with {0} XP"
+  created: "XP Book created with {0} XP!"
+  used: "XP Book used to give {0} XP!"
 
 carry_on:
   cannot_pickup_players: "<red>You cannot pick up players!</red>"

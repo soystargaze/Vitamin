@@ -21,8 +21,10 @@ plugin:
 
 items:
   registered: "Los ítems de Vitamin+ se han registrado correctamente."
+
 events:
   registered: "Eventos registrados correctamente."
+
 commands:
   registered: "Comandos registrados correctamente."
   usage: "Uso: /vitamin <args>"

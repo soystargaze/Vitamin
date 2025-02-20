@@ -1,0 +1,73 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# 支持: https://erosmari.com/discord
+# 版本: 1.0.0
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500:#FFFF00>" # 应用于 {0}, {1} 等翻译变量的颜色
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  version: "版本: {0}"
+  author: "作者: {0}"
+  enabled: "Vitamin+ 启动成功。"
+  disabled: "Vitamin+ 已成功禁用。"
+  language_loaded: "语言已加载: {0}.yml ({1} 条翻译)"
+  enable_error: "启用 Vitamin+ 时发生错误: {0}"
+
+items:
+  registered: "Vitamin+ 的物品已成功注册。"
+
+events:
+  registered: "事件已成功注册。"
+
+commands:
+  registered: "指令已成功注册。"
+  usage: "用法: /vitamin <参数>"
+  reload:
+    success: "Vitamin+ 重新加载成功。"
+    error: "重新加载 Vitamin+ 时发生错误。"
+  module:
+    usage: "用法: /vitamin module <模块> <enable|disable>"
+    not_found: "未找到模块: {0}"
+    changed: "模块 {0} {1} 成功。"
+
+module:
+  enabled: "模块 {0}: <green>已启用"
+  disabled: "模块 {0}: <red>已禁用"
+
+elevator:
+  item_name: "<gold>电梯</gold>"
+  cannot_open: "<red>你无法打开电梯！</red>"
+
+xpbook:
+  item_name: "包含 {0} 经验的经验书"
+  created: "已创建包含 {0} 经验的经验书！"
+  used: "已使用经验书，获得 {0} 经验！"
+
+carry_on:
+  cannot_pickup_players: "<red>你无法拾取玩家！</red>"
+  cannot_pickup_entity: "<red>此实体无法拾取！</red>"
+  entity_too_heavy: "<red>此实体太重，无法搬运！</red>"
+  picked_up_entity: "<green>你拾取了一个实体 (重量: {0}/{1})</green>"
+  entity_dropped: "你已释放该实体。"
+
+  picked_up_block: "<green>你拾取了 <yellow>{0}</yellow> 方块。</green>"
+  placed_block: "<gold>你已放置该方块。</gold>"
+
+void_totem:
+  activated: "虚空图腾已激活！正在传送至安全地点..."
+  cooldown: "你需要等待一段时间才能再次使用虚空图腾！"
+  no_totem: "你需要一个不死图腾才能在虚空中生存！"
+  teleport_safe: "你已被传送至安全地点。"
+  teleport_spawn: "附近没有安全位置。已传送至世界出生点。"
+
+tpcompass:
+  already_teleporting: "<yellow>你已经在传送中！"
+  cancelled: "<red>传送已取消！"
+  channeling: "正在引导传送: 还剩 {0} 秒..."
+  success: "已传送至你的重生点！"
