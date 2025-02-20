@@ -2,7 +2,6 @@ package com.erosmari.vitamin.commands;
 
 import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.config.ConfigHandler;
-import com.erosmari.vitamin.modules.DoubleJumpModule;
 import com.erosmari.vitamin.modules.ModuleManager;
 import com.erosmari.vitamin.modules.CustomRecipesModule;
 import com.erosmari.vitamin.utils.LoggingUtils;
@@ -53,13 +52,6 @@ public class ReloadCommand {
     private void reloadConfig() {
         plugin.reloadConfig();
         ConfigHandler.reload();
-
-        if (!plugin.getConfig().getBoolean("module.double_jump", true)) {
-            Object moduleInstance = moduleManager.getModule("double_jump");
-            if (moduleInstance instanceof DoubleJumpModule) {
-                ((DoubleJumpModule) moduleInstance).setModuleEnabled(false);
-            }
-        }
 
         moduleManager.reloadModules();
     }

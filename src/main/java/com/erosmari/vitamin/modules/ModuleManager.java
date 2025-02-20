@@ -24,7 +24,6 @@ public class ModuleManager {
         addModule("module.auto_tool", new AutoToolModule());
         addModule("module.carry_on", new CarryOnModule(plugin));
         addModule("module.custom_recipes", new CustomRecipesModule());
-        addModule("module.double_jump", new DoubleJumpModule(plugin));
         addModule("module.elevator", new ElevatorModule(plugin));
         addModule("module.elytra_armor", new ElytraArmorModule(plugin));
         addModule("module.enchants_back", new EnchantsBackModule(plugin));

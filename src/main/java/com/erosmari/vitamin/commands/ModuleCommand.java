@@ -1,7 +1,6 @@
 package com.erosmari.vitamin.commands;
 
 import com.erosmari.vitamin.Vitamin;
-import com.erosmari.vitamin.modules.DoubleJumpModule;
 import com.erosmari.vitamin.modules.ModuleManager;
 import com.erosmari.vitamin.modules.CustomRecipesModule;
 import com.erosmari.vitamin.utils.TranslationHandler;
@@ -85,13 +84,6 @@ public class ModuleCommand {
             Object moduleInstance = moduleManager.getModule("custom_recipes");
             if (moduleInstance instanceof CustomRecipesModule) {
                 ((CustomRecipesModule) moduleInstance).unregisterRecipes();
-            }
-        }
-
-        if (key.equalsIgnoreCase("module.double_jump")) {
-            Object moduleInstance = moduleManager.getModule("double_jump");
-            if (moduleInstance instanceof DoubleJumpModule) {
-                ((DoubleJumpModule) moduleInstance).setModuleEnabled(enable);
             }
         }
 
