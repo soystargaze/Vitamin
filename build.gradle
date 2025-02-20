@@ -45,7 +45,7 @@ processResources {
 tasks.shadowJar {
     archiveClassifier.set('')
     minimize()
-    relocate 'org.bstats', 'com.erosmari.vividplus.shaded.bstats'
+    relocate 'org.bstats', 'com.erosmari.vitamin.shaded.bstats'
 }
 
 tasks.build {
