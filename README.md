@@ -14,7 +14,7 @@
 - **Easy configuration:** Manage everything from `config.yml`
 - **Modular system:** Enable or disable each feature as needed
 - **New mechanics:** Features designed to enhance gameplay without breaking the vanilla feel
-- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **French**, and **Brazilian Portuguese**
+- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **French**, and **Brazilian Portuguese**
 
 ---
 
@@ -28,7 +28,6 @@
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests.
 - **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
-- **Double Jump:** Allows a second jump when pressing the spacebar twice.
 - **Elevator:** Create a teleporting elevator for vertical movement.
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable).
