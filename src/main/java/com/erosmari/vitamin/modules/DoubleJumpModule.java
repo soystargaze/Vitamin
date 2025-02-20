@@ -84,7 +84,6 @@ public class DoubleJumpModule implements Listener {
         Player player = event.getPlayer();
 
         if (!moduleEnabled) {
-            // Si el módulo está deshabilitado, revocar vuelo
             if (player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR) {
                 player.setAllowFlight(false);
                 if (player.isFlying()) {
