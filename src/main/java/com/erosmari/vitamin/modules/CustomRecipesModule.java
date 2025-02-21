@@ -171,7 +171,7 @@ public class CustomRecipesModule implements Listener {
         ShapedRecipe reinforcedDeepslateRecipe = new ShapedRecipe(reinforcedDeepslateKey, reinforcedDeepslate);
         reinforcedDeepslateRecipe.shape(" N ", "NDN", " N ");
         reinforcedDeepslateRecipe.setIngredient('D', Material.DEEPSLATE);
-        reinforcedDeepslateRecipe.setIngredient('N', Material.ANCIENT_DEBRIS);
+        reinforcedDeepslateRecipe.setIngredient('N', Material.NETHERITE_SCRAP);
         Bukkit.addRecipe(reinforcedDeepslateRecipe);
         registeredRecipes.add(reinforcedDeepslateKey);
     }
