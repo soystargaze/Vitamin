@@ -59,7 +59,7 @@
 <details><summary>Installation</summary>
 
 ## **Prerequisites**
-Before installing Lumen, make sure your server meets the following requirements:
+Before installing Vitamin+, make sure your server meets the following requirements:
 
 - **Minecraft Server:** PaperMC **1.21 or higher** (recommended **1.21.4**, the latest stable version).
 - **Java:** Version **21 or higher**.
