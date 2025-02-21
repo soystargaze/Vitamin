@@ -1,6 +1,9 @@
 package com.erosmari.vitamin.modules;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,6 +27,7 @@ public class AutoToolModule implements Listener {
             int slot = findBestTool(player, toolType);
             if (slot != -1 && player.getInventory().getHeldItemSlot() != slot) {
                 player.getInventory().setHeldItemSlot(slot);
+                spawnToolChangeParticles(player);
             }
         }
     }
@@ -36,6 +40,7 @@ public class AutoToolModule implements Listener {
         int slot = findBestToolForSword(player);
         if (slot != -1 && player.getInventory().getHeldItemSlot() != slot) {
             player.getInventory().setHeldItemSlot(slot);
+            spawnToolChangeParticles(player);
         }
     }
 
@@ -166,5 +171,11 @@ public class AutoToolModule implements Listener {
             inv.setItem(foundSlot, currentItem);
             return hotbarSlot;
         }
+    }
+
+    private void spawnToolChangeParticles(Player player) {
+        Location loc = player.getLocation().add(0, 1.5, 0);
+        player.getWorld().spawnParticle(Particle.SWEEP_ATTACK, loc, 3, 0.3, 0.3, 0.3, 0.01);
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_ATTACK_SWEEP, 0.2f, 1.2f);
     }
 }

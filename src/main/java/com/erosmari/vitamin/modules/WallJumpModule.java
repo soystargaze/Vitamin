@@ -160,10 +160,10 @@ public class WallJumpModule implements Listener {
 
         if (wallBlock.getType().isSolid()) {
             if (particleType == Particle.BLOCK) {
-                player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
-                        0.2, 0.2, 0.2, 0.1, wallBlock.getBlockData()); // Usar el bloque de la pared
+                player.getWorld().spawnParticle(particleType, player.getLocation(), 8,
+                        0.2, 0.2, 0.2, 0.1, wallBlock.getBlockData());
             } else {
-                player.getWorld().spawnParticle(particleType, player.getLocation(), 10,
+                player.getWorld().spawnParticle(particleType, player.getLocation(), 8,
                         0.2, 0.2, 0.2, 0.1);
             }
         }
