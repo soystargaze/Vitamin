@@ -36,6 +36,7 @@
 - **Leaf Decay:** Leaves disappear faster when cutting down trees (configurable).
 - **Pet Protection:** Prevents pets from being accidentally damaged by their owners.
 - **Player XP to Books:** Convert your XP into books by `Shift + Right-Clicking` with an empty book.
+- **Repair Tools:** Repairs gold, iron and diamond tools and weapons using nuggets, ingots or diamonds in the player's 2x2 inventory crafting grid.
 - **Seed Replanter:** Harvest and replant crops with a `Right-Click`.
 - **Silk Spawners:** Obtain spawners when mining them with `Silk Touch`.
 - **Sponge with Lava:** Sponges can now absorb lava.
@@ -47,6 +48,7 @@
 - **Vein Miner:** Mine connected ores in a vein using `Efficiency V` tools.
 - **Villager Follow Emeralds:** Villagers follow players holding emeralds.
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
+- **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
 
 </details>
 

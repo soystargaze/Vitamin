@@ -59,7 +59,7 @@ public class WeatherEffectsModule implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0L, 20L);
+        }.runTaskTimer(plugin, 0L, 25000L);
     }
 
     @EventHandler
