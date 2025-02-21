@@ -173,6 +173,38 @@ public class CustomRecipesModule implements Listener {
         reinforcedDeepslateRecipe.addIngredient(Material.NETHERITE_SCRAP);
         Bukkit.addRecipe(reinforcedDeepslateRecipe);
         registeredRecipes.add(reinforcedDeepslateKey);
+
+        NamespacedKey lavaBucketKey = new NamespacedKey("vitamin", "lava_bucket");
+        Bukkit.removeRecipe(lavaBucketKey);
+        ItemStack lavaBucket = new ItemStack(Material.LAVA_BUCKET);
+        ShapelessRecipe lavaBucketRecipe = new ShapelessRecipe(lavaBucketKey, lavaBucket);
+        lavaBucketRecipe.addIngredient(Material.WATER_BUCKET);
+        lavaBucketRecipe.addIngredient(Material.MAGMA_CREAM);
+        Bukkit.addRecipe(lavaBucketRecipe);
+        registeredRecipes.add(lavaBucketKey);
+
+        NamespacedKey tridentKey = new NamespacedKey("vitamin", "trident");
+        Bukkit.removeRecipe(tridentKey);
+        ItemStack trident = new ItemStack(Material.TRIDENT);
+        ShapedRecipe tridentRecipe = new ShapedRecipe(tridentKey, trident);
+        tridentRecipe.shape("SSS", "CPC", " D ");
+        tridentRecipe.setIngredient('P', Material.PRISMARINE);
+        tridentRecipe.setIngredient('S', Material.PRISMARINE_SHARD);
+        tridentRecipe.setIngredient('C', Material.PRISMARINE_CRYSTALS);
+        tridentRecipe.setIngredient('D', Material.STICK);
+        Bukkit.addRecipe(tridentRecipe);
+        registeredRecipes.add(tridentKey);
+
+        NamespacedKey totemOfUndyingKey = new NamespacedKey("vitamin", "totem_of_undying");
+        Bukkit.removeRecipe(totemOfUndyingKey);
+        ItemStack totemOfUndying = new ItemStack(Material.TOTEM_OF_UNDYING);
+        ShapedRecipe totemOfUndyingRecipe = new ShapedRecipe(totemOfUndyingKey, totemOfUndying);
+        totemOfUndyingRecipe.shape(" E ", "CAC", " C ");
+        totemOfUndyingRecipe.setIngredient('A', Material.ENCHANTED_GOLDEN_APPLE);
+        totemOfUndyingRecipe.setIngredient('E', Material.EMERALD);
+        totemOfUndyingRecipe.setIngredient('C', Material.GOLD_INGOT);
+        Bukkit.addRecipe(totemOfUndyingRecipe);
+        registeredRecipes.add(totemOfUndyingKey);
     }
 
     public void unregisterRecipes() {
