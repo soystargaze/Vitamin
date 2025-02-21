@@ -32,6 +32,7 @@ public class ModuleManager {
         addModule("module.leaf_decay", new LeafDecayModule(plugin));
         addModule("module.pet_protection", new PetOwnerModule());
         addModule("module.player_xp_to_books", new PlayerXptoBooksModule(plugin));
+        addModule("module.repair", new RepairModule(plugin));
         addModule("module.seed_replanter", new ReplanterModule());
         addModule("module.silk_spawners", new SilkSpawnersModule(plugin));
         addModule("module.sponge_with_lava", new SpongeWithLavaModule(plugin));
@@ -43,6 +44,7 @@ public class ModuleManager {
         addModule("module.vein_miner", new VeinMinerModule(plugin));
         addModule("module.villager_follow_emeralds", new VillagerTauntModule(plugin));
         addModule("module.wall_jump", new WallJumpModule(plugin));
+        addModule("module.weather_effects", new WeatherEffectsModule(plugin));
     }
 
     private void addModule(String configPath, Listener module) {

@@ -75,3 +75,9 @@ enchants_back:
 leaf_decay:
   decay_time: 4 # Time in seconds to decay the leaves
   max_radius: 4 # Maximum radius to decay the leaves
+
+# Repair settings
+repair:
+  diamond_value: 0.4 # Percentage repaired with a diamond: 40%
+  ingot_value: 0.27 # Percentage repaired with an ingot: 27%
+  nugget_value: 0.03 # Percentage repaired with a nugget: 3%
