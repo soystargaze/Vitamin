@@ -27,7 +27,6 @@
 
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests.
-- **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
 - **Elevator:** Create a teleporting elevator for vertical movement.
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable).
@@ -49,6 +48,8 @@
 - **Villager Follow Emeralds:** Villagers follow players holding emeralds.
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
+- **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
+    - [Recipes](https://imgur.com/a/x4YqbmH)
 
 </details>
 
