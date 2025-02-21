@@ -168,10 +168,9 @@ public class CustomRecipesModule implements Listener {
         NamespacedKey reinforcedDeepslateKey = new NamespacedKey("vitamin", "reinforced_deepslate");
         Bukkit.removeRecipe(reinforcedDeepslateKey);
         ItemStack reinforcedDeepslate = new ItemStack(Material.REINFORCED_DEEPSLATE);
-        ShapedRecipe reinforcedDeepslateRecipe = new ShapedRecipe(reinforcedDeepslateKey, reinforcedDeepslate);
-        reinforcedDeepslateRecipe.shape(" N ", "NDN", " N ");
-        reinforcedDeepslateRecipe.setIngredient('D', Material.DEEPSLATE);
-        reinforcedDeepslateRecipe.setIngredient('N', Material.NETHERITE_SCRAP);
+        ShapelessRecipe reinforcedDeepslateRecipe = new ShapelessRecipe(reinforcedDeepslateKey, reinforcedDeepslate);
+        reinforcedDeepslateRecipe.addIngredient(Material.DEEPSLATE);
+        reinforcedDeepslateRecipe.addIngredient(Material.NETHERITE_SCRAP);
         Bukkit.addRecipe(reinforcedDeepslateRecipe);
         registeredRecipes.add(reinforcedDeepslateKey);
     }
