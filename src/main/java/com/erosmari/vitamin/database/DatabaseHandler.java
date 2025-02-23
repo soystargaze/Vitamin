@@ -11,21 +11,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DatabaseHandler {
 
-    private static Logger logger;
     private static HikariDataSource dataSource;
 
     public static void initialize(JavaPlugin plugin) {
         if (dataSource != null) {
-            logger.warning("DatabaseHandler ya fue inicializado.");
+            LoggingUtils.logTranslated("database.already_initialized");
             return;
         }
 
-        logger = plugin.getLogger();
         FileConfiguration config = ConfigHandler.getConfig();
         String type = config.getString("database.type", "sqlite").toLowerCase();
 
@@ -44,12 +40,12 @@ public class DatabaseHandler {
                     initializeSQLite(plugin);
                     break;
                 default:
-                    throw new IllegalArgumentException("Tipo de base de datos no soportado: " + type);
+                    throw new IllegalArgumentException("Database type not supported: " + type);
             }
             createTables();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, TranslationHandler.get("database.init_error"), e);
-            throw new IllegalStateException("Falló la inicialización de la base de datos.");
+            LoggingUtils.logTranslated("database.init_error", e);
+            throw new IllegalStateException("Database initialization failed.", e);
         }
     }
 
@@ -125,7 +121,7 @@ public class DatabaseHandler {
 
     public static Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            throw new IllegalStateException("El pool de conexiones no está inicializado.");
+            throw new IllegalStateException("The connection pool has not been initialized.");
         }
         return dataSource.getConnection();
     }

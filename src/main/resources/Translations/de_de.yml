@@ -1,0 +1,99 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# Support: https://erosmari.com/discord
+# Version: 1.1.0
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500:#FFFF00>" # Die Farbe, die auf {0}, {1} usw. in den Übersetzungen angewendet wird
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  version: "Version: {0}"
+  author: "von {0}"
+  enabled: "Vitamin+ erfolgreich aktiviert."
+  disabled: "Vitamin+ erfolgreich deaktiviert."
+  language_loaded: "Sprache geladen: {0}.yml ({1} Übersetzungen)"
+  enable_error: "Beim Aktivieren von Vitamin+ ist ein Fehler aufgetreten: {0}"
+
+items:
+  registered: "Vitamin+-Gegenstände erfolgreich registriert."
+
+events:
+  registered: "Ereignisse erfolgreich registriert."
+
+commands:
+  registered: "Befehle erfolgreich registriert."
+  usage: "Verwendung: /vitamin <args>"
+  reload:
+    success: "Vitamin+ erfolgreich neu geladen."
+    error: "Beim Neuladen von Vitamin+ ist ein Fehler aufgetreten."
+  module:
+    usage: "Verwendung: /vitamin module <Modul> <enable|disable>"
+    not_found: "Modul nicht gefunden: {0}"
+    changed: "Modul {0} erfolgreich {1}."
+  pmodule:
+    usage: "Verwendung: /vitamin pmodule <Modul> <enable|disable>"
+    player_only: "Dieser Befehl kann nur von einem Spieler ausgeführt werden."
+    module_not_active: "Das Modul {0} ist nicht aktiv."
+    no_module_permission: "Du hast keine Berechtigung, {0} zu verwenden."
+    changed: "Modul {0} erfolgreich {1}."
+
+database:
+  already_initialized: "Die Datenbank wurde bereits initialisiert."
+  init_error: "Beim Initialisieren der Datenbank ist ein Fehler aufgetreten: {0}"
+  sqlite:
+    error_directory: "Fehler beim Erstellen des SQLite-Datenbankverzeichnisses: "
+    success: "SQLite-Datenbank erfolgreich initialisiert."
+  mysql:
+    success: "MySQL-Datenbank erfolgreich initialisiert."
+  mariadb:
+    success: "MariaDB-Datenbank erfolgreich initialisiert."
+  postgresql:
+    success: "PostgreSQL-Datenbank erfolgreich initialisiert."
+  tables:
+    success: "Datenbanktabellen erfolgreich erstellt."
+    error: "Beim Erstellen der Datenbanktabellen ist ein Fehler aufgetreten: {0}"
+  query_error: "Beim Ausführen einer Datenbankabfrage ist ein Fehler aufgetreten: {0}"
+  update_error: "Beim Aktualisieren der Datenbank ist ein Fehler aufgetreten: {0}"
+  close:
+    success: "Die Datenbankverbindung wurde erfolgreich geschlossen."
+
+module:
+  enabled: "Modul {0}: <green>aktiviert"
+  disabled: "Modul {0}: <red>deaktiviert"
+
+elevator:
+  item_name: "<gold>Aufzug</gold>"
+  cannot_open: "<red>Du kannst den Aufzug nicht öffnen!</red>"
+
+xpbook:
+  item_name: "XP-Buch mit {0} XP"
+  created: "XP-Buch mit {0} XP erstellt!"
+  used: "XP-Buch verwendet, um {0} XP zu erhalten!"
+
+carry_on:
+  cannot_pickup_players: "<red>Du kannst keine Spieler aufheben!</red>"
+  cannot_pickup_entity: "<red>Diese Entität kann nicht aufgehoben werden!</red>"
+  entity_too_heavy: "<red>Diese Entität ist zu schwer zum Tragen!</red>"
+  picked_up_entity: "<green>Du hast eine Entität aufgenommen (Gewicht: {0}/{1})</green>"
+  entity_dropped: "Du hast die Entität freigelassen."
+
+  picked_up_block: "<green>Du hast einen Block von <yellow>{0}</yellow> aufgenommen.</green>"
+  placed_block: "<gold>Du hast den Block platziert.</gold>"
+
+void_totem:
+  activated: "Leeren-Totem aktiviert! Teleportiere zu einem sicheren Ort..."
+  cooldown: "Du musst warten, bevor du ein weiteres Leeren-Totem verwenden kannst!"
+  no_totem: "Du benötigst ein Totem der Unsterblichkeit, um in der Leere zu überleben!"
+  teleport_safe: "Du wurdest an einen sicheren Ort teleportiert."
+  teleport_spawn: "Kein sicherer Ort in der Nähe gefunden. Zum Welt-Spawn teleportiert."
+
+tpcompass:
+  already_teleporting: "<yellow>Du wirst bereits teleportiert!"
+  cancelled: "<red>Teleportation abgebrochen!"
+  channeling: "Teleportation wird vorbereitet: {0} Sekunden verbleibend..."
+  success: "Zum Wiederbelebungspunkt teleportiert!"

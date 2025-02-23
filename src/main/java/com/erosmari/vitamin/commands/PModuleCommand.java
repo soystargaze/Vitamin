@@ -2,6 +2,7 @@ package com.erosmari.vitamin.commands;
 
 import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.database.DatabaseHandler;
+import com.erosmari.vitamin.utils.LoggingUtils;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -58,17 +59,17 @@ public class PModuleCommand {
         String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
 
         if (!plugin.getConfig().getBoolean(key, false)) {
-            player.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.module_not_active", key));
+            LoggingUtils.sendMessage(player, "commands.pmodule.module_not_active", key);
             return;
         }
 
         if (!player.hasPermission(key)) {
-            player.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.no_module_permission", key));
+            LoggingUtils.sendMessage(player, "commands.pmodule.no_module_permission", key);
             return;
         }
 
         if (!player.hasPermission("vitamin.pmodule")) {
-            player.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.no_pmodule_permission"));
+            LoggingUtils.sendMessage(player, "commands.pmodule.no_pmodule_permission");
             return;
         }
 
@@ -78,11 +79,11 @@ public class PModuleCommand {
         } else if (stateArg.equalsIgnoreCase("disable")) {
             enable = false;
         } else {
-            player.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.usage"));
+            LoggingUtils.sendMessage(player, "commands.pmodule.usage");
             return;
         }
 
         DatabaseHandler.setModuleEnabledForPlayer(player.getUniqueId(), key, enable);
-        player.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.changed", key, (enable ? "enabled" : "disabled")));
+        LoggingUtils.sendMessage(player, "commands.pmodule.changed", key, (enable ? "enabled" : "disabled"));
     }
 }

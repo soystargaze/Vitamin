@@ -4,37 +4,63 @@
 #   \ V / | | || (_| | | | | | | | | | |_   _|
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
-# Support: https://erosmari.com/discord
-# Version: 1.0.0
+# Support : https://erosmari.com/discord
+# Version : 1.1.0
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamine</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500:#FFFF00>" # La couleur appliquée à {0}, {1}, etc. dans les traductions
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamine</gradient><color:#FFA500>+</color>"
   version: "version : {0}"
   author: "par {0}"
-  enabled: "Vitamin+ activé avec succès."
-  disabled: "Vitamin+ désactivé avec succès."
+  enabled: "Vitamine+ activé avec succès."
+  disabled: "Vitamine+ désactivé avec succès."
   language_loaded: "Langue chargée : {0}.yml ({1} traductions)"
-  enable_error: "Une erreur est survenue lors de l'activation de Vitamin+ : {0}"
+  enable_error: "Une erreur est survenue lors de l'activation de Vitamine+ : {0}"
 
 items:
-  registered: "Les objets de Vitamin+ ont été enregistrés avec succès."
+  registered: "Les objets de Vitamine+ ont été enregistrés avec succès."
 
 events:
-  registered: "Événements enregistrés avec succès."
+  registered: "Les événements ont été enregistrés avec succès."
 
 commands:
-  registered: "Commandes enregistrées avec succès."
-  usage: "Utilisation : /vitamin <args>"
+  registered: "Les commandes ont été enregistrées avec succès."
+  usage: "Utilisation : /vitamine <args>"
   reload:
-    success: "Vitamin+ rechargé avec succès."
-    error: "Une erreur est survenue lors du rechargement de Vitamin+."
+    success: "Vitamine+ rechargé avec succès."
+    error: "Une erreur est survenue lors du rechargement de Vitamine+."
   module:
-    usage: "Utilisation : /vitamin module <module> <enable|disable>"
+    usage: "Utilisation : /vitamine module <module> <activer|désactiver>"
     not_found: "Module introuvable : {0}"
     changed: "Module {0} {1} avec succès."
+  pmodule:
+    usage: "Utilisation : /vitamine pmodule <module> <activer|désactiver>"
+    player_only: "Cette commande ne peut être exécutée que par un joueur."
+    module_not_active: "Le module {0} n'est pas actif."
+    no_module_permission: "Vous n'avez pas la permission d'utiliser {0}."
+    changed: "Module {0} {1} avec succès."
+
+database:
+  already_initialized: "La base de données est déjà initialisée."
+  init_error: "Une erreur est survenue lors de l'initialisation de la base de données : {0}"
+  sqlite:
+    error_directory: "Échec de la création du répertoire de la base de données SQLite : "
+    success: "Base de données SQLite initialisée avec succès."
+  mysql:
+    success: "Base de données MySQL initialisée avec succès."
+  mariadb:
+    success: "Base de données MariaDB initialisée avec succès."
+  postgresql:
+    success: "Base de données PostgreSQL initialisée avec succès."
+  tables:
+    success: "Tables de la base de données créées avec succès."
+    error: "Une erreur est survenue lors de la création des tables de la base de données : {0}"
+  query_error: "Une erreur est survenue lors de l'exécution d'une requête de base de données : {0}"
+  update_error: "Une erreur est survenue lors de la mise à jour de la base de données : {0}"
+  close:
+    success: "Connexion à la base de données fermée avec succès."
 
 module:
   enabled: "Module {0} : <green>activé"
@@ -50,9 +76,9 @@ xpbook:
   used: "Livre d'XP utilisé pour donner {0} XP !"
 
 carry_on:
-  cannot_pickup_players: "<red>Vous ne pouvez pas porter des joueurs !</red>"
+  cannot_pickup_players: "<red>Vous ne pouvez pas ramasser les joueurs !</red>"
   cannot_pickup_entity: "<red>Cette entité ne peut pas être ramassée !</red>"
-  entity_too_heavy: "<red>Cette entité est trop lourde à porter !</red>"
+  entity_too_heavy: "<red>Cette entité est trop lourde pour être portée !</red>"
   picked_up_entity: "<green>Vous avez ramassé une entité (Poids : {0}/{1})</green>"
   entity_dropped: "Vous avez relâché l'entité."
 
@@ -60,11 +86,11 @@ carry_on:
   placed_block: "<gold>Vous avez placé le bloc.</gold>"
 
 void_totem:
-  activated: "Talisman du Vide activé ! Téléportation vers un endroit sûr..."
+  activated: "Talisman du Vide activé ! Téléportation vers un lieu sûr..."
   cooldown: "Vous devez attendre avant d'utiliser un autre Talisman du Vide !"
-  no_totem: "Vous avez besoin d'un Totem d'Immortalité pour survivre au vide !"
+  no_totem: "Vous avez besoin d'un Talisman d'Immortalité pour survivre au vide !"
   teleport_safe: "Vous avez été téléporté à un endroit sûr."
-  teleport_spawn: "Aucun endroit sûr trouvé à proximité. Téléporté au spawn du monde."
+  teleport_spawn: "Aucun endroit sûr trouvé à proximité. Téléporté au point d'apparition du monde."
 
 tpcompass:
   already_teleporting: "<yellow>Vous êtes déjà en train de vous téléporter !"

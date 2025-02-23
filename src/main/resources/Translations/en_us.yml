@@ -5,7 +5,7 @@
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
 # Support: https://erosmari.com/discord
-# Version: 1.0.0
+# Version: 1.1.0
 
 plugin:
   prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
@@ -35,6 +35,32 @@ commands:
     usage: "Usage: /vitamin module <module> <enable|disable>"
     not_found: "Module not found: {0}"
     changed: "Module {0} {1} successfully."
+  pmodule:
+    usage: "Usage: /vitamin pmodule <module> <enable|disable>"
+    player_only: "This command can only be executed by a player."
+    module_not_active: "Module {0} is not active."
+    no_module_permission: "You do not have permission to use {0}."
+    changed: "Module {0} {1} successfully."
+
+database:
+  already_initialized: "The database has already been initialized."
+  init_error: "An error occurred while initializing the database: {0}"
+  sqlite:
+    error_directory: "Failed to create SQLite database directory: "
+    success: "SQLite database initialized successfully."
+  mysql:
+    success: "MySQL database initialized successfully."
+  mariadb:
+    success: "MariaDB database initialized successfully."
+  postgresql:
+    success: "PostgreSQL database initialized successfully."
+  tables:
+    success: "Database tables created successfully."
+    error: "An error occurred while creating database tables: {0}"
+  query_error: "An error occurred while executing a database query: {0}"
+  update_error: "An error occurred while updating the database: {0}"
+  close:
+    success: "Database connection closed successfully."
 
 module:
   enabled: "Module {0}: <green>enabled"

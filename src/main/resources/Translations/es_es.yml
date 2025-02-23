@@ -4,37 +4,63 @@
 #   \ V / | | || (_| | | | | | | | | | |_   _|
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
-# Support: https://erosmari.com/discord
-# Version: 1.0.0
+# Soporte: https://erosmari.com/discord
+# Versión: 1.1.0
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
-  dynamic_color: "<color:#FFA500:#FFFF00>" # El color aplicado a {0}, {1}, etc. en las traducciones
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500:#FFFF00>" # El color aplicado a {0}, {1}, etc. en traducciones
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color>"
   version: "versión: {0}"
   author: "por {0}"
-  enabled: "Vitamin+ habilitado correctamente."
-  disabled: "Vitamin+ deshabilitado correctamente."
+  enabled: "Vitamina+ habilitado correctamente."
+  disabled: "Vitamina+ deshabilitado correctamente."
   language_loaded: "Idioma cargado: {0}.yml ({1} traducciones)"
-  enable_error: "Ocurrió un error al habilitar Vitamin+: {0}"
+  enable_error: "Ocurrió un error al habilitar Vitamina+: {0}"
 
 items:
-  registered: "Los ítems de Vitamin+ se han registrado correctamente."
+  registered: "Objetos de Vitamina+ registrados correctamente."
 
 events:
   registered: "Eventos registrados correctamente."
 
 commands:
   registered: "Comandos registrados correctamente."
-  usage: "Uso: /vitamin <args>"
+  usage: "Uso: /vitamina <args>"
   reload:
-    success: "Vitamin+ recargado correctamente."
-    error: "Ocurrió un error al recargar Vitamin+."
+    success: "Vitamina+ recargado correctamente."
+    error: "Ocurrió un error al recargar Vitamina+."
   module:
-    usage: "Uso: /vitamin module <módulo> <enable|disable>"
+    usage: "Uso: /vitamina módulo <módulo> <habilitar|deshabilitar>"
     not_found: "Módulo no encontrado: {0}"
     changed: "Módulo {0} {1} correctamente."
+  pmodule:
+    usage: "Uso: /vitamina pmódulo <módulo> <habilitar|deshabilitar>"
+    player_only: "Este comando solo puede ser ejecutado por un jugador."
+    module_not_active: "El módulo {0} no está activo."
+    no_module_permission: "No tienes permiso para usar {0}."
+    changed: "Módulo {0} {1} correctamente."
+
+database:
+  already_initialized: "La base de datos ya ha sido inicializada."
+  init_error: "Ocurrió un error al inicializar la base de datos: {0}"
+  sqlite:
+    error_directory: "No se pudo crear el directorio de la base de datos SQLite: "
+    success: "Base de datos SQLite inicializada correctamente."
+  mysql:
+    success: "Base de datos MySQL inicializada correctamente."
+  mariadb:
+    success: "Base de datos MariaDB inicializada correctamente."
+  postgresql:
+    success: "Base de datos PostgreSQL inicializada correctamente."
+  tables:
+    success: "Tablas de la base de datos creadas correctamente."
+    error: "Ocurrió un error al crear las tablas de la base de datos: {0}"
+  query_error: "Ocurrió un error al ejecutar una consulta a la base de datos: {0}"
+  update_error: "Ocurrió un error al actualizar la base de datos: {0}"
+  close:
+    success: "Conexión a la base de datos cerrada correctamente."
 
 module:
   enabled: "Módulo {0}: <green>habilitado"
@@ -47,12 +73,12 @@ elevator:
 xpbook:
   item_name: "Libro de XP con {0} XP"
   created: "¡Libro de XP creado con {0} XP!"
-  used: "Libro de XP utilizado para otorgar {0} XP."
+  used: "Libro de XP usado para otorgar {0} XP."
 
 carry_on:
   cannot_pickup_players: "<red>¡No puedes recoger jugadores!</red>"
-  cannot_pickup_entity: "<red>¡Esta entidad no se puede recoger!</red>"
-  entity_too_heavy: "<red>¡Esta entidad es demasiado pesada para cargar!</red>"
+  cannot_pickup_entity: "<red>¡Esta entidad no puede ser recogida!</red>"
+  entity_too_heavy: "<red>¡Esta entidad es demasiado pesada para llevar!</red>"
   picked_up_entity: "<green>Has recogido una entidad (Peso: {0}/{1})</green>"
   entity_dropped: "Has soltado la entidad."
 
@@ -60,7 +86,7 @@ carry_on:
   placed_block: "<gold>Has colocado el bloque.</gold>"
 
 void_totem:
-  activated: "¡Tótem del vacío activado! Teletransportando a un lugar seguro..."
+  activated: "¡Tótem del Vacío activado! Teletransportando a un lugar seguro..."
   cooldown: "¡Debes esperar antes de usar otro Tótem del Vacío!"
   no_totem: "¡Necesitas un Tótem de la Inmortalidad para sobrevivir al vacío!"
   teleport_safe: "Has sido teletransportado a una ubicación segura."
@@ -68,6 +94,6 @@ void_totem:
 
 tpcompass:
   already_teleporting: "<yellow>¡Ya te estás teletransportando!"
-  cancelled: "<red>¡Teletransporte cancelado!"
-  channeling: "Canalizando teletransporte: {0} segundos restantes..."
+  cancelled: "<red>¡Teletransportación cancelada!"
+  channeling: "Canalizando teletransportación: {0} segundos restantes..."
   success: "¡Teletransportado a tu punto de reaparición!"

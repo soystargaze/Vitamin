@@ -4,37 +4,63 @@
 #   \ V / | | || (_| | | | | | | | | | |_   _|
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
-# Support: https://erosmari.com/discord
-# Version: 1.0.0
+# Suporte: https://erosmari.com/discord
+# Versão: 1.1.0
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500:#FFFF00>" # A cor aplicada a {0}, {1}, etc. nas traduções
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color>"
   version: "versão: {0}"
   author: "por {0}"
-  enabled: "Vitamin+ ativado com sucesso."
-  disabled: "Vitamin+ desativado com sucesso."
+  enabled: "Vitamina+ ativado com sucesso."
+  disabled: "Vitamina+ desativado com sucesso."
   language_loaded: "Idioma carregado: {0}.yml ({1} traduções)"
-  enable_error: "Ocorreu um erro ao ativar o Vitamin+: {0}"
+  enable_error: "Ocorreu um erro ao ativar o Vitamina+: {0}"
 
 items:
-  registered: "Itens do Vitamin+ registrados com sucesso."
+  registered: "Itens do Vitamina+ registrados com sucesso."
 
 events:
   registered: "Eventos registrados com sucesso."
 
 commands:
   registered: "Comandos registrados com sucesso."
-  usage: "Uso: /vitamin <args>"
+  usage: "Uso: /vitamina <args>"
   reload:
-    success: "Vitamin+ recarregado com sucesso."
-    error: "Ocorreu um erro ao recarregar o Vitamin+."
+    success: "Vitamina+ recarregado com sucesso."
+    error: "Ocorreu um erro ao recarregar o Vitamina+."
   module:
-    usage: "Uso: /vitamin module <módulo> <enable|disable>"
+    usage: "Uso: /vitamina módulo <módulo> <ativar|desativar>"
     not_found: "Módulo não encontrado: {0}"
     changed: "Módulo {0} {1} com sucesso."
+  pmodule:
+    usage: "Uso: /vitamina pmódulo <módulo> <ativar|desativar>"
+    player_only: "Este comando só pode ser executado por um jogador."
+    module_not_active: "O módulo {0} não está ativo."
+    no_module_permission: "Você não tem permissão para usar {0}."
+    changed: "Módulo {0} {1} com sucesso."
+
+database:
+  already_initialized: "O banco de dados já foi inicializado."
+  init_error: "Ocorreu um erro ao inicializar o banco de dados: {0}"
+  sqlite:
+    error_directory: "Falha ao criar o diretório do banco de dados SQLite: "
+    success: "Banco de dados SQLite inicializado com sucesso."
+  mysql:
+    success: "Banco de dados MySQL inicializado com sucesso."
+  mariadb:
+    success: "Banco de dados MariaDB inicializado com sucesso."
+  postgresql:
+    success: "Banco de dados PostgreSQL inicializado com sucesso."
+  tables:
+    success: "Tabelas do banco de dados criadas com sucesso."
+    error: "Ocorreu um erro ao criar as tabelas do banco de dados: {0}"
+  query_error: "Ocorreu um erro ao executar uma consulta no banco de dados: {0}"
+  update_error: "Ocorreu um erro ao atualizar o banco de dados: {0}"
+  close:
+    success: "Conexão com o banco de dados fechada com sucesso."
 
 module:
   enabled: "Módulo {0}: <green>ativado"
@@ -50,7 +76,7 @@ xpbook:
   used: "Livro de XP usado para conceder {0} XP!"
 
 carry_on:
-  cannot_pickup_players: "<red>Você não pode pegar jogadores!</red>"
+  cannot_pickup_players: "<red>Você não pode carregar jogadores!</red>"
   cannot_pickup_entity: "<red>Esta entidade não pode ser carregada!</red>"
   entity_too_heavy: "<red>Esta entidade é muito pesada para carregar!</red>"
   picked_up_entity: "<green>Você pegou uma entidade (Peso: {0}/{1})</green>"
@@ -60,14 +86,14 @@ carry_on:
   placed_block: "<gold>Você colocou o bloco.</gold>"
 
 void_totem:
-  activated: "Tótem do Vazio ativado! Teleportando para um local seguro..."
+  activated: "Tótem do Vazio ativado! Teletransportando para um local seguro..."
   cooldown: "Você deve esperar antes de usar outro Tótem do Vazio!"
   no_totem: "Você precisa de um Tótem da Imortalidade para sobreviver ao vazio!"
-  teleport_safe: "Você foi teleportado para um local seguro."
-  teleport_spawn: "Nenhum local seguro encontrado próximo. Teleportado para o ponto de spawn do mundo."
+  teleport_safe: "Você foi teletransportado para um local seguro."
+  teleport_spawn: "Nenhum local seguro encontrado por perto. Teletransportado para o ponto de spawn do mundo."
 
 tpcompass:
-  already_teleporting: "<yellow>Você já está se teleportando!"
-  cancelled: "<red>Teleporte cancelado!"
-  channeling: "Canalizando teleporte: {0} segundos restantes..."
-  success: "Teleportado para seu ponto de renascimento!"
+  already_teleporting: "<yellow>Você já está se teletransportando!"
+  cancelled: "<red>Teletransporte cancelado!"
+  channeling: "Canalizando teletransporte: {0} segundos restantes..."
+  success: "Teletransportado para o seu ponto de renascimento!"

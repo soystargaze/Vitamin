@@ -5,36 +5,62 @@
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
 # 支持: https://erosmari.com/discord
-# 版本: 1.0.0
+# 版本: 1.1.0
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>维生素</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500:#FFFF00>" # 应用于 {0}, {1} 等翻译变量的颜色
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>维生素</gradient><color:#FFA500>+</color>"
   version: "版本: {0}"
   author: "作者: {0}"
-  enabled: "Vitamin+ 启动成功。"
-  disabled: "Vitamin+ 已成功禁用。"
+  enabled: "维生素+ 启用成功。"
+  disabled: "维生素+ 已禁用。"
   language_loaded: "语言已加载: {0}.yml ({1} 条翻译)"
-  enable_error: "启用 Vitamin+ 时发生错误: {0}"
+  enable_error: "启用维生素+ 时发生错误: {0}"
 
 items:
-  registered: "Vitamin+ 的物品已成功注册。"
+  registered: "维生素+ 的物品已成功注册。"
 
 events:
   registered: "事件已成功注册。"
 
 commands:
-  registered: "指令已成功注册。"
+  registered: "命令已成功注册。"
   usage: "用法: /vitamin <参数>"
   reload:
-    success: "Vitamin+ 重新加载成功。"
-    error: "重新加载 Vitamin+ 时发生错误。"
+    success: "维生素+ 重新加载成功。"
+    error: "重新加载维生素+ 时发生错误。"
   module:
     usage: "用法: /vitamin module <模块> <enable|disable>"
     not_found: "未找到模块: {0}"
     changed: "模块 {0} {1} 成功。"
+  pmodule:
+    usage: "用法: /vitamin pmodule <模块> <enable|disable>"
+    player_only: "此命令只能由玩家执行。"
+    module_not_active: "模块 {0} 未激活。"
+    no_module_permission: "您没有权限使用 {0}。"
+    changed: "模块 {0} {1} 成功。"
+
+database:
+  already_initialized: "数据库已初始化。"
+  init_error: "初始化数据库时发生错误: {0}"
+  sqlite:
+    error_directory: "无法创建 SQLite 数据库目录: "
+    success: "SQLite 数据库初始化成功。"
+  mysql:
+    success: "MySQL 数据库初始化成功。"
+  mariadb:
+    success: "MariaDB 数据库初始化成功。"
+  postgresql:
+    success: "PostgreSQL 数据库初始化成功。"
+  tables:
+    success: "数据库表创建成功。"
+    error: "创建数据库表时发生错误: {0}"
+  query_error: "执行数据库查询时发生错误: {0}"
+  update_error: "更新数据库时发生错误: {0}"
+  close:
+    success: "数据库连接已成功关闭。"
 
 module:
   enabled: "模块 {0}: <green>已启用"
@@ -45,29 +71,29 @@ elevator:
   cannot_open: "<red>你无法打开电梯！</red>"
 
 xpbook:
-  item_name: "包含 {0} 经验的经验书"
-  created: "已创建包含 {0} 经验的经验书！"
-  used: "已使用经验书，获得 {0} 经验！"
+  item_name: "含 {0} 经验的经验书"
+  created: "已创建含 {0} 经验的经验书！"
+  used: "使用经验书获得 {0} 经验！"
 
 carry_on:
-  cannot_pickup_players: "<red>你无法拾取玩家！</red>"
-  cannot_pickup_entity: "<red>此实体无法拾取！</red>"
-  entity_too_heavy: "<red>此实体太重，无法搬运！</red>"
-  picked_up_entity: "<green>你拾取了一个实体 (重量: {0}/{1})</green>"
+  cannot_pickup_players: "<red>你不能拾取玩家！</red>"
+  cannot_pickup_entity: "<red>此实体无法被拾取！</red>"
+  entity_too_heavy: "<red>此实体太重，无法携带！</red>"
+  picked_up_entity: "<green>你已拾取一个实体 (重量: {0}/{1})</green>"
   entity_dropped: "你已释放该实体。"
 
-  picked_up_block: "<green>你拾取了 <yellow>{0}</yellow> 方块。</green>"
+  picked_up_block: "<green>你已拾取 <yellow>{0}</yellow> 方块。</green>"
   placed_block: "<gold>你已放置该方块。</gold>"
 
 void_totem:
-  activated: "虚空图腾已激活！正在传送至安全地点..."
+  activated: "虚空图腾已激活！正在传送到安全地点..."
   cooldown: "你需要等待一段时间才能再次使用虚空图腾！"
-  no_totem: "你需要一个不死图腾才能在虚空中生存！"
-  teleport_safe: "你已被传送至安全地点。"
-  teleport_spawn: "附近没有安全位置。已传送至世界出生点。"
+  no_totem: "你需要不死图腾才能在虚空中生存！"
+  teleport_safe: "你已被传送到安全位置。"
+  teleport_spawn: "附近未找到安全位置。已传送到世界出生点。"
 
 tpcompass:
   already_teleporting: "<yellow>你已经在传送中！"
   cancelled: "<red>传送已取消！"
-  channeling: "正在引导传送: 还剩 {0} 秒..."
-  success: "已传送至你的重生点！"
+  channeling: "传送引导中: {0} 秒剩余..."
+  success: "已传送到你的重生点！"
