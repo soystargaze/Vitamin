@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -62,6 +63,13 @@ public class FireAspectOnToolsModule implements Listener {
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         AnvilView anvilView = event.getView();
         Inventory inventory = event.getInventory();
+        Player player = (Player) anvilView.getPlayer();
+        if (player == null) return;
+        if (!player.hasPermission("vitamin.module.fire_aspect_tools") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.fire_aspect_tools")) {
+            return;
+        }
+
         ItemStack left = inventory.getItem(0);
         ItemStack right = inventory.getItem(1);
 
@@ -87,6 +95,11 @@ public class FireAspectOnToolsModule implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.fire_aspect_tools") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.fire_aspect_tools")) {
+            return;
+        }
+
         ItemStack tool = player.getInventory().getItemInMainHand();
         Material blockType = event.getBlock().getType();
         Location blockLocation = event.getBlock().getLocation();

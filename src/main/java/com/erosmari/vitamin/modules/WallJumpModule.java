@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class WallJumpModule implements Listener {
     private final Plugin plugin;
     private final Map<UUID, WallClimbState> playerStates;
-    
+
     private final double slide_speed;
     private final double wall_jump_height;
     private final double wall_jump_distance;
@@ -51,6 +52,11 @@ public class WallJumpModule implements Listener {
     @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.wall_jump") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.wall_jump")) {
+            return;
+        }
+
         UUID playerId = player.getUniqueId();
 
         if (event.isSneaking()) {
@@ -60,21 +66,21 @@ public class WallJumpModule implements Listener {
         }
     }
 
-    private void handleSneakStart(Player player, UUID playerId) {
-        if (!isPlayerOnGround(player) && isNextToWall(player)) {
-            WallClimbState state = playerStates.computeIfAbsent(playerId, k -> new WallClimbState());
-            BlockFace wallFace = getWallFace(player);
-            
-            if (wallFace != null) {
-                initializeWallClimb(player, state, wallFace);
-            }
-        }
-    }
-
     private boolean isPlayerOnGround(Player player) {
         Location loc = player.getLocation();
         Block blockBelow = loc.subtract(0, 0.1, 0).getBlock();
         return blockBelow.getType().isSolid();
+    }
+
+    private void handleSneakStart(Player player, UUID playerId) {
+        if (!isPlayerOnGround(player) && isNextToWall(player)) {
+            WallClimbState state = playerStates.computeIfAbsent(playerId, k -> new WallClimbState());
+            BlockFace wallFace = getWallFace(player);
+
+            if (wallFace != null) {
+                initializeWallClimb(player, state, wallFace);
+            }
+        }
     }
 
     private void handleSneakEnd(Player player, UUID playerId) {
@@ -90,10 +96,8 @@ public class WallJumpModule implements Listener {
         state.wallFace = wallFace;
         state.initialY = player.getLocation().getY();
         state.canWallJump = true;
-        
         cancelTasks(state);
         player.setVelocity(new Vector(0, 0, 0));
-        
         state.stickDelayTask = new BukkitRunnable() {
             @Override
             public void run() {
@@ -109,6 +113,10 @@ public class WallJumpModule implements Listener {
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.wall_jump") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.wall_jump")) {
+            return;
+        }
         UUID playerId = player.getUniqueId();
         WallClimbState state = playerStates.get(playerId);
 
@@ -179,12 +187,10 @@ public class WallJumpModule implements Listener {
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {
         Vector velocity = player.getVelocity();
-        
         switch (face) {
             case NORTH, SOUTH -> velocity.setZ(0);
             case EAST, WEST -> velocity.setX(0);
         }
-        
         player.setVelocity(velocity);
     }
 

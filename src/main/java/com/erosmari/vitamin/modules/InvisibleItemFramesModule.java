@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -11,7 +12,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 public class InvisibleItemFramesModule implements Listener {
 
     public InvisibleItemFramesModule() {
-
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -22,9 +22,13 @@ public class InvisibleItemFramesModule implements Listener {
 
         Player player = event.getPlayer();
 
+        if (!player.hasPermission("vitamin.module.invisible_item_frames") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.invisible_item_frames")) {
+            return;
+        }
+
         if (player.isSneaking() && player.getInventory().getItemInMainHand().getType() == Material.AIR) {
             itemFrame.setVisible(!itemFrame.isVisible());
-
             event.setCancelled(true);
         }
     }

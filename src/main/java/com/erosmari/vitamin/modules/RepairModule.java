@@ -1,6 +1,9 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -15,15 +18,25 @@ public class RepairModule implements Listener {
     private final double DIAMOND_REPAIR;
     private final double INGOT_REPAIR;
     private final double NUGGET_REPAIR;
+    private final double NETHERITE_REPAIR;
 
     public RepairModule(JavaPlugin plugin) {
         DIAMOND_REPAIR = plugin.getConfig().getDouble("repair.diamond_value", 0.4);
+        NETHERITE_REPAIR = plugin.getConfig().getDouble("repair.netherite_value", 0.8);
         INGOT_REPAIR = plugin.getConfig().getDouble("repair.ingot_value", 0.27);
         NUGGET_REPAIR = plugin.getConfig().getDouble("repair.nugget_value", 0.03);
     }
 
     @EventHandler
     public void onPrepareCraft(PrepareItemCraftEvent event) {
+        HumanEntity human = event.getView().getPlayer();
+        if (!(human instanceof Player player)) return;
+
+        if (!player.hasPermission("vitamin.module.repair") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.repair")) {
+            return;
+        }
+
         CraftingInventory inv = event.getInventory();
         if (inv.getMatrix().length != 4) return;
 
@@ -60,19 +73,14 @@ public class RepairModule implements Listener {
         ItemMeta meta = repairedTool.getItemMeta();
 
         if (meta instanceof Damageable damageable) {
-
             int currentDamage = damageable.getDamage();
-
             int repairAmount = (int) Math.ceil(maxDurability * totalRepairPercent);
-
             int newDamage = currentDamage - repairAmount;
             if (newDamage < 0) {
                 newDamage = 0;
             }
-
             damageable.setDamage(newDamage);
             repairedTool.setItemMeta(meta);
-
             inv.setResult(repairedTool);
         }
     }
@@ -88,6 +96,8 @@ public class RepairModule implements Listener {
         Material type = item.getType();
         if (type.name().startsWith("DIAMOND_")) {
             return Material.DIAMOND;
+        } else if (type.name().startsWith("NETHERITE_")) {
+            return Material.NETHERITE_INGOT;
         } else if (type.name().startsWith("IRON_")) {
             return Material.IRON_INGOT;
         } else if (type.name().startsWith("GOLD_")) {
@@ -104,6 +114,8 @@ public class RepairModule implements Listener {
             return type == Material.IRON_INGOT || type == Material.IRON_NUGGET;
         } else if (toolRepairMaterial == Material.GOLD_INGOT) {
             return type == Material.GOLD_INGOT || type == Material.GOLD_NUGGET;
+        } else if (toolRepairMaterial == Material.NETHERITE_INGOT) {
+            return type == Material.NETHERITE_INGOT;
         }
         return false;
     }
@@ -116,6 +128,8 @@ public class RepairModule implements Listener {
             return INGOT_REPAIR;
         } else if (type == Material.IRON_NUGGET || type == Material.GOLD_NUGGET) {
             return NUGGET_REPAIR;
+        } else if (type == Material.NETHERITE_INGOT) {
+            return NETHERITE_REPAIR;
         }
         return 0;
     }

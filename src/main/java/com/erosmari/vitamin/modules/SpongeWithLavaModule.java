@@ -1,9 +1,11 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.AsyncExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -26,8 +28,12 @@ public class SpongeWithLavaModule implements Listener {
     public void onSpongePlace(BlockPlaceEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.SPONGE) return;
-
         if (!event.canBuild()) return;
+
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.sponge_with_lava") || !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.sponge_with_lava")) {
+            return;
+        }
 
         AsyncExecutor.getExecutor().execute(() -> processLavaAbsorption(block));
     }

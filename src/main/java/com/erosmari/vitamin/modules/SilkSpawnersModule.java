@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -33,8 +34,12 @@ public class SilkSpawnersModule implements Listener {
         }
 
         Player player = event.getPlayer();
-        ItemStack tool = player.getInventory().getItemInMainHand();
+        if (!player.hasPermission("vitamin.module.silk_spawners") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.silk_spawners")) {
+            return;
+        }
 
+        ItemStack tool = player.getInventory().getItemInMainHand();
         if (tool.getType() == Material.AIR || !tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
             return;
         }
@@ -58,23 +63,26 @@ public class SilkSpawnersModule implements Listener {
     private ItemStack createSpawnerItem(EntityType entityType) {
         ItemStack spawner = new ItemStack(Material.SPAWNER);
         BlockStateMeta meta = (BlockStateMeta) spawner.getItemMeta();
-
         if (meta != null) {
             CreatureSpawner creatureSpawner = (CreatureSpawner) meta.getBlockState();
             creatureSpawner.setSpawnedType(entityType);
             meta.setBlockState(creatureSpawner);
 
             meta.getPersistentDataContainer().set(spawnerKey, PersistentDataType.STRING, entityType.name());
-
             spawner.setItemMeta(meta);
         }
-
         return spawner;
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onSpawnerPlace(BlockPlaceEvent event) {
         if (event.getBlock().getType() != Material.SPAWNER) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.silk_spawners") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.silk_spawners")) {
             return;
         }
 

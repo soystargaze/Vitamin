@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import org.bukkit.Material;
@@ -27,6 +28,10 @@ public class PlayerXptoBooksModule implements Listener {
     @EventHandler
     public void onBookConversion(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.xp_books") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.player_xp_to_books")) {
+            return;
+        }
         if (!player.isSneaking()) {
             return;
         }
@@ -63,6 +68,10 @@ public class PlayerXptoBooksModule implements Listener {
     @EventHandler
     public void onXpBookUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.xp_books") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.player_xp_to_books")) {
+            return;
+        }
         if (player.isSneaking()) {
             return;
         }

@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -51,6 +52,11 @@ public final class ReplanterModule implements Listener {
         }
 
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.replanter") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.replanter")) {
+            return;
+        }
+
         Material seedType = cropInfo.seedType();
 
         event.setCancelled(true);

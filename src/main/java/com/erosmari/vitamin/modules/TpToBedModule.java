@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import org.bukkit.Location;
@@ -40,6 +41,11 @@ public class TpToBedModule implements Listener {
         }
 
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.tp_compass") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.tp_to_bed")) {
+            return;
+        }
+
         long now = System.currentTimeMillis();
         long lastClick = lastInteract.getOrDefault(player, 0L);
         if (now - lastClick < INTERACT_COOLDOWN_MS) {
@@ -93,7 +99,7 @@ public class TpToBedModule implements Listener {
                 if (ticks % 20 == 0) {
                     int secondsLeft = plugin.getConfig().getInt("tp_with_compass.channeling_time", 3) - (ticks / 20);
                     if (secondsLeft > 0) {
-                        player.sendActionBar((TranslationHandler.getPlayerMessage("tpcompass.channeling", secondsLeft)));
+                        player.sendActionBar(TranslationHandler.getPlayerMessage("tpcompass.channeling", secondsLeft));
                     }
                 }
 

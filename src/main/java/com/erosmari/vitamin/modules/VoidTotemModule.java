@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.AsyncExecutor;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import org.bukkit.Bukkit;
@@ -32,6 +33,11 @@ public class VoidTotemModule implements Listener {
     @EventHandler
     public void onPlayerFallIntoVoid(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.void_totem") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.void_totem")) {
+            return;
+        }
+
         if (player.getLocation().getY() > -59) return;
 
         if (isOnCooldown(player)) {

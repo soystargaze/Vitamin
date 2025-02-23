@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -19,15 +20,19 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.Particle;
 import org.bukkit.Location;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.List;
 
 public class ElevatorModule implements Listener {
 
@@ -35,7 +40,7 @@ public class ElevatorModule implements Listener {
     private final NamespacedKey keyElevator;
     private final Map<Material, Material> woolToShulkerMap = new HashMap<>();
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private final Set<UUID> notifiedPlayers = new HashSet<>();
+    private final Set<UUID> notifiedPlayers = new java.util.HashSet<>();
 
     private static final long COOLDOWN_MILLIS = 500;
 
@@ -101,18 +106,33 @@ public class ElevatorModule implements Listener {
 
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
-        teleportElevator(event.getPlayer(), 1);
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elevator") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
+            return;
+        }
+        teleportElevator(player, 1);
     }
 
     @EventHandler
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elevator") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
+            return;
+        }
         if (event.isSneaking()) {
-            teleportElevator(event.getPlayer(), -1);
+            teleportElevator(player, -1);
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elevator") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
+            return;
+        }
         ItemStack item = event.getItemInHand();
         Block block = event.getBlock();
 
@@ -131,6 +151,11 @@ public class ElevatorModule implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elevator") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
+            return;
+        }
         Block block = event.getBlock();
 
         if (woolToShulkerMap.containsValue(block.getType())) {
@@ -154,15 +179,18 @@ public class ElevatorModule implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player player)) return;
+        if (!player.hasPermission("vitamin.module.elevator") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
+            return;
+        }
         if (event.getInventory().getHolder() instanceof ShulkerBox shulkerBox) {
             if (shulkerBox.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
                 event.setCancelled(true);
-                if (event.getPlayer() instanceof Player player) {
-                    UUID uuid = player.getUniqueId();
-                    if (notifiedPlayers.add(uuid)) {
-                        player.sendMessage(TranslationHandler.getPlayerMessage("elevator.cannot_open"));
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> notifiedPlayers.remove(uuid), 20L);
-                    }
+                UUID uuid = player.getUniqueId();
+                if (notifiedPlayers.add(uuid)) {
+                    player.sendMessage(TranslationHandler.getPlayerMessage("elevator.cannot_open"));
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> notifiedPlayers.remove(uuid), 20L);
                 }
             }
         }
@@ -192,17 +220,8 @@ public class ElevatorModule implements Listener {
         protectElevatorsFromExplosion(event.blockList());
     }
 
-    private void protectElevatorsFromExplosion(java.util.List<Block> blocks) {
+    private void protectElevatorsFromExplosion(List<Block> blocks) {
         blocks.removeIf(this::isElevator);
-    }
-
-    private boolean isOnCooldown(Player player) {
-        if (!cooldowns.containsKey(player.getUniqueId())) return false;
-
-        long lastUse = cooldowns.get(player.getUniqueId());
-        long currentTime = System.currentTimeMillis();
-
-        return (currentTime - lastUse) < COOLDOWN_MILLIS;
     }
 
     private boolean isElevator(Block block) {
@@ -214,8 +233,16 @@ public class ElevatorModule implements Listener {
         return false;
     }
 
-    private void teleportElevator(Player player, int direction) {
+    private boolean isOnCooldown(Player player) {
+        if (!cooldowns.containsKey(player.getUniqueId())) return false;
 
+        long lastUse = cooldowns.get(player.getUniqueId());
+        long currentTime = System.currentTimeMillis();
+
+        return (currentTime - lastUse) < COOLDOWN_MILLIS;
+    }
+
+    private void teleportElevator(Player player, int direction) {
         if (isOnCooldown(player)) {
             return;
         }

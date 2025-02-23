@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -35,6 +36,12 @@ public class VillagerTauntModule implements Listener {
     }
 
     private void checkPlayerInventory(Player player) {
+        if (!player.hasPermission("vitamin.module.villager_taunt") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.villager_taunt")) {
+            playersHoldingEmerald.remove(player);
+            return;
+        }
+
         ItemStack mainHand = player.getInventory().getItemInMainHand();
         ItemStack offHand = player.getInventory().getItemInOffHand();
 
@@ -51,6 +58,11 @@ public class VillagerTauntModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onItemSwitch(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.villager_taunt") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.villager_taunt")) {
+            playersHoldingEmerald.remove(player);
+            return;
+        }
         ItemStack newItem = player.getInventory().getItem(event.getNewSlot());
 
         if (newItem != null && newItem.getType() == Material.EMERALD) {
@@ -64,6 +76,10 @@ public class VillagerTauntModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.villager_taunt") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.villager_taunt")) {
+            return;
+        }
         if (!playersHoldingEmerald.contains(player)) return;
 
         double DETECTION_HEIGHT = 5.0;

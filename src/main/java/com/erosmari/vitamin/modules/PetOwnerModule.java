@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -23,6 +24,13 @@ public final class PetOwnerModule implements Listener {
 
         final Tameable tameable = (Tameable) event.getEntity();
         final Player attacker = getAttackerFromDamager(event.getDamager());
+
+        if (attacker != null) {
+            if (!attacker.hasPermission("vitamin.module.pet_protection") ||
+                    !DatabaseHandler.isModuleEnabledForPlayer(attacker.getUniqueId(), "module.pet_protection")) {
+                return;
+            }
+        }
 
         handlePetDamage(event, tameable, attacker);
     }

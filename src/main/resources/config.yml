@@ -12,6 +12,32 @@
 # Language of the plugin
 language: "en_us"
 
+# Database settings
+database:
+  type: sqlite
+
+  # For MySQL, MariaDB and PostgreSQL:
+  mysql:
+    host: localhost
+    port: 3306
+    database: vitamin
+    username: root
+    password: ""
+
+  mariadb:
+    host: localhost
+    port: 3306
+    database: vitamin
+    username: root
+    password: ""
+
+  postgresql:
+    host: localhost
+    port: 5432
+    database: vitamin
+    username: postgres
+    password: ""
+
 # Async thread pool size
 settings:
   async_thread_pool_size: 4
@@ -77,6 +103,7 @@ leaf_decay:
 
 # Repair settings
 repair:
+  netherite_value: 0.8 # Percentage repaired with a netherite ingot: 80%
   diamond_value: 0.4 # Percentage repaired with a diamond: 40%
   ingot_value: 0.27 # Percentage repaired with an ingot: 27%
   nugget_value: 0.03 # Percentage repaired with a nugget: 3%

@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import com.erosmari.vitamin.database.DatabaseHandler;
 
 public class AutoToolModule implements Listener {
 
@@ -20,8 +21,13 @@ public class AutoToolModule implements Listener {
     @EventHandler
     public void onBlockDamage(BlockDamageEvent event) {
         Player player = event.getPlayer();
-        Material blockType = event.getBlock().getType();
 
+        if (!player.hasPermission("vitamin.module.auto_tool") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.auto_tool")) {
+            return;
+        }
+
+        Material blockType = event.getBlock().getType();
         ToolType toolType = getToolTypeForBlock(blockType);
         if (toolType != null) {
             int slot = findBestTool(player, toolType);
@@ -37,6 +43,12 @@ public class AutoToolModule implements Listener {
         if (!(event.getDamager() instanceof Player player)) {
             return;
         }
+
+        if (!player.hasPermission("vitamin.module.auto_tool") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.auto_tool")) {
+            return;
+        }
+
         int slot = findBestToolForSword(player);
         if (slot != -1 && player.getInventory().getHeldItemSlot() != slot) {
             player.getInventory().setHeldItemSlot(slot);

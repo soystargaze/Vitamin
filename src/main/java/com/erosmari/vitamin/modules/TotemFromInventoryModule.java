@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -20,6 +21,11 @@ public final class TotemFromInventoryModule implements Listener {
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        if (!player.hasPermission("vitamin.module.totem_from_inventory") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.totem_from_inventory")) {
             return;
         }
 

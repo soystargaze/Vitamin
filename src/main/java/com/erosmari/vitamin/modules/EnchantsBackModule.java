@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -30,8 +31,12 @@ public class EnchantsBackModule implements Listener {
         if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
 
         Player player = (Player) event.getWhoClicked();
-        ItemStack inputItem = inventory.getItem(0);
+        if (!player.hasPermission("vitamin.module.enchants_back") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.enchants_back")) {
+            return;
+        }
 
+        ItemStack inputItem = inventory.getItem(0);
         if (inputItem == null || inputItem.getEnchantments().isEmpty()) return;
 
         int maxReturnedEnchantments = plugin.getConfig().getInt("enchants_back.max_returned", inputItem.getEnchantments().size());

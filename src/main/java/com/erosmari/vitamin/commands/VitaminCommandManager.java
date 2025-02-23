@@ -40,6 +40,7 @@ public class VitaminCommandManager {
                         })
                         .then(ReloadCommand.register(plugin))
                         .then(ModuleCommand.register(plugin))
+                        .then(PModuleCommand.register(plugin))
                         .build()
         );
     }

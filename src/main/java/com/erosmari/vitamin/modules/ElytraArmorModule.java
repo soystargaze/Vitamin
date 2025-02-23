@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -30,12 +31,21 @@ public class ElytraArmorModule implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        updateArmorBonus(event.getPlayer());
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elytra_armor") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
+            return;
+        }
+        updateArmorBonus(player);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elytra_armor") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
+            return;
+        }
         var armorAttribute = player.getAttribute(Attribute.ARMOR);
         if (armorAttribute != null) {
             armorAttribute.setBaseValue(calculateTotalArmorFromEquipment(player));
@@ -44,17 +54,31 @@ public class ElytraArmorModule implements Listener {
 
     @EventHandler
     public void onSwapHandItems(PlayerSwapHandItemsEvent event) {
-        updateArmorBonus(event.getPlayer());
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elytra_armor") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
+            return;
+        }
+        updateArmorBonus(player);
     }
 
     @EventHandler
     public void onHeldItemChange(PlayerItemHeldEvent event) {
-        updateArmorBonus(event.getPlayer());
+        Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.elytra_armor") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
+            return;
+        }
+        updateArmorBonus(player);
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked() instanceof Player player) {
+            if (!player.hasPermission("vitamin.module.elytra_armor") ||
+                    !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
+                return;
+            }
             Bukkit.getScheduler().runTask(plugin, () -> updateArmorBonus(player));
         }
     }
@@ -73,26 +97,18 @@ public class ElytraArmorModule implements Listener {
 
     private double calculateTotalArmorFromEquipment(Player player) {
         double totalArmorValue = 0;
-
         for (ItemStack item : player.getInventory().getArmorContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 totalArmorValue += getArmorValueFromItem(item);
             }
         }
-
         return totalArmorValue;
     }
 
     private double getArmorValueFromItem(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) {
-            return 0;
-        }
-
+        if (item == null || item.getType() == Material.AIR) return 0;
         ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.hasAttributeModifiers()) {
-            return 0;
-        }
-
+        if (meta == null || !meta.hasAttributeModifiers()) return 0;
         return Objects.requireNonNull(meta.getAttributeModifiers(Attribute.ARMOR)).stream()
                 .mapToDouble(AttributeModifier::getAmount)
                 .sum();

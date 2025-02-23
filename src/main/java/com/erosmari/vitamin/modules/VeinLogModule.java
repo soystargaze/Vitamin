@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -38,8 +39,13 @@ public class VeinLogModule implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.tree_vein_miner") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.tree_vein_miner")) {
+            return;
+        }
+
+        Block block = event.getBlock();
         ItemStack tool = player.getInventory().getItemInMainHand();
 
         if (!isValidMining(block.getType(), tool.getType())) {

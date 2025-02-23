@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -58,6 +59,10 @@ public class VeinMinerModule implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.vein_miner") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.vein_miner")) {
+            return;
+        }
         ItemStack tool = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
 

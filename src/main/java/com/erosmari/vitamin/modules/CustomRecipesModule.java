@@ -3,10 +3,14 @@ package com.erosmari.vitamin.modules;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.Keyed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +27,23 @@ public class CustomRecipesModule implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPrepareCraft(PrepareItemCraftEvent event) {
+        if (!(event.getView().getPlayer() instanceof org.bukkit.entity.Player player)) return;
+        Recipe recipe = event.getRecipe();
+        if (recipe instanceof Keyed keyed) {
+            NamespacedKey key = keyed.getKey();
+            if (registeredRecipes.contains(key)) {
+                String permission = "vitamin.craft." + key.getKey();
+                if (!player.hasPermission(permission)) {
+                    event.getInventory().setResult(new ItemStack(Material.AIR));
+                }
+            }
+        }
+    }
+
     public void registerRecipes() {
-        NamespacedKey obsidianKey = new NamespacedKey("vitamin", "obsidian_from_lava_and_ice");
+        NamespacedKey obsidianKey = new NamespacedKey("vitamin", "obsidian");
         Bukkit.removeRecipe(obsidianKey);
         ItemStack obsidian = new ItemStack(Material.OBSIDIAN, 2);
         ShapelessRecipe obsidianRecipe = new ShapelessRecipe(obsidianKey, obsidian);
@@ -33,7 +52,7 @@ public class CustomRecipesModule implements Listener {
         Bukkit.addRecipe(obsidianRecipe);
         registeredRecipes.add(obsidianKey);
 
-        NamespacedKey netherStarKey = new NamespacedKey("vitamin", "nether_star_from_wither");
+        NamespacedKey netherStarKey = new NamespacedKey("vitamin", "nether_star");
         Bukkit.removeRecipe(netherStarKey);
         ItemStack netherStar = new ItemStack(Material.NETHER_STAR);
         ShapedRecipe netherStarRecipe = new ShapedRecipe(netherStarKey, netherStar);
@@ -44,7 +63,7 @@ public class CustomRecipesModule implements Listener {
         Bukkit.addRecipe(netherStarRecipe);
         registeredRecipes.add(netherStarKey);
 
-        NamespacedKey elytraKey = new NamespacedKey("vitamin", "elytra_from_membrane_and_chestplate");
+        NamespacedKey elytraKey = new NamespacedKey("vitamin", "elytra");
         Bukkit.removeRecipe(elytraKey);
         ItemStack elytra = new ItemStack(Material.ELYTRA);
         ShapedRecipe elytraRecipe = new ShapedRecipe(elytraKey, elytra);

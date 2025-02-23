@@ -2,13 +2,17 @@ package com.erosmari.vitamin;
 
 import com.erosmari.vitamin.commands.VitaminCommandManager;
 import com.erosmari.vitamin.config.ConfigHandler;
+import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.modules.ModuleManager;
-import com.erosmari.vitamin.utils.*;
+import com.erosmari.vitamin.utils.AsyncExecutor;
+import com.erosmari.vitamin.utils.ConsoleUtils;
+import com.erosmari.vitamin.utils.LoggingUtils;
+import com.erosmari.vitamin.utils.TranslationHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bstats.bukkit.Metrics;
 
-import java.io.*;
+import java.io.File;
 
 public class Vitamin extends JavaPlugin implements Listener {
 
@@ -35,12 +39,14 @@ public class Vitamin extends JavaPlugin implements Listener {
         AsyncExecutor.shutdown();
         LoggingUtils.logTranslated("plugin.disabled");
         instance = null;
+        DatabaseHandler.close();
     }
 
     private void initializePlugin() {
         try {
             ConsoleUtils.displayAsciiArt(this);
             loadConfigurations();
+            DatabaseHandler.initialize(this);
             moduleManager = new ModuleManager(this);
             LoggingUtils.logTranslated("plugin.separator");
             initializeMetrics();

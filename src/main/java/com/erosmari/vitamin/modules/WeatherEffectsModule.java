@@ -1,16 +1,17 @@
 package com.erosmari.vitamin.modules;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class WeatherEffectsModule implements Listener {
 
@@ -35,6 +36,10 @@ public class WeatherEffectsModule implements Listener {
                 for (World world : plugin.getServer().getWorlds()) {
                     if (world.hasStorm()) {
                         for (Player player : world.getPlayers()) {
+                            if (!player.hasPermission("vitamin.module.weather_effects") ||
+                                    !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.weather_effects")) {
+                                continue;
+                            }
                             Location center = player.getLocation();
                             int radius = 10;
                             for (int x = -radius; x <= radius; x++) {
