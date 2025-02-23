@@ -119,6 +119,8 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.pmodule` - Grants permission to modify individual module states if they are enabled globally and have permissions to use them.
 - `vitamin.reload` - Allows reloading the plugin configuration.
 
+---
+
 - `vitamin.module.*` - Grants permission to use all modules.
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
@@ -142,6 +144,8 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.villager_taunt` - Allows the use of the Villager Follow Emeralds module.
 - `vitamin.module.wall_jump` - Allows the use of the Wall Jump module.
 - `vitamin.module.weather_effects` - Allows the use of the Weather Effects module.
+
+---
 
 - `vitamin.craft.*` - Grants permission to use all custom recipes.
 - `vitamin.craft.obsidian` - Allows the use of the Obsidian recipe.
