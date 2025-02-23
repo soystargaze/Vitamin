@@ -81,7 +81,7 @@ carry_on:
   entity_too_heavy: "<red>Diese Entität ist zu schwer zum Tragen!</red>"
   picked_up_entity: "<green>Du hast eine Entität aufgenommen (Gewicht: {0}/{1})</green>"
   entity_dropped: "Du hast die Entität freigelassen."
-
+  picked_up_double_chest: "<green>Du hast eine Doppeltruhe aufgenommen.</green>"
   picked_up_block: "<green>Du hast einen Block von <yellow>{0}</yellow> aufgenommen.</green>"
   placed_block: "<gold>Du hast den Block platziert.</gold>"
 

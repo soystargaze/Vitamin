@@ -81,7 +81,7 @@ carry_on:
   entity_too_heavy: "<red>此实体太重，无法携带！</red>"
   picked_up_entity: "<green>你已拾取一个实体 (重量: {0}/{1})</green>"
   entity_dropped: "你已释放该实体。"
-
+  picked_up_double_chest: "<green>你已拾取一个双箱。</green>"
   picked_up_block: "<green>你已拾取 <yellow>{0}</yellow> 方块。</green>"
   placed_block: "<gold>你已放置该方块。</gold>"
 

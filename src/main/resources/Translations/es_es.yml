@@ -81,8 +81,8 @@ carry_on:
   entity_too_heavy: "<red>¡Esta entidad es demasiado pesada para llevar!</red>"
   picked_up_entity: "<green>Has recogido una entidad (Peso: {0}/{1})</green>"
   entity_dropped: "Has soltado la entidad."
-
-  picked_up_block: "<green>Has recogido un bloque de <yellow>{0}</yellow>.</green>"
+  picked_up_double_chest: "<green>Has recogido un cofre doble.</green>"
+  picked_up_block: "<green>Has recogido un <yellow>Cofre</yellow>.</green>"
   placed_block: "<gold>Has colocado el bloque.</gold>"
 
 void_totem:
