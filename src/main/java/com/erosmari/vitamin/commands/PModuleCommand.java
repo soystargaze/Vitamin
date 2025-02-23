@@ -10,6 +10,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -26,10 +27,18 @@ public class PModuleCommand {
                 .requires(source -> source.getSender().hasPermission("vitamin.pmodule"))
                 .then(Commands.argument("module", StringArgumentType.word())
                         .suggests((context, builder) -> {
-                            Set<String> keys = plugin.getConfig().getKeys(false);
-                            for (String key : keys) {
-                                if (key.startsWith("module.") && plugin.getConfig().getBoolean(key, true)) {
-                                    builder.suggest(key);
+                            if (plugin.getConfig().contains("module")) {
+                                Set<String> keys = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("module")).getKeys(false);
+                                for (String key : keys) {
+                                    if (plugin.getConfig().getBoolean("module." + key, true)) {
+                                        builder.suggest("module." + key);
+                                    }
+                                }
+                            } else {
+                                for (String key : plugin.getConfig().getKeys(false)) {
+                                    if (key.startsWith("module.") && plugin.getConfig().getBoolean(key, true)) {
+                                        builder.suggest(key);
+                                    }
                                 }
                             }
                             return builder.buildFuture();
@@ -55,9 +64,9 @@ public class PModuleCommand {
             source.getSender().sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
             return;
         }
-
         String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
 
+        // Verifica que el módulo esté activado a nivel de servidor
         if (!plugin.getConfig().getBoolean(key, false)) {
             LoggingUtils.sendMessage(player, "commands.pmodule.module_not_active", key);
             return;
@@ -84,6 +93,8 @@ public class PModuleCommand {
         }
 
         DatabaseHandler.setModuleEnabledForPlayer(player.getUniqueId(), key, enable);
-        LoggingUtils.sendMessage(player, "commands.pmodule.changed", key, (enable ? "enabled" : "disabled"));
+
+        boolean newState = DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), key);
+        LoggingUtils.sendMessage(player, "commands.pmodule.changed", key, (newState ? "enabled" : "disabled"));
     }
 }
