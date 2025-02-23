@@ -248,7 +248,7 @@ public class CustomRecipesModule implements Listener {
         Bukkit.removeRecipe(saddleKey);
         ItemStack saddle = new ItemStack(Material.SADDLE);
         ShapedRecipe saddleRecipe = new ShapedRecipe(saddleKey, saddle);
-        saddleRecipe.shape("LLL", "C C");
+        saddleRecipe.shape("PPP", "C C");
         saddleRecipe.setIngredient('P', Material.LEATHER);
         saddleRecipe.setIngredient('C', Material.CHAIN);
         Bukkit.addRecipe(saddleRecipe);
