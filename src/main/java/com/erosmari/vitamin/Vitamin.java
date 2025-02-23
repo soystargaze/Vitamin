@@ -47,6 +47,7 @@ public class Vitamin extends JavaPlugin implements Listener {
             ConsoleUtils.displayAsciiArt(this);
             loadConfigurations();
             DatabaseHandler.initialize(this);
+            LoggingUtils.logTranslated("plugin.separator");
             moduleManager = new ModuleManager(this);
             LoggingUtils.logTranslated("plugin.separator");
             initializeMetrics();
