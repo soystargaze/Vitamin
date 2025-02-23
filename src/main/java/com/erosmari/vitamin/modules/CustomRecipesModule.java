@@ -224,6 +224,35 @@ public class CustomRecipesModule implements Listener {
         totemOfUndyingRecipe.setIngredient('C', Material.GOLD_INGOT);
         Bukkit.addRecipe(totemOfUndyingRecipe);
         registeredRecipes.add(totemOfUndyingKey);
+
+        NamespacedKey grassBlockKey = new NamespacedKey("vitamin", "grass_block");
+        Bukkit.removeRecipe(grassBlockKey);
+        ItemStack grassBlock = new ItemStack(Material.GRASS_BLOCK);
+        ShapelessRecipe grassBlockRecipe = new ShapelessRecipe(grassBlockKey, grassBlock);
+        grassBlockRecipe.addIngredient(Material.DIRT);
+        grassBlockRecipe.addIngredient(Material.BONE_MEAL);
+        Bukkit.addRecipe(grassBlockRecipe);
+        registeredRecipes.add(grassBlockKey);
+
+        NamespacedKey nameTagKey = new NamespacedKey("vitamin", "nametag");
+        Bukkit.removeRecipe(nameTagKey);
+        ItemStack nameTag = new ItemStack(Material.NAME_TAG);
+        ShapedRecipe nameTagRecipe = new ShapedRecipe(nameTagKey, nameTag);
+        nameTagRecipe.shape(" C ", " P ");
+        nameTagRecipe.setIngredient('P', Material.PAPER);
+        nameTagRecipe.setIngredient('C', Material.CHAIN);
+        Bukkit.addRecipe(nameTagRecipe);
+        registeredRecipes.add(nameTagKey);
+
+        NamespacedKey saddleKey = new NamespacedKey("vitamin", "saddle");
+        Bukkit.removeRecipe(saddleKey);
+        ItemStack saddle = new ItemStack(Material.SADDLE);
+        ShapedRecipe saddleRecipe = new ShapedRecipe(saddleKey, saddle);
+        saddleRecipe.shape("LLL", "C C");
+        saddleRecipe.setIngredient('P', Material.LEATHER);
+        saddleRecipe.setIngredient('C', Material.CHAIN);
+        Bukkit.addRecipe(saddleRecipe);
+        registeredRecipes.add(saddleKey);
     }
 
     public void unregisterRecipes() {

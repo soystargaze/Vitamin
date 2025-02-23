@@ -49,7 +49,7 @@
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
 - **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
-    - [Recipes](https://imgur.com/a/x4YqbmH)
+    - [Recipes](https://imgur.com/a/3tePcrc)
 
 </details>
 
@@ -105,7 +105,8 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 
 **Vitamin+** also provides a variety of aliases for each command `/vitamin`, `/vita`, and `/vi`.
 
-- `/vitamin module <module> <enable/disable>` - Enables or disables a specific module.
+- `/vitamin module <module> <enable/disable>` - Enables or disables a specific module globally.
+- `/vitamin pmodule <module> <enable/disable>` - Enables or disables a specific module individually if enabled globally and has permissions.
 - `/vitamin reload` - Reloads the plugin configuration.
 
 </details>
@@ -115,7 +116,55 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 
 - `vitamin.use` - Allows the use of Vitamin+ commands.
 - `vitamin.module` - Grants permission to modify module states.
+- `vitamin.pmodule` - Grants permission to modify individual module states if they are enabled globally and have permissions to use them.
 - `vitamin.reload` - Allows reloading the plugin configuration.
+
+- `vitamin.module.*` - Grants permission to use all modules.
+- `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
+- `vitamin.module.carry_on` - Allows the use of the Carry On module.
+- `vitamin.module.elevator` - Allows the use of the Elevator module.
+- `vitamin.module.elytra_armor` - Allows the use of the Elytra Armor module.
+- `vitamin.module.enchants_back` - Allows the use of the Enchants Back module.
+- `vitamin.module.fire_aspect_tools` - Allows the use of the Fire Aspect On Tools module.
+- `vitamin.module.invisible_item_frames` - Allows the use of the Invisible Item Frames module.
+- `vitamin.module.pet_protection` - Allows the use of the Pet Protection module.
+- `vitamin.module.xp_books` - Allows the use of the Player XP to Books module.
+- `vitamin.module.repair` - Allows the use of the Repair Tools module.
+- `vitamin.module.replanter` - Allows the use of the Seed Replanter module.
+- `vitamin.module.silk_spawners` - Allows the use of the Silk Spawners module.
+- `vitamin.module.sponge_with_lava` - Allows the use of the Sponge with Lava module.
+- `vitamin.module.totem_from_inventory` - Allows the use of the Totem from Inventory module.
+- `vitamin.module.void_totem` - Allows the use of the Void Totem module.
+- `vitamin.module.tp_compass` - Allows the use of the TP to Bed with Compass module.
+- `vitamin.module.unlock_recipes` - Allows the use of the Unlock All Recipes module.
+- `vitamin.module.tree_vein_miner` - Allows the use of the Tree Vein Miner module.
+- `vitamin.module.vein_miner` - Allows the use of the Vein Miner module.
+- `vitamin.module.villager_taunt` - Allows the use of the Villager Follow Emeralds module.
+- `vitamin.module.wall_jump` - Allows the use of the Wall Jump module.
+- `vitamin.module.weather_effects` - Allows the use of the Weather Effects module.
+
+- `vitamin.craft.*` - Grants permission to use all custom recipes.
+- `vitamin.craft.obsidian` - Allows the use of the Obsidian recipe.
+- `vitamin.craft.nether_star` - Allows the use of the Nether Star recipe.
+- `vitamin.craft.elytra` - Allows the use of the Elytra recipe.
+- `vitamin.craft.enchanted_golden_apple` - Allows the use of the Enchanted Golden Apple recipe.
+- `vitamin.craft.gilded_blackstone` - Allows the use of the Gilded Blackstone recipe.
+- `vitamin.craft.hearts_of_the_sea` - Allows the use of the Heart of the Sea recipe.
+- `vitamin.craft.iron_horse_armor` - Allows the use of the Iron Horse Armor recipe.
+- `vitamin.craft.golden_horse_armor` - Allows the use of the Golden Horse Armor recipe.
+- `vitamin.craft.diamond_horse_armor` - Allows the use of the Diamond Horse Armor recipe.
+- `vitamin.craft.calcite` - Allows the use of the Calcite recipe.
+- `vitamin.craft.deepslate` - Allows the use of the Deepslate recipe.
+- `vitamin.craft.cobbled_deepslate` - Allows the use of the Cobbled Deepslate recipe.
+- `vitamin.craft.tuff` - Allows the use of the Tuff recipe.
+- `vitamin.craft.dirt_path` - Allows the use of the Dirt Path recipe.
+- `vitamin.craft.reinforced_deepslate` - Allows the use of the Reinforced Deepslate recipe.
+- `vitamin.craft.lava_bucket` - Allows the use of the Lava Bucket recipe.
+- `vitamin.craft.trident` - Allows the use of the Trident recipe.
+- `vitamin.craft.totem_of_undying` - Allows the use of the Totem of Undying recipe.
+- `vitamin.craft.grass_block` - Allows the use of the Grass Block recipe.
+- `vitamin.craft.nametag` - Allows the use of the Name Tag recipe.
+- `vitamin.craft.saddle` - Allows the use of the Saddle recipe.
 
 </details> 
 
