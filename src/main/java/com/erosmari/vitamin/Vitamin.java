@@ -21,7 +21,6 @@ public class Vitamin extends JavaPlugin implements Listener {
     private VitaminCommandManager commandManager;
     private static final int BSTATS_PLUGIN_ID = 24855;
 
-    @SuppressWarnings("CallToPrintStackTrace")
     @Override
     public void onEnable() {
         instance = this;
@@ -29,7 +28,6 @@ public class Vitamin extends JavaPlugin implements Listener {
             initializePlugin();
         } catch (Exception e) {
             LoggingUtils.logTranslated("plugin.enable_error", e.getMessage());
-            e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -106,7 +104,10 @@ public class Vitamin extends JavaPlugin implements Listener {
         if (!translationFile.exists()) {
             try {
                 saveResource("Translations/" + fileName, false);
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                final String LANG_NOT_SAVED_KEY = "translations.save_error";
+                TranslationHandler.registerTemporaryTranslation(LANG_NOT_SAVED_KEY, "Language cannot be saved: {0}");
+                LoggingUtils.logTranslated(LANG_NOT_SAVED_KEY, fileName);
             }
         }
     }
