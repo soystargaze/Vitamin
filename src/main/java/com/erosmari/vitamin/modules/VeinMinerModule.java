@@ -147,6 +147,7 @@ public class VeinMinerModule implements Listener {
         if (hasSilkTouch) {
             return 1;
         }
-        return fortuneLevel == 0 ? 1 : 1 + ThreadLocalRandom.current().nextInt(fortuneLevel + 1);
+        int validFortuneLevel = Math.max(0, fortuneLevel);
+        return 1 + ThreadLocalRandom.current().nextInt(validFortuneLevel + 1);
     }
 }

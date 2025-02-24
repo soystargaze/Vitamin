@@ -22,6 +22,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("ALL")
 public class FireAspectOnToolsModule implements Listener {
@@ -118,7 +119,7 @@ public class FireAspectOnToolsModule implements Listener {
 
         int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
         if (fireAspectLevel == 1) {
-            if (Math.random() < 0.4) {
+            if (ThreadLocalRandom.current().nextDouble() < 0.4) {
                 processBlockDrop(event, tool);
             } else {
                 dropNaturalItems(event, tool);
