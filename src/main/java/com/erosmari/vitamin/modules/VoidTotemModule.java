@@ -137,7 +137,7 @@ public class VoidTotemModule implements Listener {
     private boolean isOnCooldown(Player player) {
         Long lastUsage = cooldowns.get(player.getUniqueId());
         if (lastUsage == null) return false;
-        long COOLDOWN_TIME = 30 * 1000;
+        long COOLDOWN_TIME = 30 * 1000L;
         return System.currentTimeMillis() - lastUsage < COOLDOWN_TIME;
     }
 

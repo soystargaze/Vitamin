@@ -16,7 +16,7 @@ public class SpongeWithLavaModule implements Listener {
 
     private static final int RADIUS = 3;
     private static final int MAX_LAVA_BLOCKS = 64;
-    private static final double MAX_DISTANCE = RADIUS * RADIUS;
+    private static final double MAX_DISTANCE = (double) RADIUS * RADIUS;
 
     private final JavaPlugin plugin;
 
