@@ -20,13 +20,14 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **24 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
+**Vitamin+** comes loaded with **25 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
 
 <details>
   <summary>Explore</summary>
 
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests.
+- **Crop Protection:** Prevents crops from being trampled by players.
 - **Elevator:** Create a teleporting elevator for vertical movement.
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable).
@@ -124,6 +125,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.*` - Grants permission to use all modules.
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
+- `vitamin.module.crop_protection` - Allows the use of the Crop Protection module.
 - `vitamin.module.elevator` - Allows the use of the Elevator module.
 - `vitamin.module.elytra_armor` - Allows the use of the Elytra Armor module.
 - `vitamin.module.enchants_back` - Allows the use of the Enchants Back module.
