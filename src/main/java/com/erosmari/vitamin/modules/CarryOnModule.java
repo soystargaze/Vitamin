@@ -106,6 +106,37 @@ public class CarryOnModule implements Listener {
             return;
         }
 
+        if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
+            try {
+                LandsIntegration landsApi = LandsIntegration.of(plugin);
+                LandWorld landWorld = landsApi.getWorld(entity.getWorld());
+                if (landWorld != null) {
+                    LandPlayer landPlayer = landsApi.getLandPlayer(player.getUniqueId());
+                    if (landPlayer == null) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+                    boolean canInteract = landWorld.hasRoleFlag(
+                            landPlayer,
+                            entity.getLocation(),
+                            Flags.INTERACT_GENERAL,
+                            null,
+                            false
+                    );
+                    if (!canInteract) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         int slownessLevel = (int) Math.ceil(entityWeight / 15.0);
         applySlowness(player, slownessLevel);
 
