@@ -1,9 +1,17 @@
 package com.erosmari.vitamin.modules;
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+
 import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import me.angeschossen.lands.api.LandsIntegration;
-import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.land.LandWorld;
 import me.angeschossen.lands.api.player.LandPlayer;
 import org.bukkit.Bukkit;
@@ -106,6 +114,32 @@ public class CarryOnModule implements Listener {
             return;
         }
 
+        // Integration with WorldGuard
+        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            try {
+                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                RegionQuery query = container.createQuery();
+                LocalPlayer wgPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+                com.sk89q.worldedit.util.Location weLoc = BukkitAdapter.adapt(entity.getLocation());
+
+                ApplicableRegionSet regionSet = container.createQuery().getApplicableRegions(weLoc);
+                boolean onlyGlobal = regionSet.getRegions().stream().allMatch(region -> region.getId().equalsIgnoreCase("__global__"));
+                if (!onlyGlobal) {
+                    boolean canInteract = query.testState(weLoc, wgPlayer, Flags.INTERACT);
+                    if (!canInteract) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        // Integration with Lands
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             try {
                 LandsIntegration landsApi = LandsIntegration.of(plugin);
@@ -120,7 +154,7 @@ public class CarryOnModule implements Listener {
                     boolean canInteract = landWorld.hasRoleFlag(
                             landPlayer,
                             entity.getLocation(),
-                            Flags.INTERACT_GENERAL,
+                            me.angeschossen.lands.api.flags.type.Flags.INTERACT_GENERAL,
                             null,
                             false
                     );
@@ -170,6 +204,31 @@ public class CarryOnModule implements Listener {
         Block block = event.getClickedBlock();
         if (block == null || !(block.getState() instanceof Container)) return;
 
+        // Integration with WorldGuard
+        if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            try {
+                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                RegionQuery query = container.createQuery();
+                LocalPlayer wgPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
+                com.sk89q.worldedit.util.Location weLoc = BukkitAdapter.adapt(block.getLocation());
+
+                ApplicableRegionSet regionSet = container.createQuery().getApplicableRegions(weLoc);
+                if (!regionSet.getRegions().stream().allMatch(region -> region.getId().equalsIgnoreCase("__global__"))) {
+                    boolean canBuild = query.testBuild(weLoc, wgPlayer);
+                    if (!canBuild) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        // Integration with Lands
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             try {
                 LandsIntegration landsApi = LandsIntegration.of(plugin);
@@ -185,7 +244,7 @@ public class CarryOnModule implements Listener {
                     boolean canBreak = landWorld.hasRoleFlag(
                             landPlayer,
                             block.getLocation(),
-                            Flags.BLOCK_BREAK,
+                            me.angeschossen.lands.api.flags.type.Flags.BLOCK_BREAK,
                             block.getType(),
                             false
                     );

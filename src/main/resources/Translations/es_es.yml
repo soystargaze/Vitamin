@@ -84,6 +84,8 @@ carry_on:
   picked_up_double_chest: "<green>Has recogido un cofre doble.</green>"
   picked_up_block: "<green>Has recogido un <yellow>Cofre</yellow>.</green>"
   placed_block: "<gold>Has colocado el bloque.</gold>"
+  no_permissions: "<red>No tienes permiso para recoger esta entidad/Cofre.</red>"
+  error_checking_permissions: "<red>Ocurrió un error al verificar los permisos.</red>"
 
 void_totem:
   activated: "¡Tótem del Vacío activado! Teletransportando a un lugar seguro..."

@@ -82,8 +82,10 @@ carry_on:
   picked_up_entity: "<green>You have picked up an entity (Weight: {0}/{1})</green>"
   entity_dropped: "You have released the entity."
   picked_up_double_chest: "<green>You have picked up a double chest.</green>"
-  picked_up_block: "<green>You have picked up a <yellow>Chest}</yellow>.</green>"
+  picked_up_block: "<green>You have picked up a <yellow>Chest</yellow>.</green>"
   placed_block: "<gold>You have placed the block.</gold>"
+  no_permissions: "<red>You do not have permission to pick up this entity/Chest.</red>"
+  error_checking_permissions: "<red>An error occurred while checking permissions.</red>"
 
 void_totem:
   activated: "Void Totem activated! Teleporting to safety..."

@@ -29,6 +29,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.2")
     compileOnly("com.github.angeschossen:LandsAPI:7.10.13")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
 }
 
 java {

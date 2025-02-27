@@ -84,6 +84,8 @@ carry_on:
   picked_up_double_chest: "<green>Você pegou um baú duplo.</green>"
   picked_up_block: "<green>Você pegou um <yellow>Baú</yellow>.</green>"
   placed_block: "<gold>Você colocou o bloco.</gold>"
+  no_permissions: "<red>Você não tem permissão para pegar esta entidade/Baú.</red>"
+  error_checking_permissions: "<red>Ocorreu um erro ao verificar as permissões.</red>"
 
 void_totem:
   activated: "Tótem do Vazio ativado! Teletransportando para um local seguro..."

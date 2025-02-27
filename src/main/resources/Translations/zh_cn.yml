@@ -84,6 +84,8 @@ carry_on:
   picked_up_double_chest: "<green>你已拾取一个双箱。</green>"
   picked_up_block: "<green>你已拾取 <yellow>{0}</yellow> 方块。</green>"
   placed_block: "<gold>你已放置该方块。</gold>"
+  no_permissions: "<red>你没有权限拾取此实体/箱子。</red>"
+  error_checking_permissions: "<red>检查权限时发生错误。</red>"
 
 void_totem:
   activated: "虚空图腾已激活！正在传送到安全地点..."

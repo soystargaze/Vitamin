@@ -84,6 +84,8 @@ carry_on:
   picked_up_double_chest: "<green>Du hast eine Doppeltruhe aufgenommen.</green>"
   picked_up_block: "<green>Du hast einen Block von <yellow>{0}</yellow> aufgenommen.</green>"
   placed_block: "<gold>Du hast den Block platziert.</gold>"
+  no_permissions: "<red>Du hast keine Berechtigung, diese Entität/Truhe aufzuheben.</red>"
+  error_checking_permissions: "<red>Ein Fehler ist beim Überprüfen der Berechtigungen aufgetreten.</red>"
 
 void_totem:
   activated: "Leeren-Totem aktiviert! Teleportiere zu einem sicheren Ort..."
