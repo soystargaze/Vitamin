@@ -13,6 +13,9 @@ repositories {
         url = "https://repo.papermc.io/repository/maven-public/"
     }
     maven {
+        url = "https://jitpack.io"
+    }
+    maven {
         url = "https://repo.extendedclip.com/releases/"
     }
     maven {
@@ -25,6 +28,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.2")
+    compileOnly("com.github.angeschossen:LandsAPI:7.10.13")
 }
 
 java {

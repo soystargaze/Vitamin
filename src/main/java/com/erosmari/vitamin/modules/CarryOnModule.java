@@ -2,6 +2,10 @@ package com.erosmari.vitamin.modules;
 
 import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;
+import me.angeschossen.lands.api.LandsIntegration;
+import me.angeschossen.lands.api.flags.type.Flags;
+import me.angeschossen.lands.api.land.LandWorld;
+import me.angeschossen.lands.api.player.LandPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -134,6 +138,39 @@ public class CarryOnModule implements Listener {
 
         Block block = event.getClickedBlock();
         if (block == null || !(block.getState() instanceof Container)) return;
+
+        if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
+            try {
+                LandsIntegration landsApi = LandsIntegration.of(plugin);
+                LandWorld landWorld = landsApi.getWorld(block.getWorld());
+                if (landWorld != null) {
+                    LandPlayer landPlayer = landsApi.getLandPlayer(player.getUniqueId());
+                    if (landPlayer == null) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+
+                    boolean canBreak = landWorld.hasRoleFlag(
+                            landPlayer,
+                            block.getLocation(),
+                            Flags.BLOCK_BREAK,
+                            block.getType(),
+                            false
+                    );
+
+                    if (!canBreak) {
+                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
 
         if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
             Chest chestData = (Chest) block.getBlockData();
