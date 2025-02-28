@@ -13,7 +13,7 @@
 - **Full compatibility with PaperMC**
 - **Easy configuration:** Manage everything from `config.yml`
 - **Modular system:** Enable or disable each feature as needed
-- **Permissions support:** Control player access to specific modules and crafting recipes
+- **Permissions support:** Controls player access to specific modules and crafting recipes
 - **New mechanics:** Features designed to enhance gameplay without breaking the vanilla feel
 - **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **Polish**, **French**, and **Brazilian Portuguese**
 
