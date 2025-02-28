@@ -1,0 +1,101 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# Support: https://erosmari.com/discord
+# Version: 1.1.0
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500:#FFFF00>" # Kolor stosowany do {0}, {1} itp. w tłumaczeniach
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  version: "wersja: {0}"
+  author: "przez {0}"
+  enabled: "Vitamin+ pomyślnie włączony."
+  disabled: "Vitamin+ pomyślnie wyłączony."
+  language_loaded: "Załadowano język: {0}.yml ({1} tłumaczeń)"
+  enable_error: "Wystąpił błąd podczas włączania Vitamin+: {0}"
+
+items:
+  registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."
+
+events:
+  registered: "Pomyślnie zarejestrowano wydarzenia."
+
+commands:
+  registered: "Pomyślnie zarejestrowano komendy."
+  usage: "Użycie: /vitamin <args>"
+  reload:
+    success: "Vitamin+ został pomyślnie przeładowany."
+    error: "Wystąpił błąd podczas przeładowywania Vitamin+."
+  module:
+    usage: "Użycie: /vitamin module <moduł> <enable|disable>"
+    not_found: "Nie znaleziono modułu: {0}"
+    changed: "Moduł {0} został {1} pomyślnie."
+  pmodule:
+    usage: "Użycie: /vitamin pmodule <moduł> <enable|disable>"
+    player_only: "Tę komendę może wykonać tylko gracz."
+    module_not_active: "Moduł {0} nie jest aktywny."
+    no_module_permission: "Nie masz uprawnień do używania {0}."
+    changed: "Moduł {0} został {1} pomyślnie."
+
+database:
+  already_initialized: "Baza danych została już zainicjalizowana."
+  init_error: "Wystąpił błąd podczas inicjalizacji bazy danych: {0}"
+  sqlite:
+    error_directory: "Nie udało się utworzyć katalogu bazy danych SQLite: "
+    success: "Baza danych SQLite została pomyślnie zainicjalizowana."
+  mysql:
+    success: "Baza danych MySQL została pomyślnie zainicjalizowana."
+  mariadb:
+    success: "Baza danych MariaDB została pomyślnie zainicjalizowana."
+  postgresql:
+    success: "Baza danych PostgreSQL została pomyślnie zainicjalizowana."
+  tables:
+    success: "Pomyślnie utworzono tabele bazy danych."
+    error: "Wystąpił błąd podczas tworzenia tabel bazy danych: {0}"
+  query_error: "Wystąpił błąd podczas wykonywania zapytania do bazy danych: {0}"
+  update_error: "Wystąpił błąd podczas aktualizacji bazy danych: {0}"
+  close:
+    success: "Połączenie z bazą danych zostało pomyślnie zamknięte."
+
+module:
+  enabled: "Moduł {0}: <green>włączony"
+  disabled: "Moduł {0}: <red>wyłączony"
+
+elevator:
+  item_name: "<gold>Winda</gold>"
+  cannot_open: "<red>Nie możesz otworzyć windy!</red>"
+
+xpbook:
+  item_name: "Księga XP z {0} XP"
+  created: "Utworzono księgę XP z {0} XP!"
+  used: "Użyto księgi XP, aby dodać {0} XP!"
+
+carry_on:
+  cannot_pickup_players: "<red>Nie możesz podnosić graczy!</red>"
+  cannot_pickup_entity: "<red>Nie możesz podnieść tej jednostki!</red>"
+  entity_too_heavy: "<red>Ta jednostka jest za ciężka, aby ją podnieść!</red>"
+  picked_up_entity: "<green>Podniosłeś jednostkę (Waga: {0}/{1})</green>"
+  entity_dropped: "Upuściłeś jednostkę."
+  picked_up_double_chest: "<green>Podniosłeś podwójną skrzynię.</green>"
+  picked_up_block: "<green>Podniosłeś <yellow>Skrzynię</yellow>.</green>"
+  placed_block: "<gold>Umieściłeś blok.</gold>"
+  no_permissions: "<red>Nie masz uprawnień do podnoszenia tej jednostki/skrzyni.</red>"
+  error_checking_permissions: "<red>Wystąpił błąd podczas sprawdzania uprawnień.</red>"
+
+void_totem:
+  activated: "Totem Pustki aktywowany! Teleportacja w bezpieczne miejsce..."
+  cooldown: "Musisz poczekać przed ponownym użyciem Totemu Pustki!"
+  no_totem: "Potrzebujesz Totemu Nieśmiertelności, aby przetrwać w pustce!"
+  teleport_safe: "Zostałeś teleportowany w bezpieczne miejsce."
+  teleport_spawn: "Nie znaleziono bezpiecznego miejsca w pobliżu. Teleportowano na spawn świata."
+
+tpcompass:
+  already_teleporting: "<yellow>Już się teleportujesz!"
+  cancelled: "<red>Teleportacja anulowana!"
+  channeling: "Kanalizowanie teleportacji: {0} sekund do końca..."
+  success: "Teleportowano do punktu odrodzenia!"
