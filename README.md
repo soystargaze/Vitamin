@@ -51,7 +51,7 @@
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
 - **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
-    - [Recipes](https://imgur.com/a/3tePcrc)
+    - [Recipes](https://imgur.com/a/3tePcrc) (You can enable/disable specific recipes using the permissions)
 
 </details>
 
