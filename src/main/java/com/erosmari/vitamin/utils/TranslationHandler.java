@@ -108,7 +108,7 @@ public class TranslationHandler {
     }
 
     public static Component getLogMessage(String key, Object... args) {
-        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[</gray><gradient:#FFA500:#FFFF00:#FFFF00>Vitamin</gradient><gold>+</gold><gray>]</gray> ");
+        String prefix = translations.getOrDefault("plugin.prefix", "<gray>[</gray><gradient:#FFA500#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> ");
         String template = translations.getOrDefault(key, "Translation not found: " + key + "!");
         String dynamicColor = translations.getOrDefault("plugin.dynamic_color", "<color:#FFA500>");
 
