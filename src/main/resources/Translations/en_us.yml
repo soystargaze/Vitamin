@@ -9,7 +9,7 @@
 
 plugin:
   prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
-  dynamic_color: "<color:#FFA500:#FFFF00>" # The color applied to {0}, {1}, etc. in translations
+  dynamic_color: "<color:#FFA500" # The color applied to {0}, {1}, etc. in translations
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
   name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "version: {0}"
