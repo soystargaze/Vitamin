@@ -142,12 +142,12 @@ public class Vitamin extends JavaPlugin implements Listener {
 
     private void setupVersionAdapter() {
         String version = Bukkit.getVersion();
-        if (version.contains("1.21.4")) {
+        if (version.contains("1.21.3") || version.contains("1.21.4")) {
             versionAdapter = new VersionAdapter_1_21_4();
-            LoggingUtils.logTranslated("plugin.version_detected", "1.21.4");
+        } else if (version.contains("1.21.1") || version.contains("1.21")) {
+            versionAdapter = new VersionAdapter_1_21_1();
         } else {
             versionAdapter = new VersionAdapter_1_21_1();
-            LoggingUtils.logTranslated("plugin.version_detected", "1.21.1 o inferior");
         }
     }
 
