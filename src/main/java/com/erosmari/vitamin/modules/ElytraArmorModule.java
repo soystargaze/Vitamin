@@ -112,7 +112,6 @@ public class ElytraArmorModule implements Listener {
         if (item == null || item.getType() == Material.AIR) return 0;
         ItemMeta meta = item.getItemMeta();
         if (meta == null || !meta.hasAttributeModifiers()) return 0;
-        // Se utiliza el adapter para obtener el atributo de armadura correspondiente
         return Objects.requireNonNull(meta.getAttributeModifiers(Vitamin.getInstance().getVersionAdapter().getArmorAttribute()))
                 .stream().mapToDouble(AttributeModifier::getAmount).sum();
     }
