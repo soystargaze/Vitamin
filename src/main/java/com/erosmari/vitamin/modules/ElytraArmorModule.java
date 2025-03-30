@@ -1,9 +1,11 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,9 +48,10 @@ public class ElytraArmorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
             return;
         }
-        var armorAttribute = player.getAttribute(Attribute.ARMOR);
-        if (armorAttribute != null) {
-            armorAttribute.setBaseValue(calculateTotalArmorFromEquipment(player));
+        Attribute armorAttribute = Vitamin.getInstance().getVersionAdapter().getArmorAttribute();
+        AttributeInstance instance = player.getAttribute(armorAttribute);
+        if (instance != null) {
+            instance.setBaseValue(calculateTotalArmorFromEquipment(player));
         }
     }
 
@@ -85,14 +88,14 @@ public class ElytraArmorModule implements Listener {
 
     private void updateArmorBonus(Player player) {
         ItemStack chestplate = player.getInventory().getChestplate();
-
-        var armorAttribute = player.getAttribute(Attribute.ARMOR);
-        if (armorAttribute == null) return;
+        Attribute armorAttribute = Vitamin.getInstance().getVersionAdapter().getArmorAttribute();
+        AttributeInstance instance = player.getAttribute(armorAttribute);
+        if (instance == null) return;
 
         double baseArmorValue = calculateTotalArmorFromEquipment(player);
         double elytraBonus = (chestplate != null && chestplate.getType() == Material.ELYTRA) ? defaultArmorValue : 0;
 
-        armorAttribute.setBaseValue(baseArmorValue + elytraBonus);
+        instance.setBaseValue(baseArmorValue + elytraBonus);
     }
 
     private double calculateTotalArmorFromEquipment(Player player) {
@@ -109,8 +112,8 @@ public class ElytraArmorModule implements Listener {
         if (item == null || item.getType() == Material.AIR) return 0;
         ItemMeta meta = item.getItemMeta();
         if (meta == null || !meta.hasAttributeModifiers()) return 0;
-        return Objects.requireNonNull(meta.getAttributeModifiers(Attribute.ARMOR)).stream()
-                .mapToDouble(AttributeModifier::getAmount)
-                .sum();
+        // Se utiliza el adapter para obtener el atributo de armadura correspondiente
+        return Objects.requireNonNull(meta.getAttributeModifiers(Vitamin.getInstance().getVersionAdapter().getArmorAttribute()))
+                .stream().mapToDouble(AttributeModifier::getAmount).sum();
     }
 }

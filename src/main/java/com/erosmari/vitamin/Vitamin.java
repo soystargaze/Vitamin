@@ -1,5 +1,8 @@
 package com.erosmari.vitamin;
 
+import com.erosmari.vitamin.adapter.VersionAdapter;
+import com.erosmari.vitamin.adapter.VersionAdapter_1_21_1;
+import com.erosmari.vitamin.adapter.VersionAdapter_1_21_4;
 import com.erosmari.vitamin.commands.VitaminCommandManager;
 import com.erosmari.vitamin.config.ConfigHandler;
 import com.erosmari.vitamin.database.DatabaseHandler;
@@ -8,6 +11,7 @@ import com.erosmari.vitamin.utils.AsyncExecutor;
 import com.erosmari.vitamin.utils.ConsoleUtils;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import com.erosmari.vitamin.utils.TranslationHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bstats.bukkit.Metrics;
@@ -19,12 +23,14 @@ public class Vitamin extends JavaPlugin implements Listener {
     private static Vitamin instance;
     private ModuleManager moduleManager;
     private VitaminCommandManager commandManager;
+    private VersionAdapter versionAdapter; // Adapter que encapsula las diferencias entre versiones
     private static final int BSTATS_PLUGIN_ID = 24855;
 
     @Override
     public void onEnable() {
         instance = this;
         try {
+            setupVersionAdapter(); // Detecta la versión y asigna el adapter
             initializePlugin();
         } catch (Exception e) {
             LoggingUtils.logTranslated("plugin.enable_error", e.getMessage());
@@ -132,6 +138,21 @@ public class Vitamin extends JavaPlugin implements Listener {
             TranslationHandler.registerTemporaryTranslation(BSTATS_ERROR, "BStats error: {0}");
             LoggingUtils.logTranslated(BSTATS_ERROR, e.getMessage());
         }
+    }
+
+    private void setupVersionAdapter() {
+        String version = Bukkit.getVersion();
+        if (version.contains("1.21.4")) {
+            versionAdapter = new VersionAdapter_1_21_4();
+            LoggingUtils.logTranslated("plugin.version_detected", "1.21.4");
+        } else {
+            versionAdapter = new VersionAdapter_1_21_1();
+            LoggingUtils.logTranslated("plugin.version_detected", "1.21.1 o inferior");
+        }
+    }
+
+    public VersionAdapter getVersionAdapter() {
+        return versionAdapter;
     }
 
     public static Vitamin getInstance() {

@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.database.DatabaseHandler;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -153,10 +154,7 @@ public class WallJumpModule implements Listener {
         velocity.setY(-slide_speed);
         player.setVelocity(velocity);
 
-        WallClimbState state = playerStates.get(player.getUniqueId());
-        if (state == null) return;
-
-        BlockFace wallFace = state.wallFace;
+        BlockFace wallFace = playerStates.get(player.getUniqueId()).wallFace;
         Block wallBlock = player.getLocation().getBlock().getRelative(wallFace);
 
         Particle particleType;
@@ -176,13 +174,12 @@ public class WallJumpModule implements Listener {
             }
         }
 
-        Sound soundType = Registry.SOUND_EVENT.get(NamespacedKey.minecraft(slideSound.toLowerCase()));
-
-        if (soundType == null) {
-            soundType = Sound.BLOCK_SAND_STEP;
-        }
-
-        player.getWorld().playSound(player.getLocation(), soundType, 0.2f, 1.2f);
+        Vitamin.getInstance().getVersionAdapter().playSlideSound(
+                player.getLocation(),
+                slideSound,
+                0.2f,
+                1.2f
+        );
     }
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {
