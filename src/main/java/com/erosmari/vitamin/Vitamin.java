@@ -23,14 +23,14 @@ public class Vitamin extends JavaPlugin implements Listener {
     private static Vitamin instance;
     private ModuleManager moduleManager;
     private VitaminCommandManager commandManager;
-    private VersionAdapter versionAdapter; // Adapter que encapsula las diferencias entre versiones
+    private VersionAdapter versionAdapter;
     private static final int BSTATS_PLUGIN_ID = 24855;
 
     @Override
     public void onEnable() {
         instance = this;
         try {
-            setupVersionAdapter(); // Detecta la versión y asigna el adapter
+            setupVersionAdapter();
             initializePlugin();
         } catch (Exception e) {
             LoggingUtils.logTranslated("plugin.enable_error", e.getMessage());
