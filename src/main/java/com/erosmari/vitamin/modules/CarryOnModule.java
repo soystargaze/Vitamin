@@ -1,19 +1,12 @@
 package com.erosmari.vitamin.modules;
 
-import com.sk89q.worldguard.LocalPlayer;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.erosmari.vitamin.integration.LandsHelper;
+import com.erosmari.vitamin.integration.WorldGuardHelper;
+
 
 import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;
-import me.angeschossen.lands.api.LandsIntegration;
-import me.angeschossen.lands.api.land.LandWorld;
-import me.angeschossen.lands.api.player.LandPlayer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -116,24 +109,8 @@ public class CarryOnModule implements Listener {
 
         // Integration with WorldGuard
         if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            try {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery query = container.createQuery();
-                LocalPlayer wgPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-                com.sk89q.worldedit.util.Location weLoc = BukkitAdapter.adapt(entity.getLocation());
-
-                ApplicableRegionSet regionSet = container.createQuery().getApplicableRegions(weLoc);
-                boolean onlyGlobal = regionSet.getRegions().stream().allMatch(region -> region.getId().equalsIgnoreCase("__global__"));
-                if (!onlyGlobal) {
-                    boolean canInteract = query.testState(weLoc, wgPlayer, Flags.INTERACT);
-                    if (!canInteract) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+            if (WorldGuardHelper.cannotInteract(player, entity.getLocation())) {
+                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -141,31 +118,8 @@ public class CarryOnModule implements Listener {
 
         // Integration with Lands
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
-            try {
-                LandsIntegration landsApi = LandsIntegration.of(plugin);
-                LandWorld landWorld = landsApi.getWorld(entity.getWorld());
-                if (landWorld != null) {
-                    LandPlayer landPlayer = landsApi.getLandPlayer(player.getUniqueId());
-                    if (landPlayer == null) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-                    boolean canInteract = landWorld.hasRoleFlag(
-                            landPlayer,
-                            entity.getLocation(),
-                            me.angeschossen.lands.api.flags.type.Flags.INTERACT_GENERAL,
-                            null,
-                            false
-                    );
-                    if (!canInteract) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+            if (LandsHelper.cannotInteract(player, entity.getLocation(), plugin)) {
+                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -206,23 +160,8 @@ public class CarryOnModule implements Listener {
 
         // Integration with WorldGuard
         if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-            try {
-                RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                RegionQuery query = container.createQuery();
-                LocalPlayer wgPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
-                com.sk89q.worldedit.util.Location weLoc = BukkitAdapter.adapt(block.getLocation());
-
-                ApplicableRegionSet regionSet = container.createQuery().getApplicableRegions(weLoc);
-                if (!regionSet.getRegions().stream().allMatch(region -> region.getId().equalsIgnoreCase("__global__"))) {
-                    boolean canBuild = query.testBuild(weLoc, wgPlayer);
-                    if (!canBuild) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+            if (WorldGuardHelper.cannotInteract(player, block.getLocation())) {
+                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -230,33 +169,8 @@ public class CarryOnModule implements Listener {
 
         // Integration with Lands
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
-            try {
-                LandsIntegration landsApi = LandsIntegration.of(plugin);
-                LandWorld landWorld = landsApi.getWorld(block.getWorld());
-                if (landWorld != null) {
-                    LandPlayer landPlayer = landsApi.getLandPlayer(player.getUniqueId());
-                    if (landPlayer == null) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-
-                    boolean canBreak = landWorld.hasRoleFlag(
-                            landPlayer,
-                            block.getLocation(),
-                            me.angeschossen.lands.api.flags.type.Flags.BLOCK_BREAK,
-                            block.getType(),
-                            false
-                    );
-
-                    if (!canBreak) {
-                        LoggingUtils.sendMessage(player, "carry_on.no_permissions");
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                LoggingUtils.sendMessage(player, "carry_on.error_checking_permissions");
+            if (LandsHelper.cannotInteract(player, block.getLocation(), plugin)) {
+                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
