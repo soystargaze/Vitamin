@@ -46,9 +46,11 @@ public class WorldGuardHelper {
                 Object interactFlag = flagsClass.getField("INTERACT").get(null);
 
 
-                return (Boolean) query.getClass()
+                boolean canInteract = (Boolean) query.getClass()
                         .getMethod("testState", weLoc.getClass(), wrappedPlayer.getClass(), interactFlag.getClass())
                         .invoke(query, weLoc, wrappedPlayer, interactFlag);
+
+                return !canInteract; // Devolvemos true si NO puede interactuar
             } else {
                 return false;
             }
