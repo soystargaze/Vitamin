@@ -1,4 +1,4 @@
-package com.erosmari.vitamin.modules;
+package com.erosmari.vitamin.modules.core;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

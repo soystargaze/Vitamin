@@ -1,4 +1,4 @@
-package com.erosmari.vitamin.modules;
+package com.erosmari.vitamin.modules.core;
 
 import com.erosmari.vitamin.database.DatabaseHandler;
 import com.erosmari.vitamin.utils.LoggingUtils;

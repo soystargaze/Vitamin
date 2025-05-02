@@ -1,4 +1,4 @@
-package com.erosmari.vitamin.modules;
+package com.erosmari.vitamin.modules.core;
 
 import com.erosmari.vitamin.integration.LandsIntegrationHandler;
 import com.erosmari.vitamin.integration.WorldGuardIntegrationHandler;

@@ -2,7 +2,7 @@ package com.erosmari.vitamin.commands;
 
 import com.erosmari.vitamin.Vitamin;
 import com.erosmari.vitamin.modules.ModuleManager;
-import com.erosmari.vitamin.modules.CustomRecipesModule;
+import com.erosmari.vitamin.modules.core.CustomRecipesModule;
 import com.erosmari.vitamin.utils.TranslationHandler;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;

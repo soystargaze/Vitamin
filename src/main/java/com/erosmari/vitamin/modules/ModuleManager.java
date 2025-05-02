@@ -1,5 +1,6 @@
 package com.erosmari.vitamin.modules;
 
+import com.erosmari.vitamin.modules.core.*;
 import com.erosmari.vitamin.utils.LoggingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
