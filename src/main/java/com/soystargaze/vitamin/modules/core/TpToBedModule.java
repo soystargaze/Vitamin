@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class TpToBedModule implements Listener {
 
     private final Plugin plugin;

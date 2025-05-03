@@ -5,10 +5,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import static com.soystargaze.vitamin.utils.TranslationHandler.loadedKeys;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings({"deprecation", "TextBlockMigration"})
 public class ConsoleUtils {
 
+    private static JavaPlugin plugin;
+
     public static void displayAsciiArt(JavaPlugin plugin) {
+        ConsoleUtils.plugin = plugin;
 
         final String LOCAL_TEST_MESSAGE_KEY = "plugin.logo";
         TranslationHandler.registerTemporaryTranslation(LOCAL_TEST_MESSAGE_KEY, "\n" +
@@ -41,5 +44,13 @@ public class ConsoleUtils {
             LoggingUtils.logTranslated("plugin.version_detected", "defaulting to 1.21/1.21.1");
         }
         LoggingUtils.logTranslated("plugin.separator");
+    }
+
+    public static JavaPlugin getPlugin() {
+        return plugin;
+    }
+
+    public static void setPlugin(JavaPlugin plugin) {
+        ConsoleUtils.plugin = plugin;
     }
 }
