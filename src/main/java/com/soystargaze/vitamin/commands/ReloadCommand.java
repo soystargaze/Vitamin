@@ -23,13 +23,12 @@ import java.util.List;
 public class ReloadCommand implements CommandExecutor, TabCompleter {
 
     private final Vitamin plugin;
-    private final ModuleManager moduleManager;
 
     public ReloadCommand(Vitamin plugin) {
         this.plugin = plugin;
-        this.moduleManager = plugin.getModuleManager();
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!sender.hasPermission("vitamin.reload")) {
@@ -38,32 +37,35 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         }
 
         try {
-            reloadConfig();
-            if (!plugin.getConfig().getBoolean("module.custom_recipes", true)) {
+            plugin.reloadConfig();
+            ConfigHandler.reload();
+
+            ModuleManager moduleManager = plugin.getModuleManager();
+
+            boolean customEnabled = plugin.getConfig().getBoolean("module.custom_recipes", true);
+            if (!customEnabled) {
                 Listener mod = moduleManager.getModule("custom_recipes");
                 if (mod instanceof CustomRecipesModule) {
                     ((CustomRecipesModule) mod).unregisterRecipes();
                 }
             }
+
+            moduleManager.reloadModules();
+
             int loadedTranslations = reloadTranslations();
+
             sendTranslatedMessage(sender, "commands.reload.success", loadedTranslations);
         } catch (Exception e) {
             sendTranslatedMessage(sender, "commands.reload.error");
             LoggingUtils.logTranslated("commands.reload.error", e.getMessage());
+            e.printStackTrace();
         }
         return true;
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
-        // /reload takes no arguments, so return an empty list for tab completion
         return new ArrayList<>();
-    }
-
-    private void reloadConfig() {
-        plugin.reloadConfig();
-        ConfigHandler.reload();
-        moduleManager.reloadModules();
     }
 
     private int reloadTranslations() {
