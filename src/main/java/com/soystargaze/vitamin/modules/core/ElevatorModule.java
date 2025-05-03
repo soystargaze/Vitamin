@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class ElevatorModule implements Listener {
 
     private final JavaPlugin plugin;
@@ -122,7 +123,6 @@ public class ElevatorModule implements Listener {
         Location to = event.getTo();
         if (to == null) return;
 
-        // Detect jump by checking upward movement (Y velocity)
         double yDiff = to.getY() - from.getY();
         if (yDiff > 0.1 && !isPlayerOnGround(player)) {
             teleportElevator(player, 1);

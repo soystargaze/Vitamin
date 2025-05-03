@@ -29,7 +29,6 @@ public class ConfigHandler {
     public static void reload() {
         JavaPlugin plugin = Vitamin.getInstance();
         plugin.reloadConfig();
-        config = getConfig();
     }
 
     public static String getLanguage() {

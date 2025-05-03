@@ -20,6 +20,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 
+@SuppressWarnings("deprecation")
 public class PlayerXptoBooksModule implements Listener {
 
     private final NamespacedKey xpKey;

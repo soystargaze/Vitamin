@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.ChatColor;
 
+@SuppressWarnings("deprecation")
 public class LoggingUtils {
 
     public static void logTranslated(String key, Object... args) {
