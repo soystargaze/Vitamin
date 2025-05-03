@@ -80,6 +80,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
         return new ArrayList<>();
     }
 
+    @SuppressWarnings("deprecation")
     private void sendTranslatedMessage(CommandSender sender, String key, Object... args) {
         Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
         String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);

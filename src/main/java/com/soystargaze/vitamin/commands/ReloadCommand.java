@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class ReloadCommand implements CommandExecutor, TabCompleter {
 
     private final Vitamin plugin;
