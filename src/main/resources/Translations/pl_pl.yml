@@ -4,7 +4,7 @@
 #   \ V / | | || (_| | | | | | | | | | |_   _|
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
-# Support: https://erosmari.com/discord
+# Support: https://soystargaze.com/discord
 
 plugin:
   prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
@@ -18,6 +18,8 @@ plugin:
   language_loaded: "Załadowano język: {0}.yml ({1} tłumaczeń)"
   enable_error: "Wystąpił błąd podczas włączania Vitamin+: {0}"
   version_detected: "Wykryta wersja: {0}"
+  paper_detected: "<color:#FFA500>Wykryto Paper:</color> Korzystanie z haków Paper dla lepszej wydajności."
+  paper_not_detected: "<color:#FFA500>Wykryto Spigot:</color> Korzystanie z haków rdzenia."
 
 items:
   registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."

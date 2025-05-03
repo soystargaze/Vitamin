@@ -1,0 +1,103 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# Support: https://soystargaze.com/discord
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500>"
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
+  version: "버전: {0}"
+  author: "제작자: {0}"
+  enabled: "Vitamin+이 성공적으로 활성화되었습니다."
+  disabled: "Vitamin+이 성공적으로 비활성화되었습니다."
+  language_loaded: "언어 로드 완료: {0}.yml ({1}개 번역)"
+  enable_error: "Vitamin+ 활성화 중 오류가 발생했습니다: {0}"
+  version_detected: "감지된 버전: {0}"
+  paper_detected: "<color:#FFA500>Paper 감지됨:</color> 더 나은 성능을 위해 Paper 훅을 사용합니다."
+  paper_not_detected: "<color:#FFA500>Spigot 감지됨:</color> 코어 훅을 사용합니다."
+
+  items:
+    registered: "Vitamin+ 아이템이 성공적으로 등록되었습니다."
+
+  events:
+    registered: "이벤트가 성공적으로 등록되었습니다."
+
+  commands:
+    registered: "명령어가 성공적으로 등록되었습니다."
+    usage: "사용법: /vitamin <args>"
+    reload:
+      success: "Vitamin+가 성공적으로 재로드되었습니다."
+      error: "Vitamin+ 재로드 중 오류가 발생했습니다."
+    module:
+      usage: "사용법: /vitamin module <모듈> <enable|disable>"
+      not_found: "모듈을 찾을 수 없습니다: {0}"
+      changed: "모듈 {0}이(가) {1}되었습니다."
+    pmodule:
+      usage: "사용법: /vitamin pmodule <모듈> <enable|disable>"
+      player_only: "이 명령어는 플레이어만 실행할 수 있습니다."
+      module_not_active: "모듈 {0}이(가) 활성화되어 있지 않습니다."
+      no_module_permission: "{0}을(를) 사용할 권한이 없습니다."
+      changed: "모듈 {0}이(가) {1}되었습니다."
+
+  database:
+    already_initialized: "데이터베이스가 이미 초기화되었습니다."
+    init_error: "데이터베이스 초기화 중 오류가 발생했습니다: {0}"
+    sqlite:
+      error_directory: "SQLite 데이터베이스 디렉토리를 생성하지 못했습니다: "
+      success: "SQLite 데이터베이스가 성공적으로 초기화되었습니다."
+    mysql:
+      success: "MySQL 데이터베이스가 성공적으로 초기화되었습니다."
+    mariadb:
+      success: "MariaDB 데이터베이스가 성공적으로 초기화되었습니다."
+    postgresql:
+      success: "PostgreSQL 데이터베이스가 성공적으로 초기화되었습니다."
+    tables:
+      success: "데이터베이스 테이블이 성공적으로 생성되었습니다."
+      error: "데이터베이스 테이블 생성 중 오류가 발생했습니다: {0}"
+    query_error: "데이터베이스 쿼리 실행 중 오류가 발생했습니다: {0}"
+    update_error: "데이터베이스 업데이트 중 오류가 발생했습니다: {0}"
+    close:
+      success: "데이터베이스 연결이 성공적으로 닫혔습니다."
+
+  module:
+    enabled: "모듈 {0}: <green>활성화됨"
+    disabled: "모듈 {0}: <red>비활성화됨"
+
+  elevator:
+    item_name: "<gold>엘리베이터</gold>"
+    cannot_open: "<red>엘리베이터를 열 수 없습니다!</red>"
+
+  xpbook:
+    item_name: "{0} XP 경험치 책"
+    created: "{0} XP 경험치 책이 생성되었습니다!"
+    used: "경험치 책을 사용하여 {0} XP를 획득했습니다!"
+
+  carry_on:
+    cannot_pickup_players: "<red>플레이어는 들어 올릴 수 없습니다!</red>"
+    cannot_pickup_entity: "<red>이 엔티티는 들어 올릴 수 없습니다!</red>"
+    entity_too_heavy: "<red>이 엔티티는 너무 무거워서 들 수 없습니다!</red>"
+    picked_up_entity: "<green>엔티티를 들어 올렸습니다 (무게: {0}/{1})</green>"
+    entity_dropped: "엔티티를 놓았습니다."
+    picked_up_double_chest: "<green>더블 상자를 들어 올렸습니다.</green>"
+    picked_up_block: "<green><yellow>상자</yellow>를 들어 올렸습니다.</green>"
+    placed_block: "<gold>블록을 배치했습니다.</gold>"
+    no_permissions: "<red>이 엔티티/상자를 들어 올릴 권한이 없습니다.</red>"
+    error_checking_permissions: "<red>권한 확인 중 오류가 발생했습니다.</red>"
+
+  void_totem:
+    activated: "보이드 토템이 활성화되었습니다! 안전한 곳으로 순간이동 중..."
+    cooldown: "다른 보이드 토템을 사용하기 전에 기다려야 합니다!"
+    no_totem: "보이드에서 생존하려면 불멸의 토템이 필요합니다!"
+    teleport_safe: "안전한 위치로 순간이동되었습니다."
+    teleport_spawn: "주변에서 안전한 위치를 찾을 수 없어 월드 스폰으로 순간이동되었습니다."
+
+  tpcompass:
+    already_teleporting: "<yellow>이미 순간이동 중입니다!</yellow>"
+    cancelled: "<red>순간이동이 취소되었습니다!</red>"
+    channeling: "순간이동 채널링: {0}초 남음..."
+    success: "리스폰 지점으로 순간이동되었습니다!"

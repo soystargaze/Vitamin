@@ -82,7 +82,7 @@ public class Vitamin extends JavaPlugin implements Listener {
             return;
         }
 
-        String[] defaultLanguages = {"en_us.yml", "es_es.yml", "fr_fr.yml", "de_de.yml", "pt_br.yml", "pl_pl.yml", "zh_cn.yml"};
+        String[] defaultLanguages = {"en_us.yml", "es_es.yml", "fr_fr.yml", "de_de.yml", "pt_br.yml", "pl_pl.yml", "zh_cn.yml", "ko_kr.yml", "tr_tr.yml"};
         for (String languageFile : defaultLanguages) {
             saveDefaultTranslation(languageFile);
         }
@@ -141,29 +141,19 @@ public class Vitamin extends JavaPlugin implements Listener {
     }
 
     private void setupVersionAdapter() {
-        String numeric = Bukkit.getVersion().split("-")[0];
+        String raw = Bukkit.getBukkitVersion();
+        String version = raw.replaceFirst(".*?(\\d+\\.\\d+\\.\\d+).*", "$1");
 
-        if (numeric.startsWith("1.21") && compareVersion(numeric, "1.21.3") >= 0) {
+        String[] parts = version.split("\\.");
+        int major = Integer.parseInt(parts[0]);
+        int minor = Integer.parseInt(parts[1]);
+        int patch = Integer.parseInt(parts[2]);
+
+        if (major == 1 && minor == 21 && patch >= 3) {
             versionAdapter = new VersionAdapter_1_21_4();
-        } else if (numeric.startsWith("1.21") && compareVersion(numeric, "1.21.1") >= 0) {
-            versionAdapter = new VersionAdapter_1_21_1();
         } else {
             versionAdapter = new VersionAdapter_1_21_1();
         }
-    }
-
-    private int compareVersion(String v1, String v2) {
-        String[] a1 = v1.split("\\.");
-        String[] a2 = v2.split("\\.");
-        int len = Math.max(a1.length, a2.length);
-        for (int i = 0; i < len; i++) {
-            int n1 = i < a1.length ? Integer.parseInt(a1[i]) : 0;
-            int n2 = i < a2.length ? Integer.parseInt(a2[i]) : 0;
-            if (n1 != n2) {
-                return Integer.compare(n1, n2);
-            }
-        }
-        return 0;
     }
 
     public VersionAdapter getVersionAdapter() {

@@ -35,14 +35,9 @@ public class ConsoleUtils {
         LoggingUtils.logTranslated("items.registered");
         LoggingUtils.logTranslated("commands.registered");
         LoggingUtils.logTranslated("events.registered");
-        String version = Bukkit.getVersion();
-        if (version.contains("1.21.3") || version.contains("1.21.4")) {
-            LoggingUtils.logTranslated("plugin.version_detected", "1.21.3/1.21.4");
-        } else if (version.contains("1.21.1") || version.contains("1.21")) {
-            LoggingUtils.logTranslated("plugin.version_detected", "1.21/1.21.1");
-        } else {
-            LoggingUtils.logTranslated("plugin.version_detected", "defaulting to 1.21/1.21.1");
-        }
+        String raw = Bukkit.getBukkitVersion();
+        String version = raw.replaceFirst(".*?(\\d+\\.\\d+\\.\\d+).*", "$1");
+        LoggingUtils.logTranslated("plugin.version_detected", version);
         LoggingUtils.logTranslated("plugin.separator");
     }
 

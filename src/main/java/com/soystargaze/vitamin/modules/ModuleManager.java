@@ -135,10 +135,12 @@ public class ModuleManager {
     private boolean detectPaper() {
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
-            plugin.getLogger().info("Entorno: Paper detectado");
+            LoggingUtils.logTranslated("plugin.paper_detected");
+            LoggingUtils.logTranslated("plugin.separator");
             return true;
         } catch (ClassNotFoundException e) {
-            plugin.getLogger().info("Entorno: Spigot puro");
+            LoggingUtils.logTranslated("plugin.paper_not_detected");
+            LoggingUtils.logTranslated("plugin.separator");
             return false;
         }
     }
