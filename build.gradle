@@ -39,6 +39,7 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.0.2")
     compileOnly("com.github.angeschossen:LandsAPI:7.10.13")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
+    compileOnly files('APIs/AdvancedEnchantments-8.7.4.jar')
 }
 
 java {

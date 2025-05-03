@@ -1,6 +1,7 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import net.advancedplugins.ae.api.AEAPI;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class EnchantsBackModule implements Listener {
 
@@ -31,92 +33,107 @@ public class EnchantsBackModule implements Listener {
         if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
 
         Player player = (Player) event.getWhoClicked();
-        if (!player.hasPermission("vitamin.module.enchants_back") ||
-                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.enchants_back")) {
+        if (!player.hasPermission("vitamin.module.enchants_back")
+                || !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.enchants_back")) {
             return;
         }
 
         ItemStack inputItem = inventory.getItem(0);
-        if (inputItem == null || inputItem.getEnchantments().isEmpty()) return;
+        if (inputItem == null) return;
 
-        int maxReturnedEnchantments = plugin.getConfig().getInt("enchants_back.max_returned", inputItem.getEnchantments().size());
+        Map<Enchantment, Integer> vanillaEnchants = inputItem.getEnchantments();
+        boolean hasVanilla = !vanillaEnchants.isEmpty();
 
-        int enchantmentCount = inputItem.getEnchantments().size();
-        int enchantmentsToProcess = Math.min(enchantmentCount, maxReturnedEnchantments);
+        boolean aeLoaded = plugin.getServer()
+                .getPluginManager()
+                .isPluginEnabled("AdvancedEnchantments");
+        Map<String, Integer> aeEnchants = aeLoaded
+                ? AEAPI.getEnchantmentsOnItem(inputItem)
+                : Map.of();
+        boolean hasAE = !aeEnchants.isEmpty();
+
+        if (!hasVanilla && !hasAE) return;
+
+        int totalEnchants = (hasVanilla ? vanillaEnchants.size() : 0)
+                + (hasAE      ? aeEnchants.size()      : 0);
+        int maxReturned = plugin.getConfig()
+                .getInt("enchants_back.max_returned", totalEnchants);
+        int toProcess = Math.min(totalEnchants, maxReturned);
 
         int bookCount = countBooks(player.getInventory());
-        if (bookCount < enchantmentsToProcess) {
-            return;
-        }
-
+        if (bookCount < toProcess) return;
         int freeSlots = getFreeInventorySlots(player.getInventory());
-        if (freeSlots < enchantmentsToProcess) {
-            return;
+        if (freeSlots < toProcess) return;
+
+        int processed = 0;
+
+        for (Entry<Enchantment, Integer> entry : vanillaEnchants.entrySet()) {
+            if (processed >= toProcess) break;
+            if (createEnchantedBook(player, entry.getKey(), entry.getValue())) {
+                removeOneBook(player);
+                processed++;
+            } else {
+                return;
+            }
         }
 
-        try {
-            int processed = 0;
-            for (Map.Entry<Enchantment, Integer> entry : inputItem.getEnchantments().entrySet()) {
-                if (processed >= enchantmentsToProcess) break;
-                Enchantment enchantment = entry.getKey();
-                int level = entry.getValue();
-
-                if (createEnchantedBook(player, enchantment, level)) {
+        if (aeLoaded) {
+            for (Entry<String, Integer> aeEntry : aeEnchants.entrySet()) {
+                if (processed >= toProcess) break;
+                ItemStack aeBook = new ItemStack(Material.BOOK);
+                aeBook = AEAPI.applyEnchant(
+                        aeEntry.getKey(),
+                        aeEntry.getValue(),
+                        aeBook
+                );
+                if (player.getInventory().addItem(aeBook).isEmpty()) {
                     removeOneBook(player);
                     processed++;
-                } else {
-                    return;
                 }
             }
-            player.updateInventory();
-        } catch (Exception ignored) {
         }
+
+        player.updateInventory();
     }
 
-    private boolean createEnchantedBook(Player player, Enchantment enchantment, int level) {
+    private boolean createEnchantedBook(Player player, Enchantment ench, int level) {
         try {
-            ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK);
-            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) enchantedBook.getItemMeta();
-
+            ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
             if (meta != null) {
-                meta.addStoredEnchant(enchantment, level, true);
-                enchantedBook.setItemMeta(meta);
-                return player.getInventory().addItem(enchantedBook).isEmpty();
+                meta.addStoredEnchant(ench, level, true);
+                book.setItemMeta(meta);
+                return player.getInventory().addItem(book).isEmpty();
             }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
+        } catch (Exception ignored) {}
+        return false;
     }
 
-    private int countBooks(Inventory inventory) {
-        int count = 0;
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null && item.getType() == Material.BOOK) {
-                count += item.getAmount();
+    private int countBooks(Inventory inv) {
+        int c = 0;
+        for (ItemStack itm : inv.getContents()) {
+            if (itm != null && itm.getType() == Material.BOOK) {
+                c += itm.getAmount();
             }
         }
-        return count;
+        return c;
     }
 
-    private int getFreeInventorySlots(Inventory inventory) {
-        int count = 0;
-        for (ItemStack item : inventory.getContents()) {
-            if (item == null || item.getType() == Material.AIR) {
-                count++;
+    private int getFreeInventorySlots(Inventory inv) {
+        int c = 0;
+        for (ItemStack itm : inv.getContents()) {
+            if (itm == null || itm.getType() == Material.AIR) {
+                c++;
             }
         }
-        return count;
+        return c;
     }
 
     private void removeOneBook(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.BOOK) {
-                if (item.getAmount() > 1) {
-                    item.setAmount(item.getAmount() - 1);
-                } else {
-                    player.getInventory().remove(item);
-                }
+        for (ItemStack itm : player.getInventory().getContents()) {
+            if (itm != null && itm.getType() == Material.BOOK) {
+                if (itm.getAmount() > 1) itm.setAmount(itm.getAmount() - 1);
+                else player.getInventory().remove(itm);
                 break;
             }
         }
