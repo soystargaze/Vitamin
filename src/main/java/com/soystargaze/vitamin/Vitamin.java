@@ -33,7 +33,9 @@ public class Vitamin extends JavaPlugin implements Listener {
             setupVersionAdapter();
             initializePlugin();
         } catch (Exception e) {
-            LoggingUtils.logTranslated("plugin.enable_error", e.getMessage());
+            final String LOCAL_TEST_MESSAGE_KEY = "plugin.enable_error";
+            TranslationHandler.registerTemporaryTranslation(LOCAL_TEST_MESSAGE_KEY, "Plugin cannot be enabled: {0}");
+            LoggingUtils.logTranslated(LOCAL_TEST_MESSAGE_KEY);
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -48,7 +50,6 @@ public class Vitamin extends JavaPlugin implements Listener {
 
     private void initializePlugin() {
         try {
-            ConsoleUtils.displayAsciiArt(this);
             loadConfigurations();
             DatabaseHandler.initialize(this);
             LoggingUtils.logTranslated("plugin.separator");
@@ -68,11 +69,14 @@ public class Vitamin extends JavaPlugin implements Listener {
 
         setupTranslations();
         TranslationHandler.loadTranslations(this, ConfigHandler.getLanguage());
-        ConsoleUtils.displaySuccessMessage(this);
+
+        ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
 
         initializeCommandManager();
+
+        ConsoleUtils.displaySuccessMessage(this);
     }
 
     private void setupTranslations() {
