@@ -3,7 +3,7 @@ package com.soystargaze.vitamin.commands;
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
-import com.erosmari.vitamin.modules.CustomRecipesModule;
+import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
 import com.soystargaze.vitamin.utils.LoggingUtils;
 import com.soystargaze.vitamin.utils.TranslationHandler;
 import net.kyori.adventure.text.Component;
@@ -30,7 +30,7 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!sender.hasPermission("vitamin.reload")) {
             sendTranslatedMessage(sender, "commands.reload.no_permission");
             return true;
@@ -54,7 +54,7 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
         // /reload takes no arguments, so return an empty list for tab completion
         return new ArrayList<>();
     }

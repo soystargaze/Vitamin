@@ -1,7 +1,5 @@
 package com.soystargaze.vitamin.modules;
 
-import com.erosmari.vitamin.modules.core.*;
-import com.erosmari.vitamin.modules.paper.*;
 import com.soystargaze.vitamin.modules.core.*;
 import com.soystargaze.vitamin.modules.paper.*;
 import com.soystargaze.vitamin.utils.LoggingUtils;

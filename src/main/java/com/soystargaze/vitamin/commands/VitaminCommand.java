@@ -17,20 +17,18 @@ import java.util.List;
 
 public class VitaminCommand implements CommandExecutor, TabCompleter {
 
-    private final Vitamin plugin;
     private final ModuleCommand moduleCommand;
     private final PModuleCommand pModuleCommand;
     private final ReloadCommand reloadCommand;
 
     public VitaminCommand(Vitamin plugin) {
-        this.plugin = plugin;
         this.moduleCommand = new ModuleCommand(plugin);
         this.pModuleCommand = new PModuleCommand(plugin);
         this.reloadCommand = new ReloadCommand(plugin);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!sender.hasPermission("vitamin.use")) {
             sendTranslatedMessage(sender, "commands.no_permission");
             return true;
@@ -56,7 +54,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
         if (args.length == 1) {
             List<String> subCommands = new ArrayList<>();
             if (sender.hasPermission("vitamin.reload")) {

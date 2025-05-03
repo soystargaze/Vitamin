@@ -5,6 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class VitaminCommandManager {
 
     private final Vitamin plugin;
@@ -23,9 +25,9 @@ public class VitaminCommandManager {
 
     private void registerCommand(String commandName, CommandExecutor executor) {
         JavaPlugin javaPlugin = plugin;
-        javaPlugin.getCommand(commandName).setExecutor(executor);
+        Objects.requireNonNull(javaPlugin.getCommand(commandName)).setExecutor(executor);
         if (executor instanceof TabCompleter) {
-            javaPlugin.getCommand(commandName).setTabCompleter((TabCompleter) executor);
+            Objects.requireNonNull(javaPlugin.getCommand(commandName)).setTabCompleter((TabCompleter) executor);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.soystargaze.vitamin.commands;
 
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.modules.ModuleManager;
-import com.erosmari.vitamin.modules.CustomRecipesModule;
+import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
 import com.soystargaze.vitamin.utils.TranslationHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
