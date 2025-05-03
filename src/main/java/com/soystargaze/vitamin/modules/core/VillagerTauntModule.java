@@ -1,9 +1,7 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -17,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.bukkit.Particle;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,8 +27,10 @@ public class VillagerTauntModule implements Listener {
     private final Set<Player> playersHoldingEmerald = new HashSet<>();
     private final JavaPlugin plugin;
     private final double MOVEMENT_SPEED = 0.8;
-    private final Map<UUID, Set<Villager>> villagerTasks = new HashMap<>(); // Track villagers per player
-    private final double DETECTION_RADIUS = 10.0;
+    private final Map<UUID, Set<Villager>> villagerTasks = new HashMap<>();
+    private final double DETECTION_RADIUS = 14.0;
+    private final double DETECTION_HEIGHT = 7.0;
+    private final double MINIMUM_DISTANCE = 1.5;
 
     public VillagerTauntModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -97,7 +96,6 @@ public class VillagerTauntModule implements Listener {
             return;
         }
 
-        // Update villager movement
         updateVillagerMovement(player);
     }
 
@@ -105,12 +103,9 @@ public class VillagerTauntModule implements Listener {
         UUID playerId = player.getUniqueId();
         Set<Villager> currentVillagers = villagerTasks.computeIfAbsent(playerId, k -> new HashSet<>());
 
-        // Clear previous tasks if any villagers are no longer valid
         currentVillagers.removeIf(villager -> !villager.isValid() || villager.isDead());
 
-        // Find nearby villagers
         Set<Villager> nearbyVillagers = new HashSet<>();
-        double DETECTION_HEIGHT = 5.0;
         for (Entity entity : player.getWorld().getNearbyEntities(
                 player.getLocation(), DETECTION_RADIUS, DETECTION_HEIGHT, DETECTION_RADIUS)) {
             if (entity.getType() == EntityType.VILLAGER) {
@@ -118,7 +113,6 @@ public class VillagerTauntModule implements Listener {
             }
         }
 
-        // Start movement for new villagers
         for (Villager villager : nearbyVillagers) {
             if (!currentVillagers.contains(villager)) {
                 currentVillagers.add(villager);
@@ -126,7 +120,6 @@ public class VillagerTauntModule implements Listener {
             }
         }
 
-        // Stop movement for villagers no longer in range
         currentVillagers.removeIf(villager -> !nearbyVillagers.contains(villager));
     }
 
@@ -143,16 +136,22 @@ public class VillagerTauntModule implements Listener {
                     return;
                 }
 
-                // Calculate direction to player
+                double distance = player.getLocation().distance(villager.getLocation());
+                if (distance <= MINIMUM_DISTANCE) {
+                    villager.setVelocity(new Vector(0, villager.getVelocity().getY(), 0));
+                    facePlayer(villager, player);
+                    return;
+                }
+
                 Vector direction = player.getLocation().toVector()
                         .subtract(villager.getLocation().toVector())
                         .normalize()
-                        .multiply(MOVEMENT_SPEED * 0.2); // Scale for smoother movement
+                        .multiply(MOVEMENT_SPEED * 0.2);
 
-                // Apply velocity (preserve Y to allow natural falling/jumping)
                 villager.setVelocity(new Vector(direction.getX(), villager.getVelocity().getY(), direction.getZ()));
+                facePlayer(villager, player);
             }
-        }.runTaskTimer(plugin, 0L, 2L); // Run every 2 ticks for smooth movement
+        }.runTaskTimer(plugin, 0L, 2L);
     }
 
     private void stopVillagerTasks(Player player) {
@@ -161,7 +160,7 @@ public class VillagerTauntModule implements Listener {
         if (villagers != null) {
             for (Villager villager : villagers) {
                 if (villager.isValid() && !villager.isDead()) {
-                    villager.setVelocity(new Vector(0, villager.getVelocity().getY(), 0)); // Stop horizontal movement
+                    villager.setVelocity(new Vector(0, villager.getVelocity().getY(), 0));
                 }
             }
         }
@@ -178,5 +177,15 @@ public class VillagerTauntModule implements Listener {
                 Sound.ENTITY_VILLAGER_TRADE,
                 0.5f, 1.0f
         );
+    }
+
+    private void facePlayer(Villager villager, Player player) {
+        Location villagerLoc = villager.getLocation();
+        Location playerLoc = player.getLocation();
+        double dx = playerLoc.getX() - villagerLoc.getX();
+        double dz = playerLoc.getZ() - villagerLoc.getZ();
+        float yaw = (float) Math.toDegrees(Math.atan2(dz, dx)) - 90;
+        villagerLoc.setYaw(yaw);
+        villager.teleport(villagerLoc);
     }
 }
