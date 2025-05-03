@@ -1,10 +1,44 @@
 name: Vitamin
-version: '1.1.4'
-main: com.erosmari.vitamin.Vitamin
+version: '1.2.0'
+main: com.soystargaze.vitamin.Vitamin
 api-version: '1.21'
 load: STARTUP
-authors: [Eros Marí]
-website: https://erosmari.com
+authors: [Stargaze (Eros Marí)]
+website: https://soystargaze.com
 softdepend:
   - WorldGuard
   - Lands
+commands:
+  vitamin:
+    description: Main command for Vitamin plugin
+    usage: /<command> [reload|module|pmodule]
+    permission: vitamin.use
+  vita:
+    description: Alias for /vitamin
+    usage: /<command> [reload|module|pmodule]
+    permission: vitamin.use
+  vi:
+    description: Alias for /vitamin
+    usage: /<command> [reload|module|pmodule]
+    permission: vitamin.use
+  module:
+    description: Manage server-wide module states
+    usage: /<command> <module> <enable|disable>
+    permission: vitamin.module
+  pmodule:
+    description: Manage player-specific module states
+    usage: /<command> <module> <enable|disable>
+    permission: vitamin.pmodule
+permissions:
+  vitamin.use:
+    description: Allows use of the /vitamin command
+    default: op
+  vitamin.reload:
+    description: Allows use of the /vitamin reload command
+    default: op
+  vitamin.module:
+    description: Allows use of the /module command
+    default: op
+  vitamin.pmodule:
+    description: Allows use of the /pmodule command
+    default: true
