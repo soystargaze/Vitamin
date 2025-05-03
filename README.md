@@ -10,12 +10,12 @@
 
 ## 🍊 Key Features
 
-- **Full compatibility with PaperMC**
+- **Full compatibility with Spigot and PaperMC**
 - **Easy configuration:** Manage everything from `config.yml`
 - **Modular system:** Enable or disable each feature as needed
 - **Permissions support:** Controls player access to specific modules and crafting recipes
 - **New mechanics:** Features designed to enhance gameplay without breaking the vanilla feel
-- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **German**, **Polish**, **French**, and **Brazilian Portuguese**
+- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **German**, **Polish**, **French**, **Korean**, **Turkish** and **Brazilian Portuguese**
 
 ---
 
@@ -31,7 +31,7 @@
 - **Crop Protection:** Prevents crops from being trampled by players.
 - **Elevator:** Create a teleporting elevator for vertical movement.
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
-- **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable).
+- **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable). It can also return the [AdvancedEnchantments](https://www.spigotmc.org/resources/1-17-1-21-5-⭕-advancedenchantments-⭐-500-custom-enchants-⭐create-custom-enchantments-✅.43058/) enchantments.
 - **Fire Aspect On Tools:** You can use an anvil to apply `Fire Aspect I/II` to tools. It auto-smelts drops when breaking blocks. `Level I` has a 40% chance, while `Level II` has a 100% chance.
 - **Invisible Item Frames:** Toggle the visibility of item frames with `Right-Click (empty hand)`.
 - **Leaf Decay:** Leaves disappear faster when cutting down trees (configurable).
