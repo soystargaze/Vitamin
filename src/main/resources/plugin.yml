@@ -10,7 +10,7 @@ softdepend:
   - Lands
 commands:
   vitamin:
-    description: Comando principal de Vitamin
+    description: Main command for Vitamin
     usage: /<command> [reload|module|pmodule]
     permission: vitamin.use
     aliases:
