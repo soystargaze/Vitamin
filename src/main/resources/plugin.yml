@@ -10,25 +10,12 @@ softdepend:
   - Lands
 commands:
   vitamin:
-    description: Main command for Vitamin plugin
+    description: Comando principal de Vitamin
     usage: /<command> [reload|module|pmodule]
     permission: vitamin.use
-  vita:
-    description: Alias for /vitamin
-    usage: /<command> [reload|module|pmodule]
-    permission: vitamin.use
-  vi:
-    description: Alias for /vitamin
-    usage: /<command> [reload|module|pmodule]
-    permission: vitamin.use
-  module:
-    description: Manage server-wide module states
-    usage: /<command> <module> <enable|disable>
-    permission: vitamin.module
-  pmodule:
-    description: Manage player-specific module states
-    usage: /<command> <module> <enable|disable>
-    permission: vitamin.pmodule
+    aliases:
+      - vita
+      - vi
 permissions:
   vitamin.use:
     description: Allows use of the /vitamin command
@@ -37,8 +24,8 @@ permissions:
     description: Allows use of the /vitamin reload command
     default: op
   vitamin.module:
-    description: Allows use of the /module command
+    description: Allows use of the /vitamin module command
     default: op
   vitamin.pmodule:
-    description: Allows use of the /pmodule command
+    description: Allows use of the /vitamin pmodule command
     default: true
