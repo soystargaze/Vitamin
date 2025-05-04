@@ -16,6 +16,11 @@ public class VersionAdapter_1_21_4 implements VersionAdapter {
     }
 
     @Override
+    public Attribute getMaxHPAttribute() {
+        return Attribute.MAX_HEALTH;
+    }
+
+    @Override
     public void playSlideSound(Location location, String soundKey, float volume, float pitch) {
         Sound sound = Registry.SOUNDS.get(NamespacedKey.minecraft(soundKey.toLowerCase()));
         if (sound == null) {

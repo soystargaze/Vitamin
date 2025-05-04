@@ -1,5 +1,6 @@
 package com.soystargaze.vitamin.modules.core;
 
+import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.integration.LandsIntegrationHandler;
 import com.soystargaze.vitamin.integration.WorldGuardIntegrationHandler;
 
@@ -9,7 +10,7 @@ import com.soystargaze.vitamin.utils.LoggingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
@@ -108,7 +109,13 @@ public class CarryOnModule implements Listener {
             return;
         }
 
-        double entityWeight = Objects.requireNonNull(livingEntity.getAttribute(Attribute.MAX_HEALTH)).getBaseValue() * 2;
+        AttributeInstance maxHPInstance = livingEntity.getAttribute(Vitamin.getInstance().getVersionAdapter().getMaxHPAttribute());
+        if (maxHPInstance == null) {
+            event.setCancelled(true);
+            return;
+        }
+
+        double entityWeight = maxHPInstance.getBaseValue() * 2;
         if (entityWeight > maxCarryWeight) {
             LoggingUtils.sendMessage(player, "carry_on.entity_too_heavy");
             event.setCancelled(true);
