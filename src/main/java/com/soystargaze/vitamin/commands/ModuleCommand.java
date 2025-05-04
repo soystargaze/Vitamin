@@ -3,6 +3,7 @@ package com.soystargaze.vitamin.commands;
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
+import com.soystargaze.vitamin.utils.LoggingUtils;
 import com.soystargaze.vitamin.utils.TranslationHandler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -22,13 +23,12 @@ import java.util.Set;
 public class ModuleCommand implements CommandExecutor, TabCompleter {
 
     private final Vitamin plugin;
-    private final ModuleManager moduleManager;
 
     public ModuleCommand(Vitamin plugin) {
         this.plugin = plugin;
-        this.moduleManager = plugin.getModuleManager();
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!sender.hasPermission("vitamin.module")) {
@@ -41,39 +41,51 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        String moduleName = args[0];
-        String stateArg = args[1];
-        boolean enable;
-
-        if (stateArg.equalsIgnoreCase("enable")) {
-            enable = true;
-        } else if (stateArg.equalsIgnoreCase("disable")) {
-            enable = false;
-        } else {
-            sendTranslatedMessage(sender, "commands.module.usage");
-            return true;
-        }
-
-        String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
-
-        if (!plugin.getConfig().contains(key)) {
-            sendTranslatedMessage(sender, "commands.module.not_found", key);
-            return true;
-        }
-
-        plugin.getConfig().set(key, enable);
-        plugin.saveConfig();
-
-        if (key.equalsIgnoreCase("module.custom_recipes") && !enable) {
-            Object moduleInstance = moduleManager.getModule("custom_recipes");
-            if (moduleInstance instanceof CustomRecipesModule) {
-                ((CustomRecipesModule) moduleInstance).unregisterRecipes();
+        try {
+            ModuleManager moduleManager = plugin.getModuleManager();
+            if (moduleManager == null) {
+                plugin.getLogger().warning("ModuleManager is null, cannot reload modules.");
+                return true;
             }
+
+            String moduleName = args[0];
+            String stateArg = args[1];
+            boolean enable;
+
+            if (stateArg.equalsIgnoreCase("enable")) {
+                enable = true;
+            } else if (stateArg.equalsIgnoreCase("disable")) {
+                enable = false;
+            } else {
+                sendTranslatedMessage(sender, "commands.module.usage");
+                return true;
+            }
+
+            String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
+
+            if (!plugin.getConfig().contains(key)) {
+                sendTranslatedMessage(sender, "commands.module.not_found", key);
+                return true;
+            }
+
+            plugin.getConfig().set(key, enable);
+            plugin.saveConfig();
+
+            if (key.equalsIgnoreCase("module.custom_recipes") && !enable) {
+                Object moduleInstance = moduleManager.getModule("custom_recipes");
+                if (moduleInstance instanceof CustomRecipesModule) {
+                    ((CustomRecipesModule) moduleInstance).unregisterRecipes();
+                }
+            }
+
+            moduleManager.reloadModules();
+
+            sendTranslatedMessage(sender, "commands.module.changed", key, (enable ? "enabled" : "disabled"));
+        } catch (Exception e) {
+            sendTranslatedMessage(sender, "commands.reload.error");
+            LoggingUtils.logTranslated("commands.reload.error");
+            e.printStackTrace();
         }
-
-        moduleManager.reloadModules();
-
-        sendTranslatedMessage(sender, "commands.module.changed", key, (enable ? "enabled" : "disabled"));
         return true;
     }
 
