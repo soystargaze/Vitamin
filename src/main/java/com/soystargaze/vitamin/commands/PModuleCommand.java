@@ -4,9 +4,6 @@ import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.LoggingUtils;
 import com.soystargaze.vitamin.utils.TranslationHandler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +16,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@SuppressWarnings("deprecation")
 public class PModuleCommand implements CommandExecutor, TabCompleter {
 
     private final Vitamin plugin;
@@ -31,7 +27,7 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
         if (!(sender instanceof Player player)) {
-            sendTranslatedMessage(sender, "commands.pmodule.player_only");
+            sender.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
             return true;
         }
 
@@ -101,12 +97,5 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
         }
 
         return suggestions;
-    }
-
-    private void sendTranslatedMessage(CommandSender sender, String key, Object... args) {
-        Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
-        sender.sendMessage(formattedMessage);
     }
 }

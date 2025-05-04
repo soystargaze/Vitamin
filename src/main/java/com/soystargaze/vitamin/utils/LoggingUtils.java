@@ -9,28 +9,36 @@ import org.bukkit.ChatColor;
 @SuppressWarnings("deprecation")
 public class LoggingUtils {
 
-    public static void logTranslated(String key, Object... args) {
-        Component translatedMessage = TranslationHandler.getLogMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(translatedMessage);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+    private static final LegacyComponentSerializer LEGACY_SERIALIZER =
+            LegacyComponentSerializer.builder()
+                    .character('&')
+                    .hexColors()
+                    .useUnusualXRepeatedCharacterHexFormat()
+                    .build();
 
-        Bukkit.getConsoleSender().sendMessage(formattedMessage);
+    private static String serialize(Component comp) {
+        String withAmps = LEGACY_SERIALIZER.serialize(comp);
+        return ChatColor.translateAlternateColorCodes('&', withAmps);
     }
 
-    public static void sendAndLog(Player player, String key, Object... args) {
-        Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+    public static String getMessage(String key, Object... args) {
+        Component c = TranslationHandler.getPlayerMessage(key, args);
+        return serialize(c);
+    }
 
-        player.sendMessage(formattedMessage);
-        logTranslated(key, args);
+    public static void logTranslated(String key, Object... args) {
+        Component c = TranslationHandler.getLogMessage(key, args);
+        Bukkit.getConsoleSender().sendMessage(serialize(c));
     }
 
     public static void sendMessage(Player player, String key, Object... args) {
-        Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        Component c = TranslationHandler.getPlayerMessage(key, args);
+        player.sendMessage(serialize(c));
+    }
 
-        player.sendMessage(formattedMessage);
+    public static void sendAndLog(Player player, String key, Object... args) {
+        Component c = TranslationHandler.getLogMessage(key, args);
+        Bukkit.getConsoleSender().sendMessage(serialize(c));
+        player.sendMessage(serialize(c));
     }
 }

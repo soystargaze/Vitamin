@@ -6,20 +6,17 @@ import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
 import com.soystargaze.vitamin.utils.LoggingUtils;
 import com.soystargaze.vitamin.utils.TranslationHandler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public class ReloadCommand implements CommandExecutor, TabCompleter {
 
     private final Vitamin plugin;
@@ -31,8 +28,13 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
     @SuppressWarnings("CallToPrintStackTrace")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
+            return true;
+        }
+
         if (!sender.hasPermission("vitamin.reload")) {
-            sendTranslatedMessage(sender, "commands.reload.no_permission");
+            LoggingUtils.sendMessage(player, "commands.reload.no_permission");
             return true;
         }
 
@@ -54,9 +56,9 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
 
             int loadedTranslations = reloadTranslations();
 
-            sendTranslatedMessage(sender, "commands.reload.success", loadedTranslations);
+            LoggingUtils.sendMessage(player, "commands.reload.success", loadedTranslations);
         } catch (Exception e) {
-            sendTranslatedMessage(sender, "commands.reload.error");
+            LoggingUtils.sendMessage(player, "commands.reload.error");
             LoggingUtils.logTranslated("commands.reload.error", e.getMessage());
             e.printStackTrace();
         }
@@ -72,12 +74,5 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         TranslationHandler.clearTranslations();
         TranslationHandler.loadTranslations(plugin, plugin.getConfig().getString("language", "en_us"));
         return TranslationHandler.getLoadedTranslationsCount();
-    }
-
-    private void sendTranslatedMessage(CommandSender sender, String key, Object... args) {
-        Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
-        sender.sendMessage(formattedMessage);
     }
 }

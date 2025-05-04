@@ -1,14 +1,13 @@
 package com.soystargaze.vitamin.commands;
 
 import com.soystargaze.vitamin.Vitamin;
+import com.soystargaze.vitamin.utils.LoggingUtils;
 import com.soystargaze.vitamin.utils.TranslationHandler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,13 +28,18 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
+            return true;
+        }
+
         if (!sender.hasPermission("vitamin.use")) {
-            sendTranslatedMessage(sender, "commands.no_permission");
+            LoggingUtils.sendMessage(player, "commands.no_permission");
             return true;
         }
 
         if (args.length == 0) {
-            sendTranslatedMessage(sender, "commands.usage");
+            LoggingUtils.sendMessage(player, "commands.usage");
             return true;
         }
 
@@ -47,7 +51,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             case "module" -> moduleCommand.onCommand(sender, command, label, subArgs);
             case "pmodule" -> pModuleCommand.onCommand(sender, command, label, subArgs);
             default -> {
-                sendTranslatedMessage(sender, "commands.usage");
+                LoggingUtils.sendMessage(player, "commands.usage");
                 yield true;
             }
         };
@@ -78,13 +82,5 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             };
         }
         return new ArrayList<>();
-    }
-
-    @SuppressWarnings("deprecation")
-    private void sendTranslatedMessage(CommandSender sender, String key, Object... args) {
-        Component messageComponent = TranslationHandler.getPlayerMessage(key, args);
-        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-        String formattedMessage = ChatColor.translateAlternateColorCodes('&', message);
-        sender.sendMessage(formattedMessage);
     }
 }
