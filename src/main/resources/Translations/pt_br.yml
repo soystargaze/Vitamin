@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>Você não tem permissão para pegar esta entidade/Baú.</red>"
   error_checking_permissions: "<red>Ocorreu um erro ao verificar as permissões.</red>"
 
+death_chest:
+  location_not_found: "Nenhum local seguro encontrado para o baú de morte de {0}."
+  could_not_set_chest: "Não foi possível definir o bloco como baú em {0}, tipo atual: {1}."
+  blockstate_not_chest: "O estado do bloco em {0} não é um baú, mas {1}."
+  created: "Baú de morte criado em X: {0}, Y: {1}, Z: {2}."
+
 void_totem:
   activated: "Tótem do Vazio ativado! Teletransportando para um local seguro..."
   cooldown: "Você deve esperar antes de usar outro Tótem do Vazio!"

@@ -21,83 +21,89 @@ plugin:
   paper_detected: "<color:#FFA500>Paper algılandı:</color> Daha iyi performans için Paper hook’ları kullanılıyor."
   paper_not_detected: "<color:#FFA500>Spigot algılandı:</color> Çekirdek hook’ları kullanılıyor."
 
-  items:
-    registered: "Vitamin+ öğeleri başarıyla kaydedildi."
+items:
+  registered: "Vitamin+ öğeleri başarıyla kaydedildi."
 
-  events:
-    registered: "Olaylar başarıyla kaydedildi."
+events:
+  registered: "Olaylar başarıyla kaydedildi."
 
-  commands:
-    registered: "Komutlar başarıyla kaydedildi."
-    usage: "Kullanım: /vitamin <args>"
-    reload:
-      success: "Vitamin+ başarıyla yeniden yüklendi."
-      error: "Vitamin+ yeniden yüklenirken bir hata oluştu."
-    module:
-      usage: "Kullanım: /vitamin module <module> <enable|disable>"
-      not_found: "Modül bulunamadı: {0}"
-      changed: "Modül {0} {1} başarıyla."
-    pmodule:
-      usage: "Kullanım: /vitamin pmodule <module> <enable|disable>"
-      player_only: "Bu komut yalnızca oyuncu tarafından çalıştırılabilir."
-      module_not_active: "Modül {0} etkin değil."
-      no_module_permission: "{0} komutunu kullanma izniniz yok."
-      changed: "Modül {0} {1} başarıyla."
-
-  database:
-    already_initialized: "Veritabanı zaten başlatılmış."
-    init_error: "Veritabanı başlatılırken bir hata oluştu: {0}"
-    sqlite:
-      error_directory: "SQLite veritabanı dizini oluşturulamadı: "
-      success: "SQLite veritabanı başarıyla başlatıldı."
-    mysql:
-      success: "MySQL veritabanı başarıyla başlatıldı."
-    mariadb:
-      success: "MariaDB veritabanı başarıyla başlatıldı."
-    postgresql:
-      success: "PostgreSQL veritabanı başarıyla başlatıldı."
-    tables:
-      success: "Veritabanı tabloları başarıyla oluşturuldu."
-      error: "Veritabanı tabloları oluşturulurken bir hata oluştu: {0}"
-    query_error: "Veritabanı sorgusu çalıştırılırken bir hata oluştu: {0}"
-    update_error: "Veritabanı güncellenirken bir hata oluştu: {0}"
-    close:
-      success: "Veritabanı bağlantısı başarıyla kapatıldı."
-
+commands:
+  registered: "Komutlar başarıyla kaydedildi."
+  usage: "Kullanım: /vitamin <args>"
+  reload:
+    success: "Vitamin+ başarıyla yeniden yüklendi."
+    error: "Vitamin+ yeniden yüklenirken bir hata oluştu."
   module:
-    enabled: "Module {0}: <green>enabled"
-    disabled: "Module {0}: <red>disabled"
+    usage: "Kullanım: /vitamin module <module> <enable|disable>"
+    not_found: "Modül bulunamadı: {0}"
+    changed: "Modül {0} {1} başarıyla."
+  pmodule:
+    usage: "Kullanım: /vitamin pmodule <module> <enable|disable>"
+    player_only: "Bu komut yalnızca oyuncu tarafından çalıştırılabilir."
+    module_not_active: "Modül {0} etkin değil."
+    no_module_permission: "{0} komutunu kullanma izniniz yok."
+    changed: "Modül {0} {1} başarıyla."
 
-  elevator:
-    item_name: "<gold>Asansör</gold>"
-    cannot_open: "<red>Asansörü açamazsınız!</red>"
+database:
+  already_initialized: "Veritabanı zaten başlatılmış."
+  init_error: "Veritabanı başlatılırken bir hata oluştu: {0}"
+  sqlite:
+    error_directory: "SQLite veritabanı dizini oluşturulamadı: "
+    success: "SQLite veritabanı başarıyla başlatıldı."
+  mysql:
+    success: "MySQL veritabanı başarıyla başlatıldı."
+  mariadb:
+    success: "MariaDB veritabanı başarıyla başlatıldı."
+  postgresql:
+    success: "PostgreSQL veritabanı başarıyla başlatıldı."
+  tables:
+    success: "Veritabanı tabloları başarıyla oluşturuldu."
+    error: "Veritabanı tabloları oluşturulurken bir hata oluştu: {0}"
+  query_error: "Veritabanı sorgusu çalıştırılırken bir hata oluştu: {0}"
+  update_error: "Veritabanı güncellenirken bir hata oluştu: {0}"
+  close:
+    success: "Veritabanı bağlantısı başarıyla kapatıldı."
 
-  xpbook:
-    item_name: "{0} XP Kitabı"
-    created: "{0} XP Kitabı oluşturuldu!"
-    used: "XP Kitabı kullanılarak {0} XP kazanıldı!"
+module:
+  enabled: "Module {0}: <green>enabled"
+  disabled: "Module {0}: <red>disabled"
 
-  carry_on:
-    cannot_pickup_players: "<red>Oyuncuları taşıyamazsınız!</red>"
-    cannot_pickup_entity: "<red>Bu varlık taşınamaz!</red>"
-    entity_too_heavy: "<red>Bu varlık çok ağır!</red>"
-    picked_up_entity: "<green>Varlık taşındı (Ağırlık: {0}/{1})</green>"
-    entity_dropped: "Varlık bırakıldı."
-    picked_up_double_chest: "<green>Çift sandık taşındı.</green>"
-    picked_up_block: "<green><yellow>Sandık</yellow> taşındı.</green>"
-    placed_block: "<gold>Blok yerleştirildi.</gold>"
-    no_permissions: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
-    error_checking_permissions: "<red>İzinler kontrol edilirken bir hata oluştu.</red>"
+elevator:
+  item_name: "<gold>Asansör</gold>"
+  cannot_open: "<red>Asansörü açamazsınız!</red>"
 
-  void_totem:
-    activated: "Void Totem etkinleştirildi! Güvenliğe ışınlanıyor..."
-    cooldown: "Başka bir Void Totem kullanmak için beklemelisiniz!"
-    no_totem: "Boşlukta hayatta kalmak için Ölümsüzlük Totemi gerekiyor!"
-    teleport_safe: "Güvenli bir konuma ışınlandınız."
-    teleport_spawn: "Yakınlarda güvenli bir yer bulunamadı. Dünya doğuş noktasına ışınlandınız."
+xpbook:
+  item_name: "{0} XP Kitabı"
+  created: "{0} XP Kitabı oluşturuldu!"
+  used: "XP Kitabı kullanılarak {0} XP kazanıldı!"
 
-  tpcompass:
-    already_teleporting: "<yellow>Zaten ışınlanıyorsunuz!</yellow>"
-    cancelled: "<red>Işınlanma iptal edildi!</red>"
-    channeling: "Işınlanma hazırlanıyor: {0} saniye kaldı..."
-    success: "Doğma noktanıza ışınlandınız!"
+carry_on:
+  cannot_pickup_players: "<red>Oyuncuları taşıyamazsınız!</red>"
+  cannot_pickup_entity: "<red>Bu varlık taşınamaz!</red>"
+  entity_too_heavy: "<red>Bu varlık çok ağır!</red>"
+  picked_up_entity: "<green>Varlık taşındı (Ağırlık: {0}/{1})</green>"
+  entity_dropped: "Varlık bırakıldı."
+  picked_up_double_chest: "<green>Çift sandık taşındı.</green>"
+  picked_up_block: "<green><yellow>Sandık</yellow> taşındı.</green>"
+  placed_block: "<gold>Blok yerleştirildi.</gold>"
+  no_permissions: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
+  error_checking_permissions: "<red>İzinler kontrol edilirken bir hata oluştu.</red>"
+
+death_chest:
+  location_not_found: "{0} oyuncusunun ölüm sandığı için güvenli bir yer bulunamadı."
+  could_not_set_chest: "{0} konumunda blok bir sandık olarak ayarlanamadı, mevcut tür: {1}."
+  blockstate_not_chest: "{0} konumundaki blok durumu sandık değil, {1}."
+  created: "Ölüm sandığı X: {0}, Y: {1}, Z: {2} konumunda oluşturuldu."
+
+void_totem:
+  activated: "Void Totem etkinleştirildi! Güvenliğe ışınlanıyor..."
+  cooldown: "Başka bir Void Totem kullanmak için beklemelisiniz!"
+  no_totem: "Boşlukta hayatta kalmak için Ölümsüzlük Totemi gerekiyor!"
+  teleport_safe: "Güvenli bir konuma ışınlandınız."
+  teleport_spawn: "Yakınlarda güvenli bir yer bulunamadı. Dünya doğuş noktasına ışınlandınız."
+
+tpcompass:
+  already_teleporting: "<yellow>Zaten ışınlanıyorsunuz!</yellow>"
+  cancelled: "<red>Işınlanma iptal edildi!</red>"
+  channeling: "Işınlanma hazırlanıyor: {0} saniye kaldı..."
+  success: "Doğma noktanıza ışınlandınız!"

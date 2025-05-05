@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>No tienes permiso para recoger esta entidad/Cofre.</red>"
   error_checking_permissions: "<red>Ocurrió un error al verificar los permisos.</red>"
 
+death_chest:
+  location_not_found: "No se encontró una ubicación segura para el cofre de muerte de {0}."
+  could_not_set_chest: "No se pudo establecer el bloque como cofre en {0}, tipo actual: {1}."
+  blockstate_not_chest: "El estado del bloque en {0} no es un cofre, sino {1}."
+  created: "Cofre de muerte creado en X: {0}, Y: {1}, Z: {2}."
+
 void_totem:
   activated: "¡Tótem del Vacío activado! Teletransportando a un lugar seguro..."
   cooldown: "¡Debes esperar antes de usar otro Tótem del Vacío!"

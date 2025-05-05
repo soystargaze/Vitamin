@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>Du hast keine Berechtigung, diese Entität/Truhe aufzuheben.</red>"
   error_checking_permissions: "<red>Ein Fehler ist beim Überprüfen der Berechtigungen aufgetreten.</red>"
 
+death_chest:
+  location_not_found: "Kein sicherer Ort für die Todestruhe von {0} gefunden."
+  could_not_set_chest: "Konnte Block bei {0} nicht als Truhe setzen, tatsächlicher Typ: {1}."
+  blockstate_not_chest: "Blockzustand bei {0} ist keine Truhe, sondern {1}."
+  created: "Todestruhe erstellt bei X: {0}, Y: {1}, Z: {2}."
+
 void_totem:
   activated: "Leeren-Totem aktiviert! Teleportiere zu einem sicheren Ort..."
   cooldown: "Du musst warten, bevor du ein weiteres Leeren-Totem verwenden kannst!"

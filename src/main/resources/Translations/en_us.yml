@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>You do not have permission to pick up this entity/Chest.</red>"
   error_checking_permissions: "<red>An error occurred while checking permissions.</red>"
 
+death_chest:
+  location_not_found: "No safe location found for {0}’s death chest."
+  could_not_set_chest: "Could not set block as a chest at {0}, actual type: {1}."
+  blockstate_not_chest: "Block state at {0} is not a chest but {1}."
+  created: "Death chest created at X: {0}, Y: {1}, Z: {2}."
+
 void_totem:
   activated: "Void Totem activated! Teleporting to safety..."
   cooldown: "You must wait before using another Void Totem!"

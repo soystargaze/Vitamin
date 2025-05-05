@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>Vous n'avez pas la permission de ramasser cette entité/Coffre.</red>"
   error_checking_permissions: "<red>Une erreur est survenue lors de la vérification des permissions.</red>"
 
+death_chest:
+  location_not_found: "Aucun emplacement sûr trouvé pour le coffre de mort de {0}."
+  could_not_set_chest: "Impossible de définir le bloc en coffre à {0}, type actuel : {1}."
+  blockstate_not_chest: "L'état du bloc à {0} n'est pas un coffre mais {1}."
+  created: "Coffre de mort créé à X : {0}, Y : {1}, Z : {2}."
+
 void_totem:
   activated: "Talisman du Vide activé ! Téléportation vers un lieu sûr..."
   cooldown: "Vous devez attendre avant d'utiliser un autre Talisman du Vide !"

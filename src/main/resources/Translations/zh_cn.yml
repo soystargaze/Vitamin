@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>你没有权限拾取此实体/箱子。</red>"
   error_checking_permissions: "<red>检查权限时发生错误。</red>"
 
+death_chest:
+  location_not_found: "未找到 {0} 的死亡箱子安全位置。"
+  could_not_set_chest: "无法将方块设置为箱子于 {0}，实际类型：{1}。"
+  blockstate_not_chest: "{0} 处的方块状态不是箱子，而是 {1}。"
+  created: "在 X：{0}，Y：{1}，Z：{2} 处创建了死亡箱子。"
+
 void_totem:
   activated: "虚空图腾已激活！正在传送到安全地点..."
   cooldown: "你需要等待一段时间才能再次使用虚空图腾！"

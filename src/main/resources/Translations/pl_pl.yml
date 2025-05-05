@@ -89,6 +89,12 @@ carry_on:
   no_permissions: "<red>Nie masz uprawnień do podnoszenia tej jednostki/skrzyni.</red>"
   error_checking_permissions: "<red>Wystąpił błąd podczas sprawdzania uprawnień.</red>"
 
+death_chest:
+  location_not_found: "Nie znaleziono bezpiecznego miejsca dla skrzyni śmierci gracza {0}."
+  could_not_set_chest: "Nie można ustawić bloku jako skrzyni w lokalizacji {0}, aktualny typ: {1}."
+  blockstate_not_chest: "Stan bloku w {0} to nie skrzynia, lecz {1}."
+  created: "Skrzynia śmierci utworzona na X: {0}, Y: {1}, Z: {2}."
+
 void_totem:
   activated: "Totem Pustki aktywowany! Teleportacja w bezpieczne miejsce..."
   cooldown: "Musisz poczekać przed ponownym użyciem Totemu Pustki!"

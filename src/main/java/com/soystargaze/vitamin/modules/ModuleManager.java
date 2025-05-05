@@ -50,6 +50,10 @@ public class ModuleManager {
                     CarryOnModule::new,
                     null
             ),
+            new ModuleDef("module.death_chest",
+                    DeathChestModule::new,
+                    null
+            ),
             new ModuleDef("module.elytra_armor",
                     ElytraArmorModule::new,
                     null
