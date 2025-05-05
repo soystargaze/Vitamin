@@ -5,8 +5,8 @@ import com.soystargaze.vitamin.integration.LandsIntegrationHandler;
 import com.soystargaze.vitamin.integration.WorldGuardIntegrationHandler;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
 
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -92,19 +92,19 @@ public class CarryOnModule implements Listener {
         }
 
         if (entity instanceof Player) {
-            LoggingUtils.sendMessage(player, "carry_on.cannot_pickup_players");
+            TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_players");
             event.setCancelled(true);
             return;
         }
 
         if (!(entity instanceof LivingEntity livingEntity)) {
-            LoggingUtils.sendMessage(player, "carry_on.cannot_pickup_entity");
+            TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_entity");
             event.setCancelled(true);
             return;
         }
 
         if (!entity.getScoreboardTags().isEmpty() && !entity.getScoreboardTags().contains("being_carried")) {
-            LoggingUtils.sendMessage(player, "carry_on.cannot_pickup_entity");
+            TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_entity");
             event.setCancelled(true);
             return;
         }
@@ -117,7 +117,7 @@ public class CarryOnModule implements Listener {
 
         double entityWeight = maxHPInstance.getBaseValue() * 2;
         if (entityWeight > maxCarryWeight) {
-            LoggingUtils.sendMessage(player, "carry_on.entity_too_heavy");
+            TextHandler.get().sendMessage(player, "carry_on.entity_too_heavy");
             event.setCancelled(true);
             return;
         }
@@ -125,7 +125,7 @@ public class CarryOnModule implements Listener {
         // Integration with WorldGuard
         if (wgIntegration != null) {
             if (!wgIntegration.canInteract(player, entity.getLocation())) {
-                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -134,7 +134,7 @@ public class CarryOnModule implements Listener {
         // Integration with Lands
         if (landsIntegration != null) {
             if (!landsIntegration.canInteract(player, entity.getLocation())) {
-                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -151,7 +151,7 @@ public class CarryOnModule implements Listener {
             monster.setAI(false);
         }
 
-        LoggingUtils.sendMessage(player, "carry_on.picked_up_entity", entityWeight, maxCarryWeight);
+        TextHandler.get().sendMessage(player, "carry_on.picked_up_entity", entityWeight, maxCarryWeight);
         event.setCancelled(true);
     }
 
@@ -176,7 +176,7 @@ public class CarryOnModule implements Listener {
         // Integration with WorldGuard
         if (wgIntegration != null) {
             if (!wgIntegration.canBuild(player, block.getLocation())) {
-                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -185,7 +185,7 @@ public class CarryOnModule implements Listener {
         // Integration with Lands
         if (landsIntegration != null) {
             if (!landsIntegration.canBreak(player, block.getLocation(), block.getType())) {
-                LoggingUtils.sendMessage(player, "carry_on.no_permissions");
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
             }
@@ -233,11 +233,11 @@ public class CarryOnModule implements Listener {
                 if (canPlaceChestAt(targetBlock, blockType)) {
                     placeSingleChest(player, targetBlock, meta);
                 } else {
-                    LoggingUtils.sendMessage(player, "carry_on.cannot_place_chest");
+                    TextHandler.get().sendMessage(player, "carry_on.cannot_place_chest");
                 }
             } else {
                 if (tryPlaceDoubleChest(player, targetBlock, meta, chestPart)) {
-                    LoggingUtils.sendMessage(player, "carry_on.placed_double_chest");
+                    TextHandler.get().sendMessage(player, "carry_on.placed_double_chest");
                 }
             }
         } else {
@@ -275,7 +275,7 @@ public class CarryOnModule implements Listener {
         blockItem.setItemMeta(meta);
         block.setType(Material.AIR);
         player.getInventory().addItem(blockItem);
-        LoggingUtils.sendMessage(player, "carry_on.picked_up_block",
+        TextHandler.get().sendMessage(player, "carry_on.picked_up_block",
                 block.getType().name().toLowerCase().replace("_", " "));
     }
 
@@ -292,7 +292,7 @@ public class CarryOnModule implements Listener {
         blockItem.setItemMeta(meta);
         block.setType(Material.AIR);
         player.getInventory().addItem(blockItem);
-        LoggingUtils.sendMessage(player, "carry_on.picked_up_block",
+        TextHandler.get().sendMessage(player, "carry_on.picked_up_block",
                 block.getType().name().toLowerCase().replace("_", " "));
     }
 
@@ -321,7 +321,7 @@ public class CarryOnModule implements Listener {
         block.setType(Material.AIR);
         otherHalf.setType(Material.AIR);
         player.getInventory().addItem(firstHalf, secondHalf);
-        LoggingUtils.sendMessage(player, "carry_on.picked_up_double_chest");
+        TextHandler.get().sendMessage(player, "carry_on.picked_up_double_chest");
     }
 
     private Block getConnectedChestBlock(Block block) {
@@ -346,7 +346,7 @@ public class CarryOnModule implements Listener {
         Container container = (Container) block.getState();
         container.setBlockData(meta.getBlockState().getBlockData());
         container.update(true, false);
-        LoggingUtils.sendMessage(player, "carry_on.placed_block");
+        TextHandler.get().sendMessage(player, "carry_on.placed_block");
         consumeItemInHand(player);
     }
 
@@ -362,7 +362,7 @@ public class CarryOnModule implements Listener {
         container.getInventory().setContents(contents);
         container.update(true, false);
         storedChestContents.remove(chestId);
-        LoggingUtils.sendMessage(player, "carry_on.placed_block");
+        TextHandler.get().sendMessage(player, "carry_on.placed_block");
         consumeItemInHand(player);
     }
 
@@ -386,7 +386,7 @@ public class CarryOnModule implements Listener {
             }
         }
         if (otherChestItem == null) {
-            LoggingUtils.sendMessage(player, "carry_on.need_both_chest_parts");
+            TextHandler.get().sendMessage(player, "carry_on.need_both_chest_parts");
             return false;
         }
         Block otherBlock = null;
@@ -398,7 +398,7 @@ public class CarryOnModule implements Listener {
             }
         }
         if (otherBlock == null) {
-            LoggingUtils.sendMessage(player, "carry_on.no_space_for_double_chest");
+            TextHandler.get().sendMessage(player, "carry_on.no_space_for_double_chest");
             return false;
         }
         block.setType(blockType);
@@ -447,7 +447,7 @@ public class CarryOnModule implements Listener {
             Bukkit.getScheduler().runTaskLater(plugin, entity::eject, 1L);
         });
         removeSlowness(player);
-        LoggingUtils.sendMessage(player, "carry_on.entity_dropped");
+        TextHandler.get().sendMessage(player, "carry_on.entity_dropped");
     }
 
     private void applySlowness(Player player, int level) {

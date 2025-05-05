@@ -16,18 +16,25 @@ public class VitaminCommandManager {
     }
 
     public void registerCommands() {
-        registerCommand("vitamin", new VitaminCommand(plugin));
-        registerCommand("vita", new VitaminCommand(plugin));
-        registerCommand("vi", new VitaminCommand(plugin));
-        registerCommand("module", new ModuleCommand(plugin));
-        registerCommand("pmodule", new PModuleCommand(plugin));
+        register("vitamin", commandExecutor());
+        register("vita",    commandExecutor());
+        register("vi",      commandExecutor());
     }
 
-    private void registerCommand(String commandName, CommandExecutor executor) {
-        JavaPlugin javaPlugin = plugin;
-        Objects.requireNonNull(javaPlugin.getCommand(commandName)).setExecutor(executor);
+    private CommandExecutor commandExecutor() {
+        return new VitaminCommand(plugin);
+    }
+
+    private void register(String name, CommandExecutor executor) {
+        var cmd = plugin.getCommand(name);
+        if (cmd == null) {
+            throw new IllegalStateException(
+                    "The command '" + name + "' is not defined in plugin.yml."
+            );
+        }
+        cmd.setExecutor(executor);
         if (executor instanceof TabCompleter) {
-            Objects.requireNonNull(javaPlugin.getCommand(commandName)).setTabCompleter((TabCompleter) executor);
+            cmd.setTabCompleter((TabCompleter) executor);
         }
     }
 }

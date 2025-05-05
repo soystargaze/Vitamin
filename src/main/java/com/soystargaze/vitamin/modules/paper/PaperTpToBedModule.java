@@ -1,8 +1,8 @@
 package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -99,7 +99,7 @@ public class PaperTpToBedModule implements Listener {
                 if (ticks % 20 == 0) {
                     int secondsLeft = plugin.getConfig().getInt("tp_with_compass.channeling_time", 3) - (ticks / 20);
                     if (secondsLeft > 0) {
-                        player.sendActionBar(TranslationHandler.getPlayerMessage("tpcompass.channeling", secondsLeft));
+                        player.sendActionBar(ModernTranslationHandler.getPlayerComponent("tpcompass.channeling", secondsLeft));
                     }
                 }
 
@@ -126,7 +126,7 @@ public class PaperTpToBedModule implements Listener {
         long lastSent = lastMessageSent.getOrDefault(player, 0L);
 
         if (now - lastSent >= MESSAGE_COOLDOWN_MS) {
-            LoggingUtils.sendMessage(player, messageKey);
+            TextHandler.get().sendMessage(player, messageKey);
             lastMessageSent.put(player, now);
         }
     }

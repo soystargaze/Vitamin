@@ -9,8 +9,8 @@ import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.utils.AsyncExecutor;
 import com.soystargaze.vitamin.utils.ConsoleUtils;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+// ↓ Importamos el TextHandler
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,13 +29,14 @@ public class Vitamin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+
         try {
             setupVersionAdapter();
             initializePlugin();
         } catch (Exception e) {
-            final String LOCAL_TEST_MESSAGE_KEY = "plugin.enable_error";
-            TranslationHandler.registerTemporaryTranslation(LOCAL_TEST_MESSAGE_KEY, "Plugin cannot be enabled: {0}");
-            LoggingUtils.logTranslated(LOCAL_TEST_MESSAGE_KEY);
+            final String KEY = "plugin.enable_error";
+            TextHandler.get().registerTemporaryTranslation(KEY, "Plugin cannot be enabled: {0}");
+            TextHandler.get().logTranslated(KEY, e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -43,7 +44,8 @@ public class Vitamin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         AsyncExecutor.shutdown();
-        LoggingUtils.logTranslated("plugin.disabled");
+        // LoggingUtils → TextHandler
+        TextHandler.get().logTranslated("plugin.disabled");
         instance = null;
         DatabaseHandler.close();
     }
@@ -52,12 +54,12 @@ public class Vitamin extends JavaPlugin implements Listener {
         try {
             loadConfigurations();
             DatabaseHandler.initialize(this);
-            LoggingUtils.logTranslated("plugin.separator");
+            TextHandler.get().logTranslated("plugin.separator");
             moduleManager = new ModuleManager(this);
-            LoggingUtils.logTranslated("plugin.separator");
+            TextHandler.get().logTranslated("plugin.separator");
             initializeMetrics();
         } catch (Exception e) {
-            LoggingUtils.logTranslated("plugin.enable_error", e);
+            TextHandler.get().logTranslated("plugin.enable_error", e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -67,58 +69,50 @@ public class Vitamin extends JavaPlugin implements Listener {
         getConfig().options().copyDefaults(true);
         saveConfig();
 
+        TextHandler.init(this);
         setupTranslations();
-        TranslationHandler.loadTranslations(this, ConfigHandler.getLanguage());
-
         ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
-
         initializeCommandManager();
-
         ConsoleUtils.displaySuccessMessage(this);
     }
 
     private void setupTranslations() {
         File translationsFolder = new File(getDataFolder(), "Translations");
         if (!translationsFolder.exists() && !translationsFolder.mkdirs()) {
-            LoggingUtils.logTranslated("translations.folder_error");
+            TextHandler.get().logTranslated("translations.folder_error");
             return;
         }
-
-        String[] defaultLanguages = {"en_us.yml", "es_es.yml", "fr_fr.yml", "de_de.yml", "pt_br.yml", "pl_pl.yml", "zh_cn.yml", "ko_kr.yml", "tr_tr.yml"};
-        for (String languageFile : defaultLanguages) {
-            saveDefaultTranslation(languageFile);
-        }
-
-        File[] translationFiles = translationsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
-        if (translationFiles != null) {
-            for (File file : translationFiles) {
-                String language = file.getName().replace(".yml", "");
-                TranslationHandler.loadTranslations(this, language);
+        String[] defaults = {
+                "en_us.yml","es_es.yml","fr_fr.yml","de_de.yml",
+                "pt_br.yml","pl_pl.yml","zh_cn.yml","ko_kr.yml","tr_tr.yml"
+        };
+        for (String file : defaults) {
+            File f = new File(translationsFolder, file);
+            if (!f.exists()) {
+                try {
+                    saveResource("Translations/" + file, false);
+                } catch (Exception e) {
+                    TextHandler.get().registerTemporaryTranslation(
+                            "translations.save_error",
+                            "Language cannot be saved: {0}"
+                    );
+                    TextHandler.get().logTranslated("translations.save_error", file);
+                }
             }
         }
 
-        String configuredLanguage = ConfigHandler.getLanguage();
-        if (TranslationHandler.isLanguageAvailable(configuredLanguage)) {
-            TranslationHandler.setActiveLanguage(configuredLanguage);
+        String lang = ConfigHandler.getLanguage();
+        if (TextHandler.get().isLanguageAvailable(lang)) {
+            TextHandler.get().loadTranslations(this, lang);
         } else {
-            final String LANG_NOT_FOUND_KEY = "translations.language_not_found";
-            TranslationHandler.registerTemporaryTranslation(LANG_NOT_FOUND_KEY, "Language not found: {0}");
-            LoggingUtils.logTranslated(LANG_NOT_FOUND_KEY, configuredLanguage);
-        }
-    }
-
-    private void saveDefaultTranslation(String fileName) {
-        File translationFile = new File(getDataFolder(), "Translations/" + fileName);
-        if (!translationFile.exists()) {
-            try {
-                saveResource("Translations/" + fileName, false);
-            } catch (Exception e) {
-                final String LANG_NOT_SAVED_KEY = "translations.save_error";
-                TranslationHandler.registerTemporaryTranslation(LANG_NOT_SAVED_KEY, "Language cannot be saved: {0}");
-                LoggingUtils.logTranslated(LANG_NOT_SAVED_KEY, fileName);
-            }
+            TextHandler.get().registerTemporaryTranslation(
+                    "translations.language_not_found",
+                    "Language not found: {0}"
+            );
+            TextHandler.get().logTranslated("translations.language_not_found", lang);
+            TextHandler.get().loadTranslations(this, TextHandler.get().getActiveLanguage());
         }
     }
 
@@ -129,7 +123,7 @@ public class Vitamin extends JavaPlugin implements Listener {
                 commandManager.registerCommands();
             }
         } catch (Exception e) {
-            LoggingUtils.logTranslated("command.register_error", e.getMessage());
+            TextHandler.get().logTranslated("command.register_error", e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -138,21 +132,21 @@ public class Vitamin extends JavaPlugin implements Listener {
         try {
             new Metrics(this, BSTATS_PLUGIN_ID);
         } catch (Exception e) {
-            final String BSTATS_ERROR = "bstats.error";
-            TranslationHandler.registerTemporaryTranslation(BSTATS_ERROR, "BStats error: {0}");
-            LoggingUtils.logTranslated(BSTATS_ERROR, e.getMessage());
+            TextHandler.get().registerTemporaryTranslation(
+                    "bstats.error",
+                    "BStats error: {0}"
+            );
+            TextHandler.get().logTranslated("bstats.error", e.getMessage());
         }
     }
 
     private void setupVersionAdapter() {
         String raw = Bukkit.getBukkitVersion();
         String version = raw.replaceFirst(".*?(\\d+\\.\\d+\\.\\d+).*", "$1");
-
         String[] parts = version.split("\\.");
         int major = Integer.parseInt(parts[0]);
         int minor = Integer.parseInt(parts[1]);
         int patch = Integer.parseInt(parts[2]);
-
         if (major == 1 && minor == 21 && patch >= 3) {
             versionAdapter = new VersionAdapter_1_21_4();
         } else {

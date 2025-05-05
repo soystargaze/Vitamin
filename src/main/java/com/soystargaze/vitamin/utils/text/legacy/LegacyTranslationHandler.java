@@ -1,4 +1,4 @@
-package com.soystargaze.vitamin.utils;
+package com.soystargaze.vitamin.utils.text.legacy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TranslationHandler {
+public class LegacyTranslationHandler {
 
     private static final Map<String, String> translations = new HashMap<>();
     public static int loadedKeys = 0;
@@ -137,7 +137,7 @@ public class TranslationHandler {
     }
 
     public static boolean isLanguageAvailable(String language) {
-        File langFile = new File(JavaPlugin.getProvidingPlugin(TranslationHandler.class).getDataFolder(), "Translations/" + language + ".yml");
+        File langFile = new File(JavaPlugin.getProvidingPlugin(LegacyTranslationHandler.class).getDataFolder(), "Translations/" + language + ".yml");
         return langFile.exists();
     }
     public static void setActiveLanguage(String language) {

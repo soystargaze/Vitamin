@@ -1,8 +1,8 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -66,7 +66,7 @@ public class PlayerXptoBooksModule implements Listener {
             player.getWorld().dropItemNaturally(player.getLocation(), xpBook);
         }
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
-        LoggingUtils.sendAndLog(player, "xpbook.created", totalXp);
+        TextHandler.get().sendAndLog(player, "xpbook.created", totalXp);
     }
 
     @EventHandler
@@ -103,7 +103,7 @@ public class PlayerXptoBooksModule implements Listener {
         int newTotalXp = currentXp + storedXp;
         setPlayerXp(player, newTotalXp);
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
-        LoggingUtils.sendAndLog(player, "xpbook.used", storedXp);
+        TextHandler.get().sendAndLog(player, "xpbook.used", storedXp);
     }
 
     private ItemStack createXpBook(int xpAmount) {
@@ -111,7 +111,7 @@ public class PlayerXptoBooksModule implements Listener {
         ItemMeta meta = xpBook.getItemMeta();
         if (meta != null) {
             meta.getPersistentDataContainer().set(xpKey, PersistentDataType.INTEGER, xpAmount);
-            Component nameComponent = TranslationHandler.getComponent("xpbook.item_name", xpAmount);
+            Component nameComponent = LegacyTranslationHandler.getComponent("xpbook.item_name", xpAmount);
             String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);

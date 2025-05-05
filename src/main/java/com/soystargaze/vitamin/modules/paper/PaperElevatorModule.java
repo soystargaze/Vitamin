@@ -1,7 +1,7 @@
 package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -92,7 +92,7 @@ public class PaperElevatorModule implements Listener {
         ItemStack elevator = new ItemStack(shulkerColor);
         BlockStateMeta meta = (BlockStateMeta) elevator.getItemMeta();
         if (meta != null) {
-            meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
+            meta.displayName(ModernTranslationHandler.getComponent("elevator.item_name"));
             meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
 
             ShulkerBox shulkerBox = (ShulkerBox) meta.getBlockState();
@@ -164,7 +164,7 @@ public class PaperElevatorModule implements Listener {
                     ItemStack drop = new ItemStack(block.getType());
                     BlockStateMeta meta = (BlockStateMeta) drop.getItemMeta();
                     if (meta != null) {
-                        meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
+                        meta.displayName(ModernTranslationHandler.getComponent("elevator.item_name"));
                         meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
                         drop.setItemMeta(meta);
 
@@ -189,7 +189,7 @@ public class PaperElevatorModule implements Listener {
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
                 if (notifiedPlayers.add(uuid)) {
-                    player.sendMessage(TranslationHandler.getPlayerMessage("elevator.cannot_open"));
+                    player.sendMessage(ModernTranslationHandler.getPlayerComponent("elevator.cannot_open"));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> notifiedPlayers.remove(uuid), 20L);
                 }
             }

@@ -1,8 +1,8 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -97,7 +97,7 @@ public class ElevatorModule implements Listener {
         ItemStack elevator = new ItemStack(shulkerColor);
         BlockStateMeta meta = (BlockStateMeta) elevator.getItemMeta();
         if (meta != null) {
-            Component nameComponent = TranslationHandler.getComponent("elevator.item_name");
+            Component nameComponent = LegacyTranslationHandler.getComponent("elevator.item_name");
             String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
             meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
@@ -179,7 +179,7 @@ public class ElevatorModule implements Listener {
                     ItemStack drop = new ItemStack(block.getType());
                     BlockStateMeta meta = (BlockStateMeta) drop.getItemMeta();
                     if (meta != null) {
-                        Component nameComponent = TranslationHandler.getComponent("elevator.item_name");
+                        Component nameComponent = LegacyTranslationHandler.getComponent("elevator.item_name");
                         String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
                         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
                         meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
@@ -206,7 +206,7 @@ public class ElevatorModule implements Listener {
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
                 if (notifiedPlayers.add(uuid)) {
-                    LoggingUtils.sendMessage(player,"elevator.cannot_open");
+                    TextHandler.get().sendMessage(player,"elevator.cannot_open");
                     Bukkit.getScheduler().runTaskLater(plugin, () -> notifiedPlayers.remove(uuid), 20L);
                 }
             }

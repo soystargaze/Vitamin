@@ -1,8 +1,7 @@
 package com.soystargaze.vitamin.database;
 
 import com.soystargaze.vitamin.config.ConfigHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +17,7 @@ public class DatabaseHandler {
 
     public static void initialize(JavaPlugin plugin) {
         if (dataSource != null) {
-            LoggingUtils.logTranslated("database.already_initialized");
+            TextHandler.get().logTranslated("database.already_initialized");
             return;
         }
 
@@ -44,7 +43,7 @@ public class DatabaseHandler {
             }
             createTables();
         } catch (Exception e) {
-            LoggingUtils.logTranslated("database.init_error", e);
+            TextHandler.get().logTranslated("database.init_error", e);
             throw new IllegalStateException("Database initialization failed.", e);
         }
     }
@@ -52,7 +51,7 @@ public class DatabaseHandler {
     private static void initializeSQLite(JavaPlugin plugin) throws SQLException {
         File dbFolder = new File(plugin.getDataFolder(), "Data");
         if (!dbFolder.exists() && !dbFolder.mkdirs()) {
-            throw new SQLException(TranslationHandler.get("database.sqlite.error_directory") + dbFolder.getAbsolutePath());
+            throw new SQLException("Could not create folder: " + dbFolder.getAbsolutePath());
         }
 
         String dbFilePath = new File(dbFolder, "vitamin.db").getAbsolutePath();
@@ -62,7 +61,7 @@ public class DatabaseHandler {
         hikariConfig.setPoolName("Vitamin-SQLite");
 
         dataSource = new HikariDataSource(hikariConfig);
-        LoggingUtils.logTranslated("database.sqlite.success");
+        TextHandler.get().logTranslated("database.sqlite.success");
     }
 
     private static void initializeMySQL(FileConfiguration config) {
@@ -80,7 +79,7 @@ public class DatabaseHandler {
         hikariConfig.setPoolName("Vitamin-MySQL");
 
         dataSource = new HikariDataSource(hikariConfig);
-        LoggingUtils.logTranslated("database.mysql.success");
+        TextHandler.get().logTranslated("database.mysql.success");
     }
 
     private static void initializeMariaDB(FileConfiguration config) {
@@ -98,7 +97,7 @@ public class DatabaseHandler {
         hikariConfig.setPoolName("Vitamin-MariaDB");
 
         dataSource = new HikariDataSource(hikariConfig);
-        LoggingUtils.logTranslated("database.mariadb.success");
+        TextHandler.get().logTranslated("database.mariadb.success");
     }
 
     private static void initializePostgreSQL(FileConfiguration config) {
@@ -116,7 +115,7 @@ public class DatabaseHandler {
         hikariConfig.setPoolName("Vitamin-PostgreSQL");
 
         dataSource = new HikariDataSource(hikariConfig);
-        LoggingUtils.logTranslated("database.postgresql.success");
+        TextHandler.get().logTranslated("database.postgresql.success");
     }
 
     public static Connection getConnection() throws SQLException {
@@ -135,9 +134,9 @@ public class DatabaseHandler {
                     "PRIMARY KEY (player_id, module_key)" +
                     ");";
             stmt.executeUpdate(createTable);
-            LoggingUtils.logTranslated("database.tables.success");
+            TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
-            LoggingUtils.logTranslated("database.tables.error", e);
+            TextHandler.get().logTranslated("database.tables.error", e);
         }
     }
 
@@ -153,7 +152,7 @@ public class DatabaseHandler {
                 }
             }
         } catch (SQLException e) {
-            LoggingUtils.logTranslated("database.query_error", e);
+            TextHandler.get().logTranslated("database.query_error", e);
         }
         return true;
     }
@@ -167,7 +166,7 @@ public class DatabaseHandler {
             ps.setBoolean(3, enabled);
             ps.executeUpdate();
         } catch (SQLException e) {
-            LoggingUtils.logTranslated("database.update_error", e);
+            TextHandler.get().logTranslated("database.update_error", e);
         }
     }
 
@@ -175,7 +174,7 @@ public class DatabaseHandler {
         if (dataSource != null) {
             dataSource.close();
             dataSource = null;
-            LoggingUtils.logTranslated("database.close.success");
+            TextHandler.get().logTranslated("database.close.success");
         }
     }
 }

@@ -2,7 +2,7 @@ package com.soystargaze.vitamin.modules;
 
 import com.soystargaze.vitamin.modules.core.*;
 import com.soystargaze.vitamin.modules.paper.*;
-import com.soystargaze.vitamin.utils.LoggingUtils;
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -135,12 +135,12 @@ public class ModuleManager {
     private boolean detectPaper() {
         try {
             Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
-            LoggingUtils.logTranslated("plugin.paper_detected");
-            LoggingUtils.logTranslated("plugin.separator");
+            TextHandler.get().logTranslated("plugin.paper_detected");
+            TextHandler.get().logTranslated("plugin.separator");
             return true;
         } catch (ClassNotFoundException e) {
-            LoggingUtils.logTranslated("plugin.paper_not_detected");
-            LoggingUtils.logTranslated("plugin.separator");
+            TextHandler.get().logTranslated("plugin.paper_not_detected");
+            TextHandler.get().logTranslated("plugin.separator");
             return false;
         }
     }
@@ -159,9 +159,9 @@ public class ModuleManager {
         if (plugin.getConfig().getBoolean(configPath, true)) {
             modules.put(configPath, module);
             Bukkit.getPluginManager().registerEvents(module, plugin);
-            LoggingUtils.logTranslated("module.enabled", configPath);
+            TextHandler.get().logTranslated("module.enabled", configPath);
         } else {
-            LoggingUtils.logTranslated("module.disabled", configPath);
+            TextHandler.get().logTranslated("module.disabled", configPath);
         }
     }
 

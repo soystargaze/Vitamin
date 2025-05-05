@@ -2,7 +2,7 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.AsyncExecutor;
-import com.soystargaze.vitamin.utils.LoggingUtils;
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,14 +41,14 @@ public class VoidTotemModule implements Listener {
         if (player.getLocation().getY() > -59) return;
 
         if (isOnCooldown(player)) {
-            LoggingUtils.sendMessage(player, "void_totem.cooldown");
+            TextHandler.get().sendMessage(player, "void_totem.cooldown");
             return;
         }
 
         boolean totemFromInventoryEnabled = plugin.getConfig().getBoolean("modules.totem_from_inventory", true);
 
         if (totemFromInventoryEnabled ? !hasTotemInInventory(player) : !hasTotemInHand(player)) {
-            LoggingUtils.sendMessage(player, "void_totem.no_totem");
+            TextHandler.get().sendMessage(player, "void_totem.no_totem");
             return;
         }
 
@@ -65,7 +65,7 @@ public class VoidTotemModule implements Listener {
 
             AsyncExecutor.getExecutor().execute(() -> teleportToSafeGround(player));
 
-            LoggingUtils.sendMessage(player, "void_totem.activated");
+            TextHandler.get().sendMessage(player, "void_totem.activated");
             return true;
         }
         return false;
@@ -118,9 +118,9 @@ public class VoidTotemModule implements Listener {
 
         if (safeLocation == null) {
             safeLocation = world.getSpawnLocation();
-            LoggingUtils.sendMessage(player, "void_totem.teleport_spawn");
+            TextHandler.get().sendMessage(player, "void_totem.teleport_spawn");
         } else {
-            LoggingUtils.sendMessage(player, "void_totem.teleport_safe");
+            TextHandler.get().sendMessage(player, "void_totem.teleport_safe");
         }
 
         Location finalSafeLocation = safeLocation;

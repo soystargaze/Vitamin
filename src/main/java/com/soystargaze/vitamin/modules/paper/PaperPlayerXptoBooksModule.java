@@ -1,8 +1,8 @@
 package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
@@ -62,7 +62,7 @@ public class PaperPlayerXptoBooksModule implements Listener {
             player.getWorld().dropItemNaturally(player.getLocation(), xpBook);
         }
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
-        LoggingUtils.sendAndLog(player, "xpbook.created", totalXp);
+        TextHandler.get().sendAndLog(player, "xpbook.created", totalXp);
     }
 
     @EventHandler
@@ -99,7 +99,7 @@ public class PaperPlayerXptoBooksModule implements Listener {
         int newTotalXp = currentXp + storedXp;
         setPlayerXp(player, newTotalXp);
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1F, 1F);
-        LoggingUtils.sendAndLog(player, "xpbook.used", storedXp);
+        TextHandler.get().sendAndLog(player, "xpbook.used", storedXp);
     }
 
     private ItemStack createXpBook(int xpAmount) {
@@ -107,7 +107,7 @@ public class PaperPlayerXptoBooksModule implements Listener {
         ItemMeta meta = xpBook.getItemMeta();
         if (meta != null) {
             meta.getPersistentDataContainer().set(xpKey, PersistentDataType.INTEGER, xpAmount);
-            meta.displayName(TranslationHandler.getComponent("xpbook.item_name", xpAmount));
+            meta.displayName(ModernTranslationHandler.getComponent("xpbook.item_name", xpAmount));
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             xpBook.setItemMeta(meta);

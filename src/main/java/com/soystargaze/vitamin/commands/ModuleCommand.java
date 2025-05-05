@@ -3,8 +3,8 @@ package com.soystargaze.vitamin.commands;
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,21 +25,25 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String @NotNull [] args
+    ) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
+            sendToSender(sender, "commands.pmodule.player_only");
             return true;
         }
 
-        if (!sender.hasPermission("vitamin.module")) {
-            LoggingUtils.sendMessage(player, "commands.module.no_permission");
+        if (!player.hasPermission("vitamin.module")) {
+            TextHandler.get().sendMessage(player, "commands.module.no_permission");
             return true;
         }
 
         if (args.length != 2) {
-            LoggingUtils.sendMessage(player, "commands.module.usage");
+            TextHandler.get().sendMessage(player, "commands.module.usage");
             return true;
         }
 
@@ -51,7 +55,7 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             }
 
             String moduleName = args[0];
-            String stateArg = args[1];
+            String stateArg   = args[1];
             boolean enable;
 
             if (stateArg.equalsIgnoreCase("enable")) {
@@ -59,53 +63,58 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             } else if (stateArg.equalsIgnoreCase("disable")) {
                 enable = false;
             } else {
-                LoggingUtils.sendMessage(player, "commands.module.usage");
+                TextHandler.get().sendMessage(player, "commands.module.usage");
                 return true;
             }
 
             String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
-
             if (!plugin.getConfig().contains(key)) {
-                LoggingUtils.sendMessage(player, "commands.module.not_found", key);
+                TextHandler.get().sendMessage(player, "commands.module.not_found", key);
                 return true;
             }
 
             plugin.getConfig().set(key, enable);
             plugin.saveConfig();
 
-            if (key.equalsIgnoreCase("module.custom_recipes") && !enable) {
-                Object moduleInstance = moduleManager.getModule("custom_recipes");
-                if (moduleInstance instanceof CustomRecipesModule) {
-                    ((CustomRecipesModule) moduleInstance).unregisterRecipes();
+            if ("module.custom_recipes".equalsIgnoreCase(key) && !enable) {
+                Object mod = moduleManager.getModule("custom_recipes");
+                if (mod instanceof CustomRecipesModule) {
+                    ((CustomRecipesModule) mod).unregisterRecipes();
                 }
             }
 
             moduleManager.reloadModules();
+            TextHandler.get().sendMessage(player, "commands.module.changed", key, enable ? "enabled" : "disabled");
 
-            LoggingUtils.sendMessage(player, "commands.module.changed", key, (enable ? "enabled" : "disabled"));
         } catch (Exception e) {
-            LoggingUtils.sendMessage(player,"commands.reload.error");
-            LoggingUtils.logTranslated("commands.reload.error");
+            TextHandler.get().sendMessage(player, "commands.reload.error");
+            TextHandler.get().logTranslated("commands.reload.error", e.getMessage());
             e.printStackTrace();
         }
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
+    public List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String alias,
+            @NotNull String @NotNull [] args
+    ) {
         List<String> suggestions = new ArrayList<>();
 
         if (args.length == 1) {
             if (plugin.getConfig().contains("module")) {
-                Set<String> keys = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("module")).getKeys(false);
-                for (String key : keys) {
-                    suggestions.add("module." + key);
+                Set<String> keys = Objects
+                        .requireNonNull(plugin.getConfig().getConfigurationSection("module"))
+                        .getKeys(false);
+                for (String k : keys) {
+                    suggestions.add("module." + k);
                 }
             } else {
-                Set<String> keys = plugin.getConfig().getKeys(false);
-                for (String key : keys) {
-                    if (key.startsWith("module.")) {
-                        suggestions.add(key);
+                for (String k : plugin.getConfig().getKeys(false)) {
+                    if (k.startsWith("module.")) {
+                        suggestions.add(k);
                     }
                 }
             }
@@ -115,5 +124,14 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
         }
 
         return suggestions;
+    }
+
+    private void sendToSender(CommandSender sender, String key, Object... args) {
+        Object msg = TextHandler.get().getMessage(key, args);
+        if (msg instanceof Component comp) {
+            sender.sendMessage(comp);
+        } else {
+            sender.sendMessage(msg.toString());
+        }
     }
 }

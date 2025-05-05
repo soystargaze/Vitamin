@@ -2,8 +2,8 @@ package com.soystargaze.vitamin.commands;
 
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.LoggingUtils;
-import com.soystargaze.vitamin.utils.TranslationHandler;
+import com.soystargaze.vitamin.utils.text.TextHandler;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,33 +25,37 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String label,
+            @NotNull String @NotNull [] args
+    ) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(TranslationHandler.getPlayerMessage("commands.pmodule.player_only"));
+            sendToSender(sender, "commands.pmodule.player_only");
             return true;
         }
 
         if (!player.hasPermission("vitamin.pmodule")) {
-            LoggingUtils.sendMessage(player, "commands.pmodule.no_pmodule_permission");
+            TextHandler.get().sendMessage(player, "commands.pmodule.no_pmodule_permission");
             return true;
         }
 
         if (args.length != 2) {
-            LoggingUtils.sendMessage(player, "commands.pmodule.usage");
+            TextHandler.get().sendMessage(player, "commands.pmodule.usage");
             return true;
         }
 
         String moduleName = args[0];
-        String stateArg = args[1];
-        String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
+        String stateArg   = args[1];
+        String key        = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
 
         if (!plugin.getConfig().getBoolean(key, false)) {
-            LoggingUtils.sendMessage(player, "commands.pmodule.module_not_active", key);
+            TextHandler.get().sendMessage(player, "commands.pmodule.module_not_active", key);
             return true;
         }
-
         if (!player.hasPermission(key)) {
-            LoggingUtils.sendMessage(player, "commands.pmodule.no_module_permission", key);
+            TextHandler.get().sendMessage(player, "commands.pmodule.no_module_permission", key);
             return true;
         }
 
@@ -61,33 +65,40 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
         } else if (stateArg.equalsIgnoreCase("disable")) {
             enable = false;
         } else {
-            LoggingUtils.sendMessage(player, "commands.pmodule.usage");
+            TextHandler.get().sendMessage(player, "commands.pmodule.usage");
             return true;
         }
 
         DatabaseHandler.setModuleEnabledForPlayer(player.getUniqueId(), key, enable);
-
         boolean newState = DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), key);
-        LoggingUtils.sendMessage(player, "commands.pmodule.changed", key, (newState ? "enabled" : "disabled"));
+        TextHandler.get().sendMessage(player, "commands.pmodule.changed", key, newState ? "enabled" : "disabled");
+
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String @NotNull [] args) {
+    public List<String> onTabComplete(
+            @NotNull CommandSender sender,
+            @NotNull Command command,
+            @NotNull String alias,
+            @NotNull String @NotNull [] args
+    ) {
         List<String> suggestions = new ArrayList<>();
 
         if (args.length == 1) {
             if (plugin.getConfig().contains("module")) {
-                Set<String> keys = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("module")).getKeys(false);
-                for (String key : keys) {
-                    if (plugin.getConfig().getBoolean("module." + key, true)) {
-                        suggestions.add("module." + key);
+                Set<String> keys = Objects
+                        .requireNonNull(plugin.getConfig().getConfigurationSection("module"))
+                        .getKeys(false);
+                for (String k : keys) {
+                    if (plugin.getConfig().getBoolean("module." + k, true)) {
+                        suggestions.add("module." + k);
                     }
                 }
             } else {
-                for (String key : plugin.getConfig().getKeys(false)) {
-                    if (key.startsWith("module.") && plugin.getConfig().getBoolean(key, true)) {
-                        suggestions.add(key);
+                for (String k : plugin.getConfig().getKeys(false)) {
+                    if (k.startsWith("module.") && plugin.getConfig().getBoolean(k, true)) {
+                        suggestions.add(k);
                     }
                 }
             }
@@ -97,5 +108,14 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
         }
 
         return suggestions;
+    }
+
+    private void sendToSender(CommandSender sender, String key, Object... args) {
+        Object msg = TextHandler.get().getMessage(key, args);
+        if (msg instanceof Component comp) {
+            sender.sendMessage(comp);
+        } else {
+            sender.sendMessage(msg.toString());
+        }
     }
 }
