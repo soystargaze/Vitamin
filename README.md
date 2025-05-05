@@ -21,7 +21,7 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **26 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
+**Vitamin+** comes loaded with **27 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
 
 <details>
   <summary>Explore</summary>
@@ -30,6 +30,7 @@
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard) or [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) to work with members only.
 - **Crop Protection:** Prevents crops from being trampled by players.
 - **Death Chest:** Automatically creates a chest with your items when you die if it finds a safe location (configurable).
+- **Death Map:** It gives you a map with the location of your death on respawn (configurable).
 - **Elevator:** Create a teleporting elevator for vertical movement.
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable). It can also return the [AdvancedEnchantments](https://www.spigotmc.org/resources/1-17-1-21-5-⭕-advancedenchantments-⭐-500-custom-enchants-⭐create-custom-enchantments-✅.43058/) enchantments.
@@ -129,6 +130,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
 - `vitamin.module.crop_protection` - Allows the use of the Crop Protection module.
 - `vitamin.module.death_chest` - Allows the use of the Death Chest module.
+- `vitamin.module.death_map` - Allows the use of the Death Map module.
 - `vitamin.module.elevator` - Allows the use of the Elevator module.
 - `vitamin.module.elytra_armor` - Allows the use of the Elytra Armor module.
 - `vitamin.module.enchants_back` - Allows the use of the Enchants Back module.
