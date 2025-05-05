@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
@@ -30,42 +31,47 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class DeathMapModule implements Listener {
 
+    private final JavaPlugin plugin;
     private final String displayName;
     private final List<String> lore;
     private final Scale scale;
 
     public DeathMapModule(JavaPlugin plugin) {
-        String lang = plugin.getConfig().getString("language", "en_us");
-        LegacyTranslationHandler.loadTranslations(plugin, lang);
-        LegacyTranslationHandler.setActiveLanguage(lang);
+        this.plugin = plugin;
 
         Component nameCmp = LegacyTranslationHandler.getComponent("death_map.map_item_name");
-        this.displayName = ChatColor.translateAlternateColorCodes(
-                '&',
-                LegacyComponentSerializer.legacyAmpersand().serialize(nameCmp)
-        );
+        String rawName = LegacyComponentSerializer.legacyAmpersand().serialize(nameCmp);
+        this.displayName = ChatColor.translateAlternateColorCodes('&', rawName);
 
         Component loreCmp = LegacyTranslationHandler.getComponent("death_map.map_item_lore");
-        this.lore = List.of(
-                ChatColor.translateAlternateColorCodes(
-                        '&',
-                        LegacyComponentSerializer.legacyAmpersand().serialize(loreCmp)
-                )
-        );
+        String rawLore = LegacyComponentSerializer.legacyAmpersand().serialize(loreCmp);
+        this.lore = List.of(ChatColor.translateAlternateColorCodes('&', rawLore));
 
         this.scale = Scale.valueOf(
-                plugin.getConfig()
-                        .getString("death_map.map-scale", "NORMAL")
-                        .toUpperCase()
+                plugin.getConfig().getString("death_map.map-scale", "NORMAL").toUpperCase()
         );
+
+        Bukkit.getScheduler().runTask(plugin, this::reapplyRenderers);
+    }
+
+    private void reapplyRenderers() {
+        for (short mapId : DatabaseHandler.getDeathMapIds()) {
+            try {
+                MapView view = Bukkit.getMap(mapId);
+                if (view != null) {
+                    view.setTrackingPosition(true);
+                    view.setUnlimitedTracking(true);
+                    view.addRenderer(createDeathRenderer());
+                }
+            } catch (Throwable t) {
+                plugin.getLogger().warning("No pude reaplicar el renderer al mapa " + mapId);
+            }
+        }
     }
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        if (!player.hasPermission("vitamin.module.death_map")
-                || !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.death_chest")
-        ) return;
         Location deathLoc = player.getLocation();
         DatabaseHandler.saveDeathLocation(player.getUniqueId(), deathLoc);
     }
@@ -76,48 +82,88 @@ public class DeathMapModule implements Listener {
         Location deathLoc = DatabaseHandler.getDeathLocation(player.getUniqueId());
         if (deathLoc == null) return;
 
-        World world = deathLoc.getWorld();
-        MapView view = Bukkit.createMap(world);
-        view.setCenterX(deathLoc.getBlockX());
-        view.setCenterZ(deathLoc.getBlockZ());
-        view.setScale(scale);
-        view.setScale(scale);
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            World world = deathLoc.getWorld();
+            MapView view = Bukkit.createMap(world);
+            view.setCenterX(deathLoc.getBlockX());
+            view.setCenterZ(deathLoc.getBlockZ());
+            view.setScale(scale);
+            view.setTrackingPosition(true);
+            view.setUnlimitedTracking(true);
+            view.addRenderer(createDeathRenderer());
 
-        view.setTrackingPosition(true);
-        view.addRenderer(new MapRenderer() {
+            DatabaseHandler.saveDeathMapId(player.getUniqueId(), (short) view.getId());
+
+            ItemStack mapItem = new ItemStack(Material.FILLED_MAP, 1);
+            MapMeta meta = (MapMeta) mapItem.getItemMeta();
+            if (meta != null) {
+                meta.setMapView(view);
+                meta.setDisplayName(displayName);
+                meta.setLore(lore);
+                mapItem.setItemMeta(meta);
+            }
+            player.getInventory().addItem(mapItem);
+
+            LegacyLoggingUtils.sendMessage(
+                    player,
+                    "death_map.map_given",
+                    deathLoc.getBlockX(),
+                    deathLoc.getBlockY(),
+                    deathLoc.getBlockZ()
+            );
+            LegacyLoggingUtils.logTranslated(
+                    "death_map.map_given",
+                    deathLoc.getBlockX(),
+                    deathLoc.getBlockY(),
+                    deathLoc.getBlockZ()
+            );
+        });
+    }
+
+    @EventHandler
+    public void onMapInitialize(MapInitializeEvent event) {
+        short id = (short) event.getMap().getId();
+        if (DatabaseHandler.getDeathMapIds().contains(id)) {
+            MapView view = event.getMap();
+            view.setTrackingPosition(true);
+            view.setUnlimitedTracking(true);
+            view.addRenderer(createDeathRenderer());
+        }
+    }
+
+    private MapRenderer createDeathRenderer() {
+        return new MapRenderer() {
             private boolean rendered = false;
+
             @Override
             public void render(@NotNull MapView mv,
                                @NotNull MapCanvas canvas,
                                @NotNull Player p) {
                 if (rendered) return;
-                canvas.setPixelColor(64, 64, new Color(255, 0, 0));
+                int cx = 64, cy = 64;
+                Color black = new Color(0, 0, 0);
+                Color white = new Color(255, 255, 255);
+
+
+                for (int d = -2; d <= 2; d++) {
+                    drawSquare(canvas, cx + d, cy + d, black);
+                    drawSquare(canvas, cx + d, cy - d, black);
+                }
+                for (int d = -1; d <= 1; d++) {
+                    canvas.setPixelColor(cx + d, cy + d, white);
+                    canvas.setPixelColor(cx + d, cy - d, white);
+                }
+
                 rendered = true;
             }
-        });
 
-        ItemStack mapItem = new ItemStack(Material.FILLED_MAP, 1);
-        MapMeta meta = (MapMeta) mapItem.getItemMeta();
-        if (meta != null) {
-            meta.setMapView(view);
-            meta.setDisplayName(displayName);
-            meta.setLore(lore);
-            mapItem.setItemMeta(meta);
-        }
-        player.getInventory().addItem(mapItem);
-
-        LegacyLoggingUtils.sendMessage(
-                player,
-                "death_map.map_given",
-                deathLoc.getBlockX(),
-                deathLoc.getBlockY(),
-                deathLoc.getBlockZ()
-        );
-        LegacyLoggingUtils.logTranslated(
-                "death_map.map_given",
-                deathLoc.getBlockX(),
-                deathLoc.getBlockY(),
-                deathLoc.getBlockZ()
-        );
+            private void drawSquare(MapCanvas canvas, int x, int y, Color color) {
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        canvas.setPixelColor(x + dx, y + dy, color);
+                    }
+                }
+            }
+        };
     }
 }

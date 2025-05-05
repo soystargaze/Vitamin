@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -150,9 +152,48 @@ public class DatabaseHandler {
                     ");";
             stmt.executeUpdate(createDeaths);
 
+            String createMaps = """
+                CREATE TABLE IF NOT EXISTS player_death_maps (
+                  player_id VARCHAR(36) NOT NULL,
+                  map_id    SMALLINT     NOT NULL,
+                  PRIMARY KEY(player_id, map_id)
+                );
+                """;
+            stmt.executeUpdate(createMaps);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
+        }
+    }
+
+    public static List<Short> getDeathMapIds() {
+        List<Short> result = new ArrayList<>();
+        String sql = "SELECT map_id FROM player_death_maps";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(rs.getShort("map_id"));
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.deathmap.query_error", e);
+        }
+        return result;
+    }
+
+    public static void saveDeathMapId(UUID playerId, short mapId) {
+        String sql = """
+            REPLACE INTO player_death_maps (player_id, map_id)
+            VALUES (?, ?);
+            """;
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerId.toString());
+            ps.setShort(2, mapId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.deathmap.save_error", e);
         }
     }
 
