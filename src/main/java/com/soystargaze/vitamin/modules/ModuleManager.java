@@ -104,6 +104,10 @@ public class ModuleManager {
             ),
 
             // —— Modules with Paper hooks ——
+            new ModuleDef("module.death_map",
+                    DeathMapModule::new,
+                    PaperDeathMapModule::new
+            ),
             new ModuleDef("module.elevator",
                     ElevatorModule::new,
                     PaperElevatorModule::new

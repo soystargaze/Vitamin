@@ -4,11 +4,15 @@ import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DatabaseHandler {
@@ -127,17 +131,73 @@ public class DatabaseHandler {
 
     private static void createTables() {
         try (Connection connection = getConnection(); Statement stmt = connection.createStatement()) {
-            String createTable = "CREATE TABLE IF NOT EXISTS player_modules (" +
+            String createModules = "CREATE TABLE IF NOT EXISTS player_modules (" +
                     "player_id VARCHAR(36) NOT NULL," +
                     "module_key VARCHAR(100) NOT NULL," +
                     "enabled BOOLEAN NOT NULL," +
                     "PRIMARY KEY (player_id, module_key)" +
                     ");";
-            stmt.executeUpdate(createTable);
+            stmt.executeUpdate(createModules);
+
+            String createDeaths = "CREATE TABLE IF NOT EXISTS player_deaths (" +
+                    "player_id   VARCHAR(36) PRIMARY KEY," +
+                    "world       VARCHAR(100) NOT NULL," +
+                    "x           DOUBLE       NOT NULL," +
+                    "y           DOUBLE       NOT NULL," +
+                    "z           DOUBLE       NOT NULL," +
+                    "yaw         FLOAT        NOT NULL," +
+                    "pitch       FLOAT        NOT NULL" +
+                    ");";
+            stmt.executeUpdate(createDeaths);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
         }
+    }
+
+    public static void saveDeathLocation(UUID playerId, Location loc) {
+        String sql = """
+            REPLACE INTO player_deaths
+              (player_id, world, x, y, z, yaw, pitch)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """;
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerId.toString());
+            ps.setString(2, Objects.requireNonNull(loc.getWorld()).getName());
+            ps.setDouble(3, loc.getX());
+            ps.setDouble(4, loc.getY());
+            ps.setDouble(5, loc.getZ());
+            ps.setFloat(6,  loc.getYaw());
+            ps.setFloat(7,  loc.getPitch());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.deathlocation.save_error", e);
+        }
+    }
+
+    public static Location getDeathLocation(UUID playerId) {
+        String sql = "SELECT world, x, y, z, yaw, pitch FROM player_deaths WHERE player_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, playerId.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    World world = Bukkit.getWorld(rs.getString("world"));
+                    if (world == null) return null;
+                    double x     = rs.getDouble("x");
+                    double y     = rs.getDouble("y");
+                    double z     = rs.getDouble("z");
+                    float  yaw   = rs.getFloat("yaw");
+                    float  pitch = rs.getFloat("pitch");
+                    return new Location(world, x, y, z, yaw, pitch);
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.deathlocation.query_error", e);
+        }
+        return null;
     }
 
     public static boolean isModuleEnabledForPlayer(UUID playerId, String moduleKey) {

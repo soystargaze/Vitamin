@@ -49,6 +49,7 @@ module:
   crop_protection: true # Prevents crops from being trampled
   custom_recipes: true # Add custom recipes to the game
   death_chest: true # Create a chest with your items when you die
+  death_map: true # Create a map with your death location
   elevator: true # Craft an elevator block to teleport up and down
   elytra_armor: true # Elytra gives armor like a chest plate
   enchants_back: true # Enchants are returned when disenchanting with a grindstone and has empty books
@@ -77,6 +78,10 @@ carry_on:
 death_chest:
   vertical_search: 30 # Vertical safe search distance
   horizontal_search: 50 # Horizontal safe search distance
+
+# Death Map settings
+death_map:
+  map-scale: "NORMAL" # Options: CLOSEST, NORMAL, FAR, FARTHEST
 
 # Elytra Armor settings
 elytra_armor:

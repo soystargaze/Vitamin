@@ -46,6 +46,8 @@ public class DeathChestModule implements Listener {
         if (drops.isEmpty()) return;
 
         Location deathLocation = player.getLocation();
+        DatabaseHandler.saveDeathLocation(player.getUniqueId(), deathLocation);
+
         Location chestLocation = findSafeLocation(deathLocation);
         if (chestLocation == null) {
             TextHandler.get().logTranslated(
