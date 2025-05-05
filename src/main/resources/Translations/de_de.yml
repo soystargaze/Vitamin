@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "Blockzustand bei {0} ist keine Truhe, sondern {1}."
   created: "Todestruhe erstellt bei X: {0}, Y: {1}, Z: {2}."
 
+death_map:
+  map_item_name: "<gold>Todeskarte</gold>"
+  map_item_lore: "<gray>Finde deinen Todesort mit dieser Karte.</gray>"
+  map_given: "Du hast eine Todeskarte erhalten, die deinen letzten Todesort bei {0}, {1}, {2} markiert."
+  map_renderer_error: "Beim Rendern der Karte ist ein Fehler aufgetreten: {0}"
+
 void_totem:
   activated: "Leeren-Totem aktiviert! Teleportiere zu einem sicheren Ort..."
   cooldown: "Du musst warten, bevor du ein weiteres Leeren-Totem verwenden kannst!"

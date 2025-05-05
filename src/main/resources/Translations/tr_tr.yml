@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "{0} konumundaki blok durumu sandık değil, {1}."
   created: "Ölüm sandığı X: {0}, Y: {1}, Z: {2} konumunda oluşturuldu."
 
+death_map:
+  map_item_name: "<gold>Ölüm Haritası</gold>"
+  map_item_lore: "<gray>Bu harita ile ölüm konumunuzu bulun.</gray>"
+  map_given: "Ölüm haritanız {0}, {1}, {2} konumunda oluşturuldu."
+  map_renderer_error: "Harita renderlenirken bir hata oluştu: {0}"
+
 void_totem:
   activated: "Void Totem etkinleştirildi! Güvenliğe ışınlanıyor..."
   cooldown: "Başka bir Void Totem kullanmak için beklemelisiniz!"

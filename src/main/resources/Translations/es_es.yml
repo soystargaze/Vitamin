@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "El estado del bloque en {0} no es un cofre, sino {1}."
   created: "Cofre de muerte creado en X: {0}, Y: {1}, Z: {2}."
 
+death_map:
+  map_item_name: "<gold>Mapa de la muerte</gold>"
+  map_item_lore: "<gray>Encuentra tu ubicación de muerte con este mapa.</gray>"
+  map_given: "Has recibido un mapa de muerte que marca tu última ubicación de muerte en {0}, {1}, {2}."
+  map_renderer_error: "Se produjo un error al renderizar el mapa: {0}"
+
 void_totem:
   activated: "¡Tótem del Vacío activado! Teletransportando a un lugar seguro..."
   cooldown: "¡Debes esperar antes de usar otro Tótem del Vacío!"

@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "Stan bloku w {0} to nie skrzynia, lecz {1}."
   created: "Skrzynia śmierci utworzona na X: {0}, Y: {1}, Z: {2}."
 
+death_map:
+  map_item_name: "<gold>Mapa śmierci</gold>"
+  map_item_lore: "<gray>Znajdź swoje miejsce śmierci za pomocą tej mapy.</gray>"
+  map_given: "Otrzymałeś mapę śmierci oznaczającą miejsce ostatniej śmierci na {0}, {1}, {2}."
+  map_renderer_error: "Wystąpił błąd podczas renderowania mapy: {0}"
+
 void_totem:
   activated: "Totem Pustki aktywowany! Teleportacja w bezpieczne miejsce..."
   cooldown: "Musisz poczekać przed ponownym użyciem Totemu Pustki!"

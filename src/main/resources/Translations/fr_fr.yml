@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "L'état du bloc à {0} n'est pas un coffre mais {1}."
   created: "Coffre de mort créé à X : {0}, Y : {1}, Z : {2}."
 
+death_map:
+  map_item_name: "<gold>Carte de mort</gold>"
+  map_item_lore: "<gray>Trouvez votre lieu de mort avec cette carte.</gray>"
+  map_given: "Vous avez reçu une carte de mort marquant votre dernier lieu de mort à {0}, {1}, {2}."
+  map_renderer_error: "Une erreur est survenue lors du rendu de la carte : {0}"
+
 void_totem:
   activated: "Talisman du Vide activé ! Téléportation vers un lieu sûr..."
   cooldown: "Vous devez attendre avant d'utiliser un autre Talisman du Vide !"

@@ -64,7 +64,7 @@ public class DeathMapModule implements Listener {
                     view.addRenderer(createDeathRenderer());
                 }
             } catch (Throwable t) {
-                plugin.getLogger().warning("No pude reaplicar el renderer al mapa " + mapId);
+                LegacyLoggingUtils.logTranslated("death_map.map_renderer_error", mapId);
             }
         }
     }

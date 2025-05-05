@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "{0} 处的方块状态不是箱子，而是 {1}。"
   created: "在 X：{0}，Y：{1}，Z：{2} 处创建了死亡箱子。"
 
+death_map:
+  map_item_name: "<gold>死亡地图</gold>"
+  map_item_lore: "<gray>使用此地图查找你的死亡位置。</gray>"
+  map_given: "你已收到一张死亡地图，标记了你最后死亡地点在 {0}, {1}, {2}。"
+  map_renderer_error: "渲染地图时出错：{0}"
+
 void_totem:
   activated: "虚空图腾已激活！正在传送到安全地点..."
   cooldown: "你需要等待一段时间才能再次使用虚空图腾！"

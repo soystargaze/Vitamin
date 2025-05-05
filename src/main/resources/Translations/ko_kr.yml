@@ -83,6 +83,12 @@ death_chest:
   blockstate_not_chest: "{0} 위치의 블록 상태가 상자가 아니라 {1}입니다."
   created: "X: {0}, Y: {1}, Z: {2} 위치에 죽음 상자가 생성되었습니다."
 
+death_map:
+  map_item_name: "<gold>사망 지도</gold>"
+  map_item_lore: "<gray>이 지도로 사망 위치를 찾습니다.</gray>"
+  map_given: "마지막 사망 위치인 {0}, {1}, {2}에 사망 지도가 생성되었습니다."
+  map_renderer_error: "지도를 렌더링하는 중 오류가 발생했습니다: {0}"
+
 carry_on:
   cannot_pickup_players: "<red>플레이어는 들어 올릴 수 없습니다!</red>"
   cannot_pickup_entity: "<red>이 엔티티는 들어 올릴 수 없습니다!</red>"

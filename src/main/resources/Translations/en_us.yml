@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "Block state at {0} is not a chest but {1}."
   created: "Death chest created at X: {0}, Y: {1}, Z: {2}."
 
+death_map:
+  map_item_name: "<gold>Death Map</gold>"
+  map_item_lore: "<gray>Find your death location with this map.</gray>"
+  map_given: "You’ve received a death map marking your last death location at {0}, {1}, {2}."
+  map_renderer_error: "An error occurred while rendering the map: {0}"
+
 void_totem:
   activated: "Void Totem activated! Teleporting to safety..."
   cooldown: "You must wait before using another Void Totem!"

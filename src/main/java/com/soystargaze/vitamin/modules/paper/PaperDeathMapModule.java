@@ -54,7 +54,7 @@ public class PaperDeathMapModule implements Listener {
                     view.addRenderer(createDeathRenderer());
                 }
             } catch (Throwable t) {
-                plugin.getLogger().warning("No pude volver a aplicar renderer al mapa " + mapId);
+                ModernLoggingUtils.logTranslated("death_map.map_renderer_error", mapId);
             }
         }
     }

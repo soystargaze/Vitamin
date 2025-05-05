@@ -95,6 +95,12 @@ death_chest:
   blockstate_not_chest: "O estado do bloco em {0} não é um baú, mas {1}."
   created: "Baú de morte criado em X: {0}, Y: {1}, Z: {2}."
 
+death_map:
+  map_item_name: "<gold>Mapa da morte</gold>"
+  map_item_lore: "<gray>Encontre sua localização de morte com este mapa.</gray>"
+  map_given: "Você recebeu um mapa da morte marcando sua última localização de morte em {0}, {1}, {2}."
+  map_renderer_error: "Ocorreu um erro ao renderizar o mapa: {0}"
+
 void_totem:
   activated: "Tótem do Vazio ativado! Teletransportando para um local seguro..."
   cooldown: "Você deve esperar antes de usar outro Tótem do Vazio!"
