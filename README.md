@@ -35,7 +35,7 @@
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable). It can also return the [AdvancedEnchantments](https://www.spigotmc.org/resources/1-17-1-21-5-⭕-advancedenchantments-⭐-500-custom-enchants-⭐create-custom-enchantments-✅.43058/) enchantments.
 - **Fire Aspect On Tools:** You can use an anvil to apply `Fire Aspect I/II` to tools. It auto-smelts drops when breaking blocks. `Level I` has a 40% chance, while `Level II` has a 100% chance.
-- **Invisible Item Frames:** Toggle the visibility of item frames with `Right-Click (empty hand)`.
+- **Invisible Item Frames:** Toggle the visibility of item frames with `Shift + Right-Click (empty hand)`.
 - **Leaf Decay:** Leaves disappear faster when cutting down trees (configurable).
 - **Pet Protection:** Prevents pets from being accidentally damaged by their owners.
 - **Player XP to Books:** Convert your XP into books by `Shift + Right-Clicking` with an empty book.
@@ -45,7 +45,7 @@
 - **Sponge with Lava:** Sponges can now absorb lava.
 - **Totem from Inventory:** The Totem of Undying works from anywhere in your inventory.
 - **Void Totem:** The Totem of Undying activates when falling into the void.
-- **TP to Bed with Compass:** Use a compass to teleport to your spawn point (configurable).
+- **TP to Bed with Compass:** Use a compass with `Right-click` to teleport to your spawn point (configurable).
 - **Unlock All Recipes:** Unlock all crafting recipes upon joining the server.
 - **Tree Vein Miner:** Chop down entire trees when using `Efficiency V` tools.
 - **Vein Miner:** Mine connected ores in a vein using `Efficiency V` tools.
