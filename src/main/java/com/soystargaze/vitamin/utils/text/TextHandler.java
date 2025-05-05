@@ -14,17 +14,17 @@ public class TextHandler {
     private final boolean modern;
 
     private TextHandler(JavaPlugin plugin) {
-        boolean isPaperFork;
+        boolean modernDetected;
         try {
-            plugin.getServer().getClass().getMethod("getPaperVersion");
-            isPaperFork = true;
-        } catch (NoSuchMethodException e) {
-            isPaperFork = false;
+            Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
+            modernDetected = true;
+        } catch (ClassNotFoundException e) {
+            modernDetected = false;
         }
-        this.modern = isPaperFork;
+        this.modern = modernDetected;
 
         if (modern) {
-            Bukkit.getLogger().info("[Vitamin] Using ModernTranslationHandler (Paper or fork detected)");
+            Bukkit.getLogger().info("[Vitamin] Using ModernTranslationHandler (Paper/fork detected)");
         } else {
             Bukkit.getLogger().info("[Vitamin] Using LegacyTranslationHandler");
         }
