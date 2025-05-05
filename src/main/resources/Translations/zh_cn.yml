@@ -63,6 +63,10 @@ database:
   update_error: "更新数据库时发生错误: {0}"
   close:
     success: "数据库连接已成功关闭。"
+  death_map:
+    save_error: "保存死亡地图时发生错误: {0}"
+  death_location:
+    save_error: "保存死亡位置时发生错误: {0}"
 
 module:
   enabled: "模块 {0}: <green>已启用"

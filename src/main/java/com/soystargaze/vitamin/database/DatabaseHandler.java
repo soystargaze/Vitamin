@@ -177,7 +177,7 @@ public class DatabaseHandler {
                 result.add(rs.getShort("map_id"));
             }
         } catch (SQLException e) {
-            TextHandler.get().logTranslated("database.deathmap.query_error", e);
+            TextHandler.get().logTranslated("database.query_error", e);
         }
         return result;
     }
@@ -214,7 +214,7 @@ public class DatabaseHandler {
             ps.setFloat(7,  loc.getPitch());
             ps.executeUpdate();
         } catch (SQLException e) {
-            TextHandler.get().logTranslated("database.deathlocation.save_error", e);
+            TextHandler.get().logTranslated("database.death_location.save_error", e);
         }
     }
 
@@ -236,7 +236,7 @@ public class DatabaseHandler {
                 }
             }
         } catch (SQLException e) {
-            TextHandler.get().logTranslated("database.deathlocation.query_error", e);
+            TextHandler.get().logTranslated("database.query_error", e);
         }
         return null;
     }

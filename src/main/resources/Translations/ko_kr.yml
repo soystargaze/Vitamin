@@ -63,6 +63,10 @@ database:
   update_error: "데이터베이스 업데이트 중 오류가 발생했습니다: {0}"
   close:
     success: "데이터베이스 연결이 성공적으로 닫혔습니다."
+  death_map:
+    save_error: "사망 지도 저장 중 오류가 발생했습니다: {0}"
+  death_location:
+    save_error: "사망 위치 저장 중 오류가 발생했습니다: {0}"
 
 module:
   enabled: "모듈 {0}: <green>활성화됨"

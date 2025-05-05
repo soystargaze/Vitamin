@@ -63,6 +63,10 @@ database:
   update_error: "Ocurrió un error al actualizar la base de datos: {0}"
   close:
     success: "Conexión a la base de datos cerrada correctamente."
+  death_map:
+    save_error: "Ocurrió un error al guardar el mapa de muerte: {0}"
+  death_location:
+    save_error: "Ocurrió un error al guardar la ubicación de muerte: {0}"
 
 module:
   enabled: "Módulo {0}: <green>habilitado"
