@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>Işınlanma iptal edildi!</red>"
   channeling: "Işınlanma hazırlanıyor: {0} saniye kaldı..."
   success: "Doğma noktanıza ışınlandınız!"
+  no_bed: "<red>Işınlanma iptal edildi: Yatak yok!</red>"

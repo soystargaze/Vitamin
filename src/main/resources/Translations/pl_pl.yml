@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>Teleportacja anulowana!"
   channeling: "Kanalizowanie teleportacji: {0} sekund do końca..."
   success: "Teleportowano do punktu odrodzenia!"
+  no_bed: "<red>Nie znaleziono łóżka w pobliżu!</red>"

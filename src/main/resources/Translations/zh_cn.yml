@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>传送已取消！"
   channeling: "传送引导中: {0} 秒剩余..."
   success: "已传送到你的重生点！"
+  no_bed: "<red>你没有床！</red>"

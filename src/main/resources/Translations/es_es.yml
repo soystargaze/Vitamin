@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>¡Teletransportación cancelada!"
   channeling: "Canalizando teletransportación: {0} segundos restantes..."
   success: "¡Teletransportado a tu punto de reaparición!"
+  no_bed: "<red>¡Necesitas primero dormir en una cama!</red>"

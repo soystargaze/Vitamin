@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>Teleportation cancelled!"
   channeling: "Channeling teleportation: {0} seconds left..."
   success: "Teleported to your respawn point!"
+  no_bed: "<red>You need to sleep in a bed first!"

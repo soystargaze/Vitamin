@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>순간이동이 취소되었습니다!</red>"
   channeling: "순간이동 채널링: {0}초 남음..."
   success: "리스폰 지점으로 순간이동되었습니다!"
+  no_bed: "<red>리스폰 지점이 설정되어 있지 않습니다!</red>"

@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>Teleportation abgebrochen!"
   channeling: "Teleportation wird vorbereitet: {0} Sekunden verbleibend..."
   success: "Zum Wiederbelebungspunkt teleportiert!"
+  no_bed: "<red>Du hast kein Bett gesetzt!</red>"

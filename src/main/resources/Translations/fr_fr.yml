@@ -117,3 +117,4 @@ tpcompass:
   cancelled: "<red>Téléportation annulée !"
   channeling: "Canalisation de la téléportation : {0} secondes restantes..."
   success: "Téléporté à votre point de réapparition !"
+  no_bed: "<red>Vous devez d'abord dormir dans un lit !"
