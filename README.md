@@ -27,7 +27,7 @@
   <summary>Explore</summary>
 
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
-- **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard) or [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) to work with members only.
+- **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard) or [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) to work with members only, also respects `Lootin Chests` if [Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/) is in the server (can be disabled).
 - **Crop Protection:** Prevents crops from being trampled by players.
 - **Death Chest:** Automatically creates a chest with your items when you die if it finds a safe location (configurable).
 - **Death Map:** It gives you a map with the location of your death on respawn (configurable).
