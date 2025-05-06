@@ -62,6 +62,9 @@ public class PaperDeathMapModule implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        if (!player.hasPermission("vitamin.module.death_map")
+                || !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.death_map")
+        ) return;
         Location deathLoc = player.getLocation();
         DatabaseHandler.saveDeathLocation(player.getUniqueId(), deathLoc);
     }
@@ -69,6 +72,9 @@ public class PaperDeathMapModule implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("vitamin.module.death_map")
+                || !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.death_map")
+        ) return;
         Location deathLoc = DatabaseHandler.getDeathLocation(player.getUniqueId());
         if (deathLoc == null) return;
 
