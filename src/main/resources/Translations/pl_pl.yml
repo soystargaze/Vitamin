@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>Umieściłeś blok.</gold>"
   no_permissions: "<red>Nie masz uprawnień do podnoszenia tej jednostki/skrzyni.</red>"
   error_checking_permissions: "<red>Wystąpił błąd podczas sprawdzania uprawnień.</red>"
+  error_lootin_container: "<red>Wystąpił błąd podczas sprawdzania kontenera Lootin: {0}</red>"
+  no_lootin_pickup: "<red>Nie masz uprawnień do podnoszenia tej jednostki.</red>"
 
 death_chest:
   location_not_found: "Nie znaleziono bezpiecznego miejsca dla skrzyni śmierci gracza {0}."

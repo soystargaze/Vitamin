@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>You have placed the block.</gold>"
   no_permissions: "<red>You do not have permission to pick up this entity/Chest.</red>"
   error_checking_permissions: "<red>An error occurred while checking permissions.</red>"
+  error_lootin_container: "<red>An error occurred while checking the Lootin container: {0}</red>"
+  no_lootin_pickup: "<red>You cannot pick up this Lootin container.</red>"
 
 death_chest:
   location_not_found: "No safe location found for {0}’s death chest."

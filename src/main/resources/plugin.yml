@@ -8,6 +8,7 @@ website: https://soystargaze.com
 softdepend:
   - WorldGuard
   - Lands
+  - Lootin
 commands:
   vitamin:
     description: Main command for Vitamin

@@ -73,6 +73,7 @@ module:
 # Carry On settings
 carry_on:
   max_weight: 100
+  allow_lootin_pickup: false # Block Lootin chest pickup (only if Lootin plugin is on the server)
 
 # Death Chest settings
 death_chest:

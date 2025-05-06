@@ -1,11 +1,11 @@
 package com.soystargaze.vitamin.modules.core;
 
-import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.integration.LandsIntegrationHandler;
+import com.soystargaze.vitamin.integration.LootinIntegrationHandler;
 import com.soystargaze.vitamin.integration.WorldGuardIntegrationHandler;
 
+import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
-
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,6 +46,7 @@ public class CarryOnModule implements Listener {
     private final Map<String, ItemStack[]> storedChestContents = new HashMap<>();
     private WorldGuardIntegrationHandler wgIntegration;
     private LandsIntegrationHandler landsIntegration;
+    private LootinIntegrationHandler lootinIntegration;
 
     public CarryOnModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -58,6 +59,9 @@ public class CarryOnModule implements Listener {
         }
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             landsIntegration = new LandsIntegrationHandler(plugin);
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("Lootin") != null) {
+            lootinIntegration = new LootinIntegrationHandler(plugin);
         }
     }
 
@@ -172,6 +176,16 @@ public class CarryOnModule implements Listener {
 
         Block block = event.getClickedBlock();
         if (block == null || !(block.getState() instanceof Container)) return;
+
+        // Integration with Lootin
+        if (lootinIntegration != null && lootinIntegration.isLootinContainer(block.getState())) {
+            boolean allow = plugin.getConfig().getBoolean("carry_on.allow_lootin_pickup", false);
+            if (!allow) {
+                TextHandler.get().sendMessage(player, "carry_on.no_lootin_pickup");
+                event.setCancelled(true);
+                return;
+            }
+        }
 
         // Integration with WorldGuard
         if (wgIntegration != null) {

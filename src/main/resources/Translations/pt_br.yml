@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>Você colocou o bloco.</gold>"
   no_permissions: "<red>Você não tem permissão para pegar esta entidade/Baú.</red>"
   error_checking_permissions: "<red>Ocorreu um erro ao verificar as permissões.</red>"
+  error_lootin_container: "<red>Ocorreu um erro ao verificar o contêiner Lootin: {0}</red>"
+  no_lootin_pickup: "<red>Você não pode pegar este contêiner, pois não é um contêiner Lootin.</red>"
 
 death_chest:
   location_not_found: "Nenhum local seguro encontrado para o baú de morte de {0}."

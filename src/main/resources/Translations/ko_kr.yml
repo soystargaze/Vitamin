@@ -104,6 +104,8 @@ carry_on:
   placed_block: "<gold>블록을 배치했습니다.</gold>"
   no_permissions: "<red>이 엔티티/상자를 들어 올릴 권한이 없습니다.</red>"
   error_checking_permissions: "<red>권한 확인 중 오류가 발생했습니다.</red>"
+  error_lootin_container: "<red>Lootin 컨테이너 확인 중 오류가 발생했습니다: {0}</red>"
+  no_lootin_pickup: "<red>이 Lootin 컨테이너를 들어 올릴 수 없습니다.</red>"
 
 void_totem:
   activated: "보이드 토템이 활성화되었습니다! 안전한 곳으로 순간이동 중..."

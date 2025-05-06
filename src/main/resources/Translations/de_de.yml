@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>Du hast den Block platziert.</gold>"
   no_permissions: "<red>Du hast keine Berechtigung, diese Entität/Truhe aufzuheben.</red>"
   error_checking_permissions: "<red>Ein Fehler ist beim Überprüfen der Berechtigungen aufgetreten.</red>"
+  error_lootin_container: "<red>Ein Fehler ist beim Überprüfen des Lootin-Containers aufgetreten: {0}</red>"
+  no_lootin_pickup: "<red>Du kannst diese Entität nicht aufheben, da sie nicht in der Lootin-Container-Liste ist.</red>"
 
 death_chest:
   location_not_found: "Kein sicherer Ort für die Todestruhe von {0} gefunden."

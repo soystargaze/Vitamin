@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>Has colocado el bloque.</gold>"
   no_permissions: "<red>No tienes permiso para recoger esta entidad/Cofre.</red>"
   error_checking_permissions: "<red>Ocurrió un error al verificar los permisos.</red>"
+  error_lootin_container: "<red>Ocurrió un error al verificar el contenedor Lootin: {0}</red>"
+  no_lootin_pickup: "<red>No puedes recoger este contenedor Lootin.</red>"
 
 death_chest:
   location_not_found: "No se encontró una ubicación segura para el cofre de muerte de {0}."

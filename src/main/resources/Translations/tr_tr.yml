@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>Blok yerleştirildi.</gold>"
   no_permissions: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
   error_checking_permissions: "<red>İzinler kontrol edilirken bir hata oluştu.</red>"
+  error_lootin_container: "<red>Lootin konteyneri kontrol edilirken bir hata oluştu: {0}</red>"
+  no_lootin_pickup: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
 
 death_chest:
   location_not_found: "{0} oyuncusunun ölüm sandığı için güvenli bir yer bulunamadı."

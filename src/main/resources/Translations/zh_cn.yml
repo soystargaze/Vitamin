@@ -92,6 +92,8 @@ carry_on:
   placed_block: "<gold>你已放置该方块。</gold>"
   no_permissions: "<red>你没有权限拾取此实体/箱子。</red>"
   error_checking_permissions: "<red>检查权限时发生错误。</red>"
+  error_lootin_container: "<red>检查 Lootin 容器时发生错误: {0}</red>"
+  no_lootin_pickup: "<red>你没有权限拾取此容器。</red>"
 
 death_chest:
   location_not_found: "未找到 {0} 的死亡箱子安全位置。"
