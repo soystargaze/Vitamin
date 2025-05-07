@@ -28,6 +28,10 @@ public class ModuleManager {
                     p -> new CustomRecipesModule(),
                     null
             ),
+            new ModuleDef("module.gold_armor_trim",
+                    p -> new GoldArmorTrimModule(),
+                    null
+            ),
             new ModuleDef("module.invisible_item_frames",
                     p -> new InvisibleItemFramesModule(),
                     null
