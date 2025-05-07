@@ -74,7 +74,7 @@ module:
 
 # Carry On settings
 carry_on:
-  max_weight: 100
+  max_weight: 100 # Weight is based on the max health of the mob
   allow_lootin_pickup: false # Block Lootin chest pickup (only if Lootin plugin is on the server)
 
 # Death Chest settings
