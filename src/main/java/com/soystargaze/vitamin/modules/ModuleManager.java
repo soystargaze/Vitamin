@@ -29,7 +29,7 @@ public class ModuleManager {
                     null
             ),
             new ModuleDef("module.gold_armor_trim",
-                    p -> new GoldArmorTrimModule(),
+                    p -> new ArmorTrimModule(),
                     null
             ),
             new ModuleDef("module.invisible_item_frames",

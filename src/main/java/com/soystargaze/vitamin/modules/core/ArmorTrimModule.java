@@ -16,15 +16,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class GoldArmorTrimModule implements Listener {
+public class ArmorTrimModule implements Listener {
 
     private final Set<UUID> provokedPlayers = new HashSet<>();
 
     @EventHandler
     public void onEntityTarget(EntityTargetEvent event) {
         if (event.getEntity() instanceof Piglin && event.getTarget() instanceof Player player) {
-            if (!player.hasPermission("vitamin.module.gold_armor_trim") ||
-                    !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.gold_armor_trim")) {
+            if (!player.hasPermission("vitamin.module.armor_trim") ||
+                    !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.armor_trim")) {
                 return;
             }
             if (!provokedPlayers.contains(player.getUniqueId()) && hasGoldArmorTrim(player)) {
