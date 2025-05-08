@@ -11,28 +11,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
 
 public class VeinMinerModule implements Listener {
 
     private static final int MAX_BLOCKS = 64;
 
-    private static final Map<Material, Material> SMELT_MAP = new EnumMap<>(Material.class);
     private static final Set<Material> ORES = EnumSet.noneOf(Material.class);
+    private static final Map<Material, Material> RAW_TO_INGOT = new EnumMap<>(Material.class);
 
     static {
-        SMELT_MAP.put(Material.IRON_ORE, Material.IRON_INGOT);
-        SMELT_MAP.put(Material.DEEPSLATE_IRON_ORE, Material.IRON_INGOT);
-        SMELT_MAP.put(Material.GOLD_ORE, Material.GOLD_INGOT);
-        SMELT_MAP.put(Material.DEEPSLATE_GOLD_ORE, Material.GOLD_INGOT);
-        SMELT_MAP.put(Material.COPPER_ORE, Material.COPPER_INGOT);
-        SMELT_MAP.put(Material.DEEPSLATE_COPPER_ORE, Material.COPPER_INGOT);
-
         ORES.add(Material.COAL_ORE);
         ORES.add(Material.DEEPSLATE_COAL_ORE);
         ORES.add(Material.IRON_ORE);
@@ -51,6 +39,10 @@ public class VeinMinerModule implements Listener {
         ORES.add(Material.DEEPSLATE_DIAMOND_ORE);
         ORES.add(Material.NETHER_QUARTZ_ORE);
         ORES.add(Material.NETHER_GOLD_ORE);
+
+        RAW_TO_INGOT.put(Material.RAW_IRON, Material.IRON_INGOT);
+        RAW_TO_INGOT.put(Material.RAW_GOLD, Material.GOLD_INGOT);
+        RAW_TO_INGOT.put(Material.RAW_COPPER, Material.COPPER_INGOT);
     }
 
     public VeinMinerModule(JavaPlugin ignored) {
@@ -70,18 +62,16 @@ public class VeinMinerModule implements Listener {
             return;
         }
 
-        boolean hasSilkTouch = tool.containsEnchantment(Enchantment.SILK_TOUCH);
-        boolean hasFireAspect = tool.containsEnchantment(Enchantment.FIRE_ASPECT);
-        int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
-
-        if (!tool.containsEnchantment(Enchantment.EFFICIENCY) || tool.getEnchantmentLevel(Enchantment.EFFICIENCY) != 5) {
+        if (!tool.containsEnchantment(Enchantment.EFFICIENCY) ||
+                tool.getEnchantmentLevel(Enchantment.EFFICIENCY) != 5) {
             return;
         }
 
-        processVeinMining(block, hasSilkTouch, hasFireAspect, fortuneLevel);
+        event.setCancelled(true);
+        processVeinMining(block, tool);
     }
 
-    private void processVeinMining(Block block, boolean hasSilkTouch, boolean hasFireAspect, int fortuneLevel) {
+    private void processVeinMining(Block block, ItemStack tool) {
         Set<Block> veinBlocks = new HashSet<>();
         findConnectedOres(block, block.getType(), veinBlocks);
 
@@ -90,21 +80,38 @@ public class VeinMinerModule implements Listener {
         }
 
         for (Block ore : veinBlocks) {
-            handleBlockDrop(ore, hasSilkTouch, hasFireAspect, fortuneLevel);
+            handleBlockDrop(ore, tool);
         }
     }
 
-    private void handleBlockDrop(Block ore, boolean hasSilkTouch, boolean hasFireAspect, int fortuneLevel) {
-        Material dropMaterial = ore.getType();
+    private void handleBlockDrop(Block ore, ItemStack tool) {
+        boolean hasSilkTouch = tool.containsEnchantment(Enchantment.SILK_TOUCH);
+        boolean hasFireAspect = tool.containsEnchantment(Enchantment.FIRE_ASPECT);
 
-        if (!hasSilkTouch && hasFireAspect) {
-            dropMaterial = SMELT_MAP.getOrDefault(dropMaterial, dropMaterial);
+        Collection<ItemStack> drops;
+        if (hasSilkTouch) {
+            drops = Collections.singletonList(new ItemStack(ore.getType()));
+        } else {
+            drops = ore.getDrops(tool);
+            if (hasFireAspect) {
+                List<ItemStack> modifiedDrops = new ArrayList<>();
+                for (ItemStack drop : drops) {
+                    Material dropType = drop.getType();
+                    if (RAW_TO_INGOT.containsKey(dropType)) {
+                        Material ingot = RAW_TO_INGOT.get(dropType);
+                        modifiedDrops.add(new ItemStack(ingot, drop.getAmount()));
+                    } else {
+                        modifiedDrops.add(drop);
+                    }
+                }
+                drops = modifiedDrops;
+            }
         }
 
-        int dropAmount = calculateDropAmount(hasSilkTouch, fortuneLevel);
-
         ore.setType(Material.AIR);
-        ore.getWorld().dropItemNaturally(ore.getLocation(), new ItemStack(dropMaterial, dropAmount));
+        for (ItemStack drop : drops) {
+            ore.getWorld().dropItemNaturally(ore.getLocation(), drop);
+        }
     }
 
     private void findConnectedOres(Block block, Material oreType, Set<Block> visited) {
@@ -124,7 +131,6 @@ public class VeinMinerModule implements Listener {
     private Set<Block> getAdjacentBlocks(Block block) {
         Set<Block> neighbors = new HashSet<>();
         int[][] offsets = { {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1} };
-
         for (int[] offset : offsets) {
             neighbors.add(block.getRelative(offset[0], offset[1], offset[2]));
         }
@@ -141,13 +147,5 @@ public class VeinMinerModule implements Listener {
 
     private boolean isPickaxe(Material material) {
         return material.name().endsWith("_PICKAXE");
-    }
-
-    private int calculateDropAmount(boolean hasSilkTouch, int fortuneLevel) {
-        if (hasSilkTouch) {
-            return 1;
-        }
-        int validFortuneLevel = Math.max(0, fortuneLevel);
-        return 1 + ThreadLocalRandom.current().nextInt(validFortuneLevel + 1);
     }
 }
