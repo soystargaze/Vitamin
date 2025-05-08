@@ -106,6 +106,7 @@ tp_with_compass:
 # Enchants Back settings
 enchants_back:
   max_returned: 5 # Maximum number of enchants returned
+  random_range: true # Random range from max_returned
 
 # Leaf Decay settings
 leaf_decay:

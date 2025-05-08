@@ -44,26 +44,31 @@ public class EnchantsBackModule implements Listener {
         Map<Enchantment, Integer> vanillaEnchants = inputItem.getEnchantments();
         boolean hasVanilla = !vanillaEnchants.isEmpty();
 
-        boolean aeLoaded = plugin.getServer()
-                .getPluginManager()
-                .isPluginEnabled("AdvancedEnchantments");
-        Map<String, Integer> aeEnchants = aeLoaded
-                ? AEAPI.getEnchantmentsOnItem(inputItem)
-                : Map.of();
+        boolean aeLoaded = plugin.getServer().getPluginManager().isPluginEnabled("AdvancedEnchantments");
+        Map<String, Integer> aeEnchants = aeLoaded ? AEAPI.getEnchantmentsOnItem(inputItem) : Map.of();
         boolean hasAE = !aeEnchants.isEmpty();
 
         if (!hasVanilla && !hasAE) return;
 
-        int totalEnchants = (hasVanilla ? vanillaEnchants.size() : 0)
-                + (hasAE      ? aeEnchants.size()      : 0);
-        int maxReturned = plugin.getConfig()
-                .getInt("enchants_back.max_returned", totalEnchants);
-        int toProcess = Math.min(totalEnchants, maxReturned);
+        int totalEnchants = (hasVanilla ? vanillaEnchants.size() : 0) + (hasAE ? aeEnchants.size() : 0);
+        int maxReturned = plugin.getConfig().getInt("enchants_back.max_returned", totalEnchants);
+        boolean useRandomRange = plugin.getConfig().getBoolean("enchants_back.random_range", false);
 
         int bookCount = countBooks(player.getInventory());
-        if (bookCount < toProcess) return;
         int freeSlots = getFreeInventorySlots(player.getInventory());
-        if (freeSlots < toProcess) return;
+
+        int maxPossible = Math.min(totalEnchants, maxReturned);
+        int toProcess;
+        if (useRandomRange) {
+            int maxAvailable = Math.min(maxPossible, bookCount);
+            maxAvailable = Math.min(maxAvailable, freeSlots);
+            if (maxAvailable <= 0) return;
+            toProcess = (int) (Math.random() * maxAvailable) + 1;
+        } else {
+            toProcess = Math.min(maxPossible, bookCount);
+            toProcess = Math.min(toProcess, freeSlots);
+            if (toProcess <= 0) return;
+        }
 
         int processed = 0;
 
@@ -77,15 +82,11 @@ public class EnchantsBackModule implements Listener {
             }
         }
 
-        if (aeLoaded) {
+        if (aeLoaded && processed < toProcess) {
             for (Entry<String, Integer> aeEntry : aeEnchants.entrySet()) {
                 if (processed >= toProcess) break;
                 ItemStack aeBook = new ItemStack(Material.BOOK);
-                aeBook = AEAPI.applyEnchant(
-                        aeEntry.getKey(),
-                        aeEntry.getValue(),
-                        aeBook
-                );
+                aeBook = AEAPI.applyEnchant(aeEntry.getKey(), aeEntry.getValue(), aeBook);
                 if (player.getInventory().addItem(aeBook).isEmpty()) {
                     removeOneBook(player);
                     processed++;
