@@ -143,9 +143,7 @@ class ArmorTrimManager {
                         }
                         break;
                     case "EMERALD":
-                        if (config.getBoolean("armor_trims." + materialKey + ".hero_of_the_village.enabled", true)) {
-                            effects.add(new HeroOfTheVillageEffect());
-                        }
+                        effects.add(new HeroOfTheVillageEffect());
                         break;
                     case "NETHERITE":
                         if (config.getBoolean("armor_trims." + materialKey + ".fire_resistance.enabled", true)) {

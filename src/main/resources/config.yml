@@ -140,9 +140,7 @@ armor_trims:
       speed_boost: 0.05  # base speed increase per piece
       duration: 5  # seconds
   EMERALD:
-    enabled: true
-    hero_of_the_village:
-      enabled: true
+    enabled: true # Hero of the Village effect
   NETHERITE:
     enabled: true
     fire_resistance:
