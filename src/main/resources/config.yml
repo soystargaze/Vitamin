@@ -185,3 +185,5 @@ armor_trims:
       radius: 5.0  # blocks
   GOLD:
     enabled: true  # Controls piglin neutrality behavior
+
+# Future features will be added here ↓
