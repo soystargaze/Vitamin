@@ -1,17 +1,14 @@
 package com.soystargaze.vitamin;
 
 import com.soystargaze.vitamin.adapter.VersionAdapter;
-import com.soystargaze.vitamin.adapter.VersionAdapter_1_21_1;
-import com.soystargaze.vitamin.adapter.VersionAdapter_1_21_4;
+import com.soystargaze.vitamin.adapter.*;
 import com.soystargaze.vitamin.commands.VitaminCommandManager;
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
-import com.soystargaze.vitamin.utils.AsyncExecutor;
-import com.soystargaze.vitamin.utils.ConsoleUtils;
-import com.soystargaze.vitamin.utils.updater.UpdateChecker;
-import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.updater.UpdateOnJoinListener;
+import com.soystargaze.vitamin.utils.*;
+import com.soystargaze.vitamin.utils.text.*;
+import com.soystargaze.vitamin.utils.updater.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,6 +53,7 @@ public class Vitamin extends JavaPlugin implements Listener {
             DatabaseHandler.initialize(this);
             TextHandler.get().logTranslated("plugin.separator");
             moduleManager = new ModuleManager(this);
+            getServer().getPluginManager().registerEvents(new UpdateOnFullLoad(), this);
             getServer().getPluginManager().registerEvents(new UpdateOnJoinListener(), this);
             TextHandler.get().logTranslated("plugin.separator");
             initializeMetrics();
@@ -75,7 +73,6 @@ public class Vitamin extends JavaPlugin implements Listener {
         ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
-        UpdateChecker.checkForUpdates();
         initializeCommandManager();
         ConsoleUtils.displaySuccessMessage(this);
     }
