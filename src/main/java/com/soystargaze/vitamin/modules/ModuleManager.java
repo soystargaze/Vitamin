@@ -28,7 +28,7 @@ public class ModuleManager {
                     p -> new CustomRecipesModule(),
                     null
             ),
-            new ModuleDef("module.gold_armor_trim",
+            new ModuleDef("module.armor_trim",
                     p -> new ArmorTrimModule(),
                     null
             ),
