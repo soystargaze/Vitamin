@@ -16,10 +16,9 @@ language: "en_us"
 # Recommended: leave true to keep defaults up-to-date.
 # For custom translations, duplicate and rename default files before editing.
 translations:
-  force-update: true
+  force-update: true # Recommended to keep translations up-to-date. Default: true
 
-# Check for updates on admin join
-update-check: true
+update-check: true # Check for updates on admin join
 
 # Database settings
 database:
