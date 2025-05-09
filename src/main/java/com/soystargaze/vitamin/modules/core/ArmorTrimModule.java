@@ -322,6 +322,7 @@ class ArmorTrimManager {
         }
     }
 
+    @SuppressWarnings("unused")
     public int getTrimStack(Player player, TrimMaterial material) {
         return playerTrimCounts.getOrDefault(player.getUniqueId(), new HashMap<>()).getOrDefault(material, 0);
     }
