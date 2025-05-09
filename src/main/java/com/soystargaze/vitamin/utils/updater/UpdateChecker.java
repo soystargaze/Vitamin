@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class UpdateChecker {
 
-    private static final String API_URL = "https://api.modrinth.com/project/%s/version";
+    private static final String API_URL = "https://api.modrinth.com/v2/project/%s/version";
     private static final String PROJECT_ID = "vitamin";
     @SuppressWarnings("deprecation")
     private static final String CURRENT_VERSION = Vitamin.getInstance().getDescription().getVersion();
@@ -28,7 +28,7 @@ public class UpdateChecker {
                 URL urlObj = uri.toURL();
                 HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", "VitaminPlugin");
+                connection.setRequestProperty("User-Agent", "soystargaze/Vitamin/" + CURRENT_VERSION + " (dev@soystargaze.com)");
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == 200) {
