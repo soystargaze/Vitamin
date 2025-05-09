@@ -9,8 +9,9 @@ import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.utils.AsyncExecutor;
 import com.soystargaze.vitamin.utils.ConsoleUtils;
-// ↓ Importamos el TextHandler
+import com.soystargaze.vitamin.utils.updater.UpdateChecker;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.updater.UpdateOnJoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,7 +45,6 @@ public class Vitamin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         AsyncExecutor.shutdown();
-        // LoggingUtils → TextHandler
         TextHandler.get().logTranslated("plugin.disabled");
         instance = null;
         DatabaseHandler.close();
@@ -56,6 +56,7 @@ public class Vitamin extends JavaPlugin implements Listener {
             DatabaseHandler.initialize(this);
             TextHandler.get().logTranslated("plugin.separator");
             moduleManager = new ModuleManager(this);
+            getServer().getPluginManager().registerEvents(new UpdateOnJoinListener(), this);
             TextHandler.get().logTranslated("plugin.separator");
             initializeMetrics();
         } catch (Exception e) {
@@ -76,6 +77,7 @@ public class Vitamin extends JavaPlugin implements Listener {
         AsyncExecutor.initialize();
         initializeCommandManager();
         ConsoleUtils.displaySuccessMessage(this);
+        UpdateChecker.checkForUpdates();
     }
 
     private void setupTranslations() {
@@ -92,7 +94,8 @@ public class Vitamin extends JavaPlugin implements Listener {
             File f = new File(translationsFolder, file);
             if (!f.exists()) {
                 try {
-                    saveResource("Translations/" + file, false);
+                    boolean replace = getConfig().getBoolean("translations.force-update", true);
+                    saveResource("Translations/" + file, replace);
                 } catch (Exception e) {
                     TextHandler.get().registerTemporaryTranslation(
                             "translations.save_error",

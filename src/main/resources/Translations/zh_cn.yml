@@ -20,6 +20,10 @@ plugin:
   version_detected: "检测到的版本: {0}"
   paper_detected: "<color:#FFA500>检测到 Paper:</color> 使用 Paper 钩子以获得更好的性能。"
   paper_not_detected: "<color:#FFA500>检测到 Spigot:</color> 使用核心钩子。"
+  update_available: "<color:#FFA500>可用更新:</color> 在 {1} 下载维生素+ {0}"
+  no_update_available: "<color:#FFA500>没有可用更新。</color> 您正在使用最新版本。"
+  update_check_failed: "<color:#FFA500>检查更新失败:</color> {0}"
+  update_check_error: "<color:#FFA500>检查更新时发生错误:</color> {0}"
 
 items:
   registered: "维生素+ 的物品已成功注册。"

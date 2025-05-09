@@ -20,6 +20,10 @@ plugin:
   version_detected: "Versão detectada: {0}"
   paper_detected: "<color:#FFA500>Paper detectado:</color> Usando ganchos do Paper para melhor desempenho."
   paper_not_detected: "<color:#FFA500>Spigot detectado:</color> Usando ganchos do núcleo."
+  update_available: "<color:#FFA500>Atualização disponível:</color> Baixe o Vitamin+ {0} em {1}"
+  no_update_available: "<color:#FFA500>Nenhuma atualização disponível.</color> Você está usando a versão mais recente."
+  update_check_failed: "<color:#FFA500>Falha ao verificar atualizações:</color> {0}"
+  update_check_error: "<color:#FFA500>Erro ao verificar atualizações:</color> {0}"
 
 items:
   registered: "Itens do Vitamina+ registrados com sucesso."

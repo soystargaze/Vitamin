@@ -20,6 +20,10 @@ plugin:
   version_detected: "Wykryta wersja: {0}"
   paper_detected: "<color:#FFA500>Wykryto Paper:</color> Korzystanie z haków Paper dla lepszej wydajności."
   paper_not_detected: "<color:#FFA500>Wykryto Spigot:</color> Korzystanie z haków rdzenia."
+  update_available: "<color:#FFA500>Dostępna aktualizacja:</color> Pobierz Vitamin+ {0} z {1}"
+  no_update_available: "<color:#FFA500>Brak dostępnych aktualizacji.</color> Używasz najnowszej wersji."
+  update_check_failed: "<color:#FFA500>Nie udało się sprawdzić aktualizacji:</color> {0}"
+  update_check_error: "<color:#FFA500>Wystąpił błąd podczas sprawdzania aktualizacji:</color> {0}"
 
 items:
   registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."

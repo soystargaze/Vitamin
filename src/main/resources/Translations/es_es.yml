@@ -20,6 +20,10 @@ plugin:
   version_detected: "Versión detectada: {0}"
   paper_detected: "<color:#FFA500>Paper detectado:</color> Usando funciones de Paper para un mejor rendimiento."
   paper_not_detected: "<color:#FFA500>Spigot detectado:</color> Usando funciones Core."
+  update_available: "<color:#FFA500>Actualización disponible:</color> Descarga Vitamin+ {0} en {1}"
+  no_update_available: "<color:#FFA500>No hay actualizaciones disponibles.</color> Estás usando la última versión."
+  update_check_failed: "<color:#FFA500>Error al verificar actualizaciones:</color> {0}"
+  update_check_error: "<color:#FFA500>Error al verificar actualizaciones:</color> {0}"
 
 items:
   registered: "Objetos de Vitamina+ registrados correctamente."

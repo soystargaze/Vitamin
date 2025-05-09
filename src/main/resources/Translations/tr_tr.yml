@@ -20,6 +20,10 @@ plugin:
   version_detected: "Algılanan sürüm: {0}"
   paper_detected: "<color:#FFA500>Paper algılandı:</color> Daha iyi performans için Paper hook’ları kullanılıyor."
   paper_not_detected: "<color:#FFA500>Spigot algılandı:</color> Çekirdek hook’ları kullanılıyor."
+  update_available: "<color:#FFA500>Güncelleme mevcut:</color> Vitamin+ {0} sürümünü {1} adresinden indirin"
+  no_update_available: "<color:#FFA500>Güncelleme yok.</color> En son sürümü kullanıyorsunuz."
+  update_check_failed: "<color:#FFA500>Güncelleme kontrolü başarısız oldu:</color> {0}"
+  update_check_error: "<color:#FFA500>Güncelleme kontrolü sırasında hata oluştu:</color> {0}"
 
 items:
   registered: "Vitamin+ öğeleri başarıyla kaydedildi."

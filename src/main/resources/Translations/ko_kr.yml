@@ -20,6 +20,10 @@ plugin:
   version_detected: "감지된 버전: {0}"
   paper_detected: "<color:#FFA500>Paper 감지됨:</color> 더 나은 성능을 위해 Paper 훅을 사용합니다."
   paper_not_detected: "<color:#FFA500>Spigot 감지됨:</color> 코어 훅을 사용합니다."
+  update_available: "<color:#FFA500>업데이트 가능:</color> Vitamin+ {0}을(를) {1}에서 다운로드하세요."
+  no_update_available: "<color:#FFA500>업데이트 없음.</color> 최신 버전을 사용하고 있습니다."
+  update_check_failed: "<color:#FFA500>업데이트 확인 실패:</color> {0}"
+  update_check_error: "<color:#FFA500>업데이트 확인 중 오류 발생:</color> {0}"
 
 items:
   registered: "Vitamin+ 아이템이 성공적으로 등록되었습니다."

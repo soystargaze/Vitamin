@@ -12,6 +12,15 @@
 # Language of the plugin
 language: "en_us"
 
+# Overwrite default translation files with plugin updates if true.
+# Recommended: leave true to keep defaults up-to-date.
+# For custom translations, duplicate and rename default files before editing.
+translations:
+  force-update: true
+
+# Check for updates on admin join
+update-check: true
+
 # Database settings
 database:
   type: sqlite

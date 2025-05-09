@@ -20,6 +20,10 @@ plugin:
   version_detected: "Version detected: {0}"
   paper_detected: "<color:#FFA500>Paper detected:</color> Using paper hooks for better performance."
   paper_not_detected: "<color:#FFA500>Spigot detected:</color> Using core hooks."
+  update_available: "<color:#FFA500>Update available:</color> Download Vitamin+ {0} at {1}"
+  no_update_available: "<color:#FFA500>No updates available.</color> You are using the latest version."
+  update_check_failed: "<color:#FFA500>Failed to check for updates:</color> {0}"
+  update_check_error: "<color:#FFA500>Error checking for updates:</color> {0}"
 
 items:
   registered: "Registered Vitamin+'s items successfully."
