@@ -1,10 +1,12 @@
 package com.soystargaze.vitamin.modules.core;
 
+import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -99,22 +101,99 @@ class ArmorTrimManager {
     private final Map<UUID, Map<TrimMaterial, Integer>> playerTrimCounts = new HashMap<>();
     private final Map<TrimMaterial, List<Effect>> trimEffects = new HashMap<>();
 
+    private static final Map<String, TrimMaterial> MATERIAL_MAP = new HashMap<>();
+
+    static {
+        MATERIAL_MAP.put("COPPER", TrimMaterial.COPPER);
+        MATERIAL_MAP.put("IRON", TrimMaterial.IRON);
+        MATERIAL_MAP.put("REDSTONE", TrimMaterial.REDSTONE);
+        MATERIAL_MAP.put("EMERALD", TrimMaterial.EMERALD);
+        MATERIAL_MAP.put("NETHERITE", TrimMaterial.NETHERITE);
+        MATERIAL_MAP.put("LAPIS", TrimMaterial.LAPIS);
+        MATERIAL_MAP.put("QUARTZ", TrimMaterial.QUARTZ);
+        MATERIAL_MAP.put("DIAMOND", TrimMaterial.DIAMOND);
+        MATERIAL_MAP.put("AMETHYST", TrimMaterial.AMETHYST);
+        MATERIAL_MAP.put("GOLD", TrimMaterial.GOLD);
+    }
+
     public ArmorTrimManager() {
-        trimEffects.put(TrimMaterial.COPPER, Collections.singletonList(new HasteOnSneakEffect(15 * 20, 60)));
-        trimEffects.put(TrimMaterial.IRON, Collections.singletonList(new MagnetEffect(1.0)));
-        trimEffects.put(TrimMaterial.REDSTONE, Collections.singletonList(new SpeedOnSneakEffect(0.05, 5)));
-        trimEffects.put(TrimMaterial.EMERALD, Collections.singletonList(new HeroOfTheVillageEffect()));
-        trimEffects.put(TrimMaterial.NETHERITE, Arrays.asList(
-                new FireResistanceEffect(10, 30),
-                new KnockbackResistanceEffect()
-        ));
-        trimEffects.put(TrimMaterial.LAPIS, Arrays.asList(
-                new ExtraExpEffect(0.10),
-                new EnchantExpRefundEffect(0.05, 0.15)
-        ));
-        trimEffects.put(TrimMaterial.QUARTZ, Collections.singletonList(new NightVisionOnSneakEffect()));
-        trimEffects.put(TrimMaterial.DIAMOND, Collections.singletonList(new ArmorBoostEffect(0.08)));
-        trimEffects.put(TrimMaterial.AMETHYST, Collections.singletonList(new RegenerationOnDamageEffect(8, 15, 5.0)));
+        FileConfiguration config = ConfigHandler.getConfig();
+        for (String materialKey : MATERIAL_MAP.keySet()) {
+            if (config.getBoolean("armor_trims." + materialKey + ".enabled", true)) {
+                List<Effect> effects = new ArrayList<>();
+                switch (materialKey) {
+                    case "COPPER":
+                        if (config.getBoolean("armor_trims." + materialKey + ".haste_on_sneak.enabled", true)) {
+                            int durationSeconds = config.getInt("armor_trims." + materialKey + ".haste_on_sneak.duration", 15);
+                            int cooldownSeconds = config.getInt("armor_trims." + materialKey + ".haste_on_sneak.cooldown", 60);
+                            effects.add(new HasteOnSneakEffect(durationSeconds * 20, cooldownSeconds));
+                        }
+                        break;
+                    case "IRON":
+                        if (config.getBoolean("armor_trims." + materialKey + ".magnet.enabled", true)) {
+                            double baseRadius = config.getDouble("armor_trims." + materialKey + ".magnet.base_radius", 1.0);
+                            effects.add(new MagnetEffect(baseRadius));
+                        }
+                        break;
+                    case "REDSTONE":
+                        if (config.getBoolean("armor_trims." + materialKey + ".speed_on_sneak.enabled", true)) {
+                            double speedBoost = config.getDouble("armor_trims." + materialKey + ".speed_on_sneak.speed_boost", 0.05);
+                            int durationSeconds = config.getInt("armor_trims." + materialKey + ".speed_on_sneak.duration", 5);
+                            effects.add(new SpeedOnSneakEffect(speedBoost, durationSeconds));
+                        }
+                        break;
+                    case "EMERALD":
+                        if (config.getBoolean("armor_trims." + materialKey + ".hero_of_the_village.enabled", true)) {
+                            effects.add(new HeroOfTheVillageEffect());
+                        }
+                        break;
+                    case "NETHERITE":
+                        if (config.getBoolean("armor_trims." + materialKey + ".fire_resistance.enabled", true)) {
+                            int durationSeconds = config.getInt("armor_trims." + materialKey + ".fire_resistance.duration", 10);
+                            int cooldownSeconds = config.getInt("armor_trims." + materialKey + ".fire_resistance.cooldown", 30);
+                            effects.add(new FireResistanceEffect(durationSeconds, cooldownSeconds));
+                        }
+                        if (config.getBoolean("armor_trims." + materialKey + ".knockback_resistance.enabled", true)) {
+                            effects.add(new KnockbackResistanceEffect());
+                        }
+                        break;
+                    case "LAPIS":
+                        if (config.getBoolean("armor_trims." + materialKey + ".extra_exp.enabled", true)) {
+                            double extraPerPiece = config.getDouble("armor_trims." + materialKey + ".extra_exp.extra_per_piece", 0.10);
+                            effects.add(new ExtraExpEffect(extraPerPiece));
+                        }
+                        if (config.getBoolean("armor_trims." + materialKey + ".enchant_exp_refund.enabled", true)) {
+                            double probabilityPerPiece = config.getDouble("armor_trims." + materialKey + ".enchant_exp_refund.probability_per_piece", 0.05);
+                            double refundPercentage = config.getDouble("armor_trims." + materialKey + ".enchant_exp_refund.refund_percentage", 0.15);
+                            effects.add(new EnchantExpRefundEffect(probabilityPerPiece, refundPercentage));
+                        }
+                        break;
+                    case "QUARTZ":
+                        if (config.getBoolean("armor_trims." + materialKey + ".night_vision_on_sneak.enabled", true)) {
+                            effects.add(new NightVisionOnSneakEffect());
+                        }
+                        break;
+                    case "DIAMOND":
+                        if (config.getBoolean("armor_trims." + materialKey + ".armor_boost.enabled", true)) {
+                            double reductionPerPiece = config.getDouble("armor_trims." + materialKey + ".armor_boost.reduction_per_piece", 0.08);
+                            effects.add(new ArmorBoostEffect(reductionPerPiece));
+                        }
+                        break;
+                    case "AMETHYST":
+                        if (config.getBoolean("armor_trims." + materialKey + ".regeneration_on_damage.enabled", true)) {
+                            int durationSeconds = config.getInt("armor_trims." + materialKey + ".regeneration_on_damage.duration", 8);
+                            int cooldownSeconds = config.getInt("armor_trims." + materialKey + ".regeneration_on_damage.cooldown", 15);
+                            double radius = config.getDouble("armor_trims." + materialKey + ".regeneration_on_damage.radius", 5.0);
+                            effects.add(new RegenerationOnDamageEffect(durationSeconds, cooldownSeconds, radius));
+                        }
+                        break;
+                    // No effects defined for GOLD by default, handled in hasGoldArmorTrim
+                }
+                if (!effects.isEmpty()) {
+                    trimEffects.put(MATERIAL_MAP.get(materialKey), effects);
+                }
+            }
+        }
     }
 
     public void updatePlayerTrims(Player player) {
@@ -144,6 +223,10 @@ class ArmorTrimManager {
     }
 
     public boolean hasGoldArmorTrim(Player player) {
+        FileConfiguration config = ConfigHandler.getConfig();
+        if (!config.getBoolean("armor_trims.GOLD.enabled", true)) {
+            return false;
+        }
         Map<TrimMaterial, Integer> counts = playerTrimCounts.getOrDefault(player.getUniqueId(), new HashMap<>());
         return counts.getOrDefault(TrimMaterial.GOLD, 0) > 0;
     }
@@ -276,7 +359,7 @@ interface EnchantListenerEffect extends Effect {
 
 class HasteOnSneakEffect implements SneakListenerEffect {
     private final int duration; // ticks
-    private final int cooldown; // segundos
+    private final int cooldown; // seconds
     private final Map<UUID, Long> lastActivatedMap = new HashMap<>();
 
     public HasteOnSneakEffect(int duration, int cooldown) {

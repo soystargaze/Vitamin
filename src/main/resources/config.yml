@@ -119,3 +119,62 @@ repair:
   diamond_value: 0.4 # Percentage repaired with a diamond: 40%
   ingot_value: 0.27 # Percentage repaired with an ingot: 27%
   nugget_value: 0.03 # Percentage repaired with a nugget: 3%
+
+# Armor Trim settings
+armor_trims:
+  COPPER:
+    enabled: true
+    haste_on_sneak:
+      enabled: true
+      duration: 15  # seconds, converted to ticks (x20) in code
+      cooldown: 60  # seconds
+  IRON:
+    enabled: true
+    magnet:
+      enabled: true
+      base_radius: 1.0  # blocks per armor piece
+  REDSTONE:
+    enabled: true
+    speed_on_sneak:
+      enabled: true
+      speed_boost: 0.05  # base speed increase per piece
+      duration: 5  # seconds
+  EMERALD:
+    enabled: true
+    hero_of_the_village:
+      enabled: true
+  NETHERITE:
+    enabled: true
+    fire_resistance:
+      enabled: true
+      duration: 10  # seconds per piece
+      cooldown: 30  # seconds
+    knockback_resistance:
+      enabled: true
+  LAPIS:
+    enabled: true
+    extra_exp:
+      enabled: true
+      extra_per_piece: 0.10  # extra XP percentage per piece
+    enchant_exp_refund:
+      enabled: true
+      probability_per_piece: 0.05  # chance per piece to refund XP
+      refund_percentage: 0.15  # percentage of spent XP refunded
+  QUARTZ:
+    enabled: true
+    night_vision_on_sneak:
+      enabled: true
+  DIAMOND:
+    enabled: true
+    armor_boost:
+      enabled: true
+      reduction_per_piece: 0.08  # damage reduction per piece
+  AMETHYST:
+    enabled: true
+    regeneration_on_damage:
+      enabled: true
+      duration: 8  # seconds per piece
+      cooldown: 15  # seconds
+      radius: 5.0  # blocks
+  GOLD:
+    enabled: true  # Controls piglin neutrality behavior
