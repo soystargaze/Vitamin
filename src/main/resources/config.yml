@@ -44,6 +44,7 @@ settings:
 
 # Enable or disable modules
 module:
+  armor_trim: true # Armor trim gives special effects depending on the material (Active with Shift or Passive)
   auto_tool: true # Automatically switch to the correct tool when breaking blocks
   carry_on: true # Shift + Right Click to pick up entities and chests
   crop_protection: true # Prevents crops from being trampled
@@ -54,7 +55,6 @@ module:
   elytra_armor: true # Elytra gives armor like a chest plate
   enchants_back: true # Enchants are returned when disenchanting with a grindstone and has empty books
   fire_aspect_tools: true # Drop's smelting when the tool has Fire Aspect I (40%) and Fire Aspect II (100%)
-  armor_trim: true # Piglins don't attack you when you wear an armor with gold trim
   invisible_item_frames: true # Right-click an item frame with an empty hand to make it invisible/visible
   leaf_decay: true # Leaves decay when the log is removed
   pet_protection: true # Prevents pets from taking damage from the owner
