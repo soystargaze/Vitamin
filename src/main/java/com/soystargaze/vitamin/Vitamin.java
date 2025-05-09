@@ -86,23 +86,22 @@ public class Vitamin extends JavaPlugin implements Listener {
             TextHandler.get().logTranslated("translations.folder_error");
             return;
         }
+
         String[] defaults = {
                 "en_us.yml","es_es.yml","fr_fr.yml","de_de.yml",
                 "pt_br.yml","pl_pl.yml","zh_cn.yml","ko_kr.yml","tr_tr.yml"
         };
+
+        boolean replace = getConfig().getBoolean("translations.force-update", true);
         for (String file : defaults) {
-            File f = new File(translationsFolder, file);
-            if (!f.exists()) {
-                try {
-                    boolean replace = getConfig().getBoolean("translations.force-update", true);
-                    saveResource("Translations/" + file, replace);
-                } catch (Exception e) {
-                    TextHandler.get().registerTemporaryTranslation(
-                            "translations.save_error",
-                            "Language cannot be saved: {0}"
-                    );
-                    TextHandler.get().logTranslated("translations.save_error", file);
-                }
+            try {
+                saveResource("Translations/" + file, replace);
+            } catch (Exception e) {
+                TextHandler.get().registerTemporaryTranslation(
+                        "translations.save_error",
+                        "Language cannot be saved: {0}"
+                );
+                TextHandler.get().logTranslated("translations.save_error", file);
             }
         }
 
