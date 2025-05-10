@@ -50,6 +50,10 @@ public class ModuleManager {
             ),
 
             // —— Spigot-only (with Plugin) ——
+            new ModuleDef("module.bone_meal_expansion",
+                    BoneMealExpansionModule::new,
+                    null
+            ),
             new ModuleDef("module.carry_on",
                     CarryOnModule::new,
                     null

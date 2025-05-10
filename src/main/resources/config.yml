@@ -54,6 +54,7 @@ settings:
 module:
   armor_trim: true # Armor trim gives special effects depending on the material (Active with Shift or Passive)
   auto_tool: true # Automatically switch to the correct tool when breaking blocks
+  bone_meal_expansion: true # Bone meal can be used to grow special crops
   carry_on: true # Shift + Right Click to pick up entities and chests
   crop_protection: true # Prevents crops from being trampled
   custom_recipes: true # Add custom recipes to the game
@@ -80,6 +81,16 @@ module:
   villager_follow_emeralds: true # Villagers follow you when you hold an emerald
   wall_jump: true # Shift to wall jump. You can climb up or slide down walls
   weather_effects: true # In the daytime, mobs have more babies and with the rain, crops grow faster.
+
+# Bone Meal Expansion settings
+bone_meal_expansion:
+  crops:
+    sugar_cane: true
+    cactus: true
+    bamboo: true
+    nether_wart: true
+    pumpkin_stem: true
+    melon_stem: true
 
 # Carry On settings
 carry_on:
