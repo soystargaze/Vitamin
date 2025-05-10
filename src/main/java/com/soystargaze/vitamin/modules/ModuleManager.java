@@ -37,7 +37,7 @@ public class ModuleManager {
                     null
             ),
             new ModuleDef("module.pet_protection",
-                    p -> new PetOwnerModule(),
+                    p -> new PetProtectionModule(),
                     null
             ),
             new ModuleDef("module.seed_replanter",
@@ -72,6 +72,10 @@ public class ModuleManager {
             ),
             new ModuleDef("module.leaf_decay",
                     LeafDecayModule::new,
+                    null
+            ),
+            new ModuleDef("module.oxygen_bottle",
+                    OxygenBottleModule::new,
                     null
             ),
             new ModuleDef("module.repair",

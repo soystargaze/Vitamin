@@ -21,11 +21,26 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **27 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
+**Vitamin+** comes loaded with **29 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
 
 <details>
   <summary>Explore</summary>
 
+- **Armor Trim:** The armor trim gives special effects depending on the material, some effects are stackable. (Triggered with `Shift` or Passive effect and configurable)
+  <details>
+    <summary>Materials</summary>
+
+    - **Copper**: Grants *Haste* for **15 seconds** when sneaking is initiated, with a **60-second cooldown**. **Stackable**.
+    - **Iron**: Attracts items with a magnet effect within a radius of **1.0 blocks per piece**. **Stackable**.
+    - **Redstone**: Gives *Speed* for **5 seconds** when sneaking is initiated, with an increase of **0.05 per piece**. **Stackable**.
+    - **Emerald**: Applies *Hero of the Village* when opening merchant inventories (up to **5 stacks**). **Stackable**.
+    - **Netherite**: Provides *Fire Resistance* for **10 seconds** with a **30-second cooldown** and *Knockback Resistance*. **Stackable**.
+    - **Lapis**: Boosts XP gain by **10% per piece** and may refund between **5% and 15% of XP** when enchanting. **Stackable**.
+    - **Quartz**: Grants *Night Vision* while sneaking (requires staying crouched). **Not stackable**.
+    - **Diamond**: Increases armor effectiveness by **8% per piece**. **Stackable**.
+    - **Amethyst**: Grants *Regeneration* to self and nearby players for **8 seconds** when damaged, with a **15-second cooldown** and a radius of **5.0 blocks**. **Stackable**.
+    - **Gold**: Prevents Piglins from attacking unless provoked. **Not stackable** (only one piece needed).
+  </details>
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard) or [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) to work with members only, also respects `Lootin Chests` if [Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/) is in the server (can be disabled).
 - **Crop Protection:** Prevents crops from being trampled by players.
@@ -37,6 +52,7 @@
 - **Fire Aspect On Tools:** You can use an anvil to apply `Fire Aspect I/II` to tools. It auto-smelts drops when breaking blocks. `Level I` has a 40% chance, while `Level II` has a 100% chance.
 - **Invisible Item Frames:** Toggle the visibility of item frames with `Shift + Right-Click (empty hand)`.
 - **Leaf Decay:** Leaves disappear faster when cutting down trees (configurable).
+- **Oxygen Bottle:** Using an empty bottle in the water gives you some oxygen to breathe (configurable).
 - **Pet Protection:** Prevents pets from being accidentally damaged by their owners.
 - **Player XP to Books:** Convert your XP into books by `Shift + Right-Clicking` with an empty book.
 - **Repair Tools:** Repairs gold, iron and diamond tools and weapons using nuggets, ingots or diamonds in the player's 2x2 inventory crafting grid.
@@ -49,7 +65,7 @@
 - **Unlock All Recipes:** Unlock all crafting recipes upon joining the server.
 - **Tree Vein Miner:** Chop down entire trees when using `Efficiency V` tools.
 - **Vein Miner:** Mine connected ores in a vein using `Efficiency V` tools.
-- **Villager Follow Emeralds:** Villagers follow players holding emeralds.
+- **Villager Follow Emeralds:** Villagers follow players holding emeralds or dropped in the ground.
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
 - **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.

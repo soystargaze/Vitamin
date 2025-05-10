@@ -11,9 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-public final class PetOwnerModule implements Listener {
+public final class PetProtectionModule implements Listener {
 
-    public PetOwnerModule() {
+    public PetProtectionModule() {
     }
 
     @EventHandler
