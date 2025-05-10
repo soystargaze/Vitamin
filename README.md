@@ -142,6 +142,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 ---
 
 - `vitamin.module.*` - Grants permission to use all modules.
+- `vitamin.module.armor_trim` - Allows the use of the Armor Trim module.
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
 - `vitamin.module.crop_protection` - Allows the use of the Crop Protection module.
@@ -152,6 +153,8 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.enchants_back` - Allows the use of the Enchants Back module.
 - `vitamin.module.fire_aspect_tools` - Allows the use of the Fire Aspect On Tools module.
 - `vitamin.module.invisible_item_frames` - Allows the use of the Invisible Item Frames module.
+- `vitamin.module.leaf_decay` - Allows the use of the Leaf Decay module.
+- `vitamin.module.oxygen_bottle` - Allows the use of the Oxygen Bottle module.
 - `vitamin.module.pet_protection` - Allows the use of the Pet Protection module.
 - `vitamin.module.xp_books` - Allows the use of the Player XP to Books module.
 - `vitamin.module.repair` - Allows the use of the Repair Tools module.
