@@ -26,7 +26,7 @@
 <details>
   <summary>Explore</summary>
 
-- **Armor Trim:** The armor trim gives special effects depending on the material, some effects are stackable. (Triggered with `Shift` or Passive effect and configurable)
+- **Armor Trim:** The armor trim gives special effects depending on the material, some effects are stackable. (Triggered with `Shift` or Passive effects)
   <details>
     <summary>Materials</summary>
 
