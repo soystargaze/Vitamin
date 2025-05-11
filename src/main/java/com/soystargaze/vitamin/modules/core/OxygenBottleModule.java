@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
@@ -24,6 +25,8 @@ public class OxygenBottleModule implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
@@ -45,7 +48,7 @@ public class OxygenBottleModule implements Listener {
 
                 int currentAir = player.getRemainingAir();
                 int maxAir = player.getMaximumAir();
-                int restoreAmount = plugin.getConfig().getInt("oxygen_bottle.restore_amount", 60); // 3 segundos por defecto
+                int restoreAmount = plugin.getConfig().getInt("oxygen_bottle.restore_amount", 60);
                 int newAir = Math.min(currentAir + restoreAmount, maxAir);
                 player.setRemainingAir(newAir);
 
@@ -53,6 +56,7 @@ public class OxygenBottleModule implements Listener {
                 if (item.getAmount() <= 0) {
                     player.getInventory().setItemInMainHand(null);
                 }
+
                 player.getInventory().addItem(new ItemStack(Material.POTION));
             }
         }
