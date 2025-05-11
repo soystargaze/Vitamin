@@ -28,6 +28,7 @@ public class ConsoleUtils {
         TextHandler.get().logTranslated("plugin.name");
         TextHandler.get().logTranslated("plugin.version", plugin.getDescription().getVersion());
         TextHandler.get().logTranslated("plugin.author", plugin.getDescription().getAuthors());
+        TextHandler.get().logTranslated("plugin.website", plugin.getDescription().getWebsite());
         TextHandler.get().logTranslated("plugin.separator");
         TextHandler.get().logTranslated("plugin.enabled");
         TextHandler.get().logTranslated("plugin.language_loaded", TextHandler.get().getActiveLanguage(), TextHandler.get().getLoadedTranslationsCount());

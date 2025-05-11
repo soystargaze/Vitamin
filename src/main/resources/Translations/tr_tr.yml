@@ -13,6 +13,7 @@ plugin:
   name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "sürüm: {0}"
   author: "tarafından {0}"
+  website: "web sitesi: {0}"
   enabled: "Vitamin+ başarıyla etkinleştirildi."
   disabled: "Vitamin+ başarıyla devre dışı bırakıldı."
   language_loaded: "Dil yüklendi: {0}.yml ({1} çeviri)"

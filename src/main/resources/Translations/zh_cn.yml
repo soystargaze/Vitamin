@@ -13,6 +13,7 @@ plugin:
   name: "<gradient:#FFA500:#FFFF00>维生素</gradient><color:#FFA500>+</color>"
   version: "版本: {0}"
   author: "作者: {0}"
+  website: "网站: {0}"
   enabled: "维生素+ 启用成功。"
   disabled: "维生素+ 已禁用。"
   language_loaded: "语言已加载: {0}.yml ({1} 条翻译)"

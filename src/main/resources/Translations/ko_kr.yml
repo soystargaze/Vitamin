@@ -13,6 +13,7 @@ plugin:
   name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "버전: {0}"
   author: "제작자: {0}"
+  website: "웹사이트: {0}"
   enabled: "Vitamin+이 성공적으로 활성화되었습니다."
   disabled: "Vitamin+이 성공적으로 비활성화되었습니다."
   language_loaded: "언어 로드 완료: {0}.yml ({1}개 번역)"

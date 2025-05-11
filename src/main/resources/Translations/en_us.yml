@@ -13,6 +13,7 @@ plugin:
   name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "version: {0}"
   author: "by {0}"
+  website: "website: {0}"
   enabled: "Vitamin+ enabled successfully."
   disabled: "Vitamin+ disabled successfully."
   language_loaded: "Language loaded: {0}.yml ({1} translations)"
