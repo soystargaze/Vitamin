@@ -45,7 +45,7 @@ public class TpToBedModule implements Listener {
 
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.tp_compass") ||
-                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.tp_to_bed")) {
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.tp_to_bed_with_compass")) {
             return;
         }
 

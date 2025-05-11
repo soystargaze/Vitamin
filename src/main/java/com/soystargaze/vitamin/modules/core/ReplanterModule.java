@@ -52,8 +52,8 @@ public final class ReplanterModule implements Listener {
         }
 
         Player player = event.getPlayer();
-        if (!player.hasPermission("vitamin.module.replanter") ||
-                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.replanter")) {
+        if (!player.hasPermission("vitamin.module.seed_replanter") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.seed_replanter")) {
             return;
         }
 

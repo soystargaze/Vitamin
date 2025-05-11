@@ -21,8 +21,8 @@ public class UnlockRecipesModule implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!player.hasPermission("vitamin.module.unlock_recipes") ||
-                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.unlock_recipes")) {
+        if (!player.hasPermission("vitamin.module.unlock_all_recipes") ||
+                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.unlock_all_recipes")) {
             return;
         }
         if (!player.hasPlayedBefore()) {

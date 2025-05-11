@@ -69,6 +69,7 @@ module:
   oxygen_bottle: true # Using an empty bottle in the water gives you some oxygen
   pet_protection: true # Prevents pets from taking damage from the owner
   player_xp_to_books: true # Shift + Right Click with an empty book to store all your XP
+  repair: true # Repair items with nuggets, ingots, diamonds and netherite
   seed_replanter: true # Right-Click a fully grown crop to harvest and replant it
   silk_spawners: true # Mine spawners with a silk touch pickaxe to get the spawner
   sponge_with_lava: true # Sponges can absorb lava

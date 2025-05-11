@@ -160,16 +160,16 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.pet_protection` - Allows the use of the Pet Protection module.
 - `vitamin.module.xp_books` - Allows the use of the Player XP to Books module.
 - `vitamin.module.repair` - Allows the use of the Repair Tools module.
-- `vitamin.module.replanter` - Allows the use of the Seed Replanter module.
+- `vitamin.module.seed_replanter` - Allows the use of the Seed Replanter module.
 - `vitamin.module.silk_spawners` - Allows the use of the Silk Spawners module.
 - `vitamin.module.sponge_with_lava` - Allows the use of the Sponge with Lava module.
 - `vitamin.module.totem_from_inventory` - Allows the use of the Totem from Inventory module.
 - `vitamin.module.void_totem` - Allows the use of the Void Totem module.
 - `vitamin.module.tp_compass` - Allows the use of the TP to Bed with Compass module.
-- `vitamin.module.unlock_recipes` - Allows the use of the Unlock All Recipes module.
+- `vitamin.module.unlock_all_recipes` - Allows the use of the Unlock All Recipes module.
 - `vitamin.module.tree_vein_miner` - Allows the use of the Tree Vein Miner module.
 - `vitamin.module.vein_miner` - Allows the use of the Vein Miner module.
-- `vitamin.module.villager_taunt` - Allows the use of the Villager Follow Emeralds module.
+- `vitamin.module.villager_follow_emeralds` - Allows the use of the Villager Follow Emeralds module.
 - `vitamin.module.wall_jump` - Allows the use of the Wall Jump module.
 - `vitamin.module.weather_effects` - Allows the use of the Weather Effects module.
 
