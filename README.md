@@ -21,7 +21,7 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **29 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
+**Vitamin+** comes loaded with **30 great power-ups** to enhance your gameplay, with even more on the way! Keep taking your vitamins for awesome upgrades!
 
 <details>
   <summary>Explore</summary>
