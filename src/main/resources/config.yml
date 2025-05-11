@@ -89,8 +89,8 @@ bone_meal_expansion:
     cactus: true
     bamboo: true
     nether_wart: true
-    pumpkin_stem: true
-    melon_stem: true
+    pumpkin_stem: true # Just works with the pumpkin stem
+    melon_stem: true # Just works with the melon stem
 
 # Carry On settings
 carry_on:
