@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConfigHandler {
 
@@ -17,34 +19,50 @@ public class ConfigHandler {
     private static String language;
 
     public static void setup(JavaPlugin plugin) {
-        plugin.saveDefaultConfig();
-
-        File configFile = new File(plugin.getDataFolder(), "config.yml");
-        FileConfiguration userConfig = YamlConfiguration.loadConfiguration(configFile);
-
-        InputStream resourceStream = plugin.getResource("config.yml");
-        if (resourceStream == null) {
-            plugin.getLogger().severe("Default config.yml not found in resources.");
-            return;
-        }
-        FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(resourceStream, StandardCharsets.UTF_8)
-        );
-
-        for (String key : defaultConfig.getKeys(true)) {
-            if (!userConfig.contains(key)) {
-                userConfig.set(key, defaultConfig.get(key));
+        File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) {
+            boolean created = dataFolder.mkdirs();
+            if (!created) {
+                plugin.getLogger().severe("Could not create plugin data folder at " +
+                        dataFolder.getAbsolutePath());
+                return;
             }
         }
 
+        File configFile = new File(dataFolder, "config.yml");
+
+        FileConfiguration oldConfig = YamlConfiguration.loadConfiguration(configFile);
+        Map<String, Object> userValues = new HashMap<>();
+
+        InputStream defaultStream = plugin.getResource("config.yml");
+        if (defaultStream == null) {
+            plugin.getLogger().severe("Default config.yml not found in plugin JAR!");
+            return;
+        }
+        FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
+                new InputStreamReader(defaultStream, StandardCharsets.UTF_8)
+        );
+
+        for (String key : defaultConfig.getKeys(true)) {
+            if (oldConfig.contains(key)) {
+                userValues.put(key, oldConfig.get(key));
+            }
+        }
+
+        plugin.saveResource("config.yml", true);
+
+        FileConfiguration mergedConfig = YamlConfiguration.loadConfiguration(configFile);
+        for (Map.Entry<String, Object> entry : userValues.entrySet()) {
+            mergedConfig.set(entry.getKey(), entry.getValue());
+        }
+
         try {
-            userConfig.save(configFile);
+            mergedConfig.save(configFile);
         } catch (IOException e) {
             plugin.getLogger().severe("Error saving config.yml: " + e.getMessage());
         }
 
-        config = userConfig;
-
+        config = mergedConfig;
         language = config.getString("language", "en_us");
     }
 
