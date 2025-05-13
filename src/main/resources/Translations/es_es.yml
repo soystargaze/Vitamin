@@ -14,8 +14,8 @@ plugin:
   version: "versión: {0}"
   author: "por {0}"
   website: "sitio web: {0}"
-  enabled: "Vitamina+ habilitado correctamente."
-  disabled: "Vitamina+ deshabilitado correctamente."
+  enabled: "Vitamin+ habilitado correctamente."
+  disabled: "Vitamin+ deshabilitado correctamente."
   language_loaded: "Idioma cargado: {0}.yml ({1} traducciones)"
   enable_error: "Ocurrió un error al habilitar Vitamina+: {0}"
   version_detected: "Versión detectada: {0}"
@@ -27,23 +27,23 @@ plugin:
   update_check_error: "<color:#FFA500>Error al verificar actualizaciones:</color> {0}"
 
 items:
-  registered: "Objetos de Vitamina+ registrados correctamente."
+  registered: "Objetos de Vitamin+ registrados correctamente."
 
 events:
   registered: "Eventos registrados correctamente."
 
 commands:
   registered: "Comandos registrados correctamente."
-  usage: "Uso: /vitamina <args>"
+  usage: "Uso: /vitamin <args>"
   reload:
-    success: "Vitamina+ recargado correctamente."
-    error: "Ocurrió un error al recargar Vitamina+."
+    success: "Vitamin+ recargado correctamente."
+    error: "Ocurrió un error al recargar Vitamin+."
   module:
-    usage: "Uso: /vitamina módulo <módulo> <habilitar|deshabilitar>"
+    usage: "Uso: /vitamin module <módulo> <habilitar|deshabilitar>"
     not_found: "Módulo no encontrado: {0}"
     changed: "Módulo {0} {1} correctamente."
   pmodule:
-    usage: "Uso: /vitamina pmódulo <módulo> <habilitar|deshabilitar>"
+    usage: "Uso: /vitamin pmmodule <módulo> <habilitar|deshabilitar>"
     player_only: "Este comando solo puede ser ejecutado por un jugador."
     module_not_active: "El módulo {0} no está activo."
     no_module_permission: "No tienes permiso para usar {0}."
