@@ -72,6 +72,11 @@ database:
     save_error: "Ölüm haritası kaydedilirken bir hata oluştu: {0}"
   death_location:
     save_error: "Ölüm konumu kaydedilirken bir hata oluştu: {0}"
+  chest:
+    save_error: "Sandık kaydedilirken bir hata oluştu: {0}"
+    load_error: "Sandık yüklenirken bir hata oluştu: {0}"
+    delete_error: "Sandık silinirken bir hata oluştu: {0}"
+    deserialize_error: "Sandık serileştirilirken bir hata oluştu: {0}"
 
 module:
   enabled: "Module {0}: <green>enabled"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>İzinler kontrol edilirken bir hata oluştu.</red>"
   error_lootin_container: "<red>Lootin konteyneri kontrol edilirken bir hata oluştu: {0}</red>"
   no_lootin_pickup: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
+  need_both_chest_parts: "<red>Çift sandık taşımak için her iki parçayı da taşımalısınız.</red>"
+  no_space_for_double_chest: "<red>Çift sandık taşımak için yeterli alan yok.</red>"
+  cannot_place_chest: "<red>Bu konumda sandık yerleştirilemez.</red>"
+  placed_double_chest: "<green>Çift sandık yerleştirildi.</green>"
 
 death_chest:
   location_not_found: "{0} oyuncusunun ölüm sandığı için güvenli bir yer bulunamadı."

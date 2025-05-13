@@ -72,6 +72,11 @@ database:
     save_error: "Wystąpił błąd podczas zapisywania mapy śmierci: {0}"
   death_location:
     save_error: "Wystąpił błąd podczas zapisywania lokalizacji śmierci: {0}"
+  chest:
+    save_error: "Wystąpił błąd podczas zapisywania skrzyni: {0}"
+    load_error: "Wystąpił błąd podczas ładowania skrzyni: {0}"
+    delete_error: "Wystąpił błąd podczas usuwania skrzyni: {0}"
+    deserialize_error: "Wystąpił błąd podczas deserializacji skrzyni: {0}"
 
 module:
   enabled: "Moduł {0}: <green>włączony"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>Wystąpił błąd podczas sprawdzania uprawnień.</red>"
   error_lootin_container: "<red>Wystąpił błąd podczas sprawdzania kontenera Lootin: {0}</red>"
   no_lootin_pickup: "<red>Nie masz uprawnień do podnoszenia tej jednostki.</red>"
+  need_both_chest_parts: "<red>Musisz mieć obie części skrzyni, aby podnieść podwójną skrzynię.</red>"
+  no_space_for_double_chest: "<red>Nie masz wystarczająco dużo miejsca w ekwipunku, aby podnieść podwójną skrzynię.</red>"
+  cannot_place_chest: "<red>Nie możesz umieścić skrzyni w tej lokalizacji.</red>"
+  placed_double_chest: "<green>Umieściłeś podwójną skrzynię.</green>"
 
 death_chest:
   location_not_found: "Nie znaleziono bezpiecznego miejsca dla skrzyni śmierci gracza {0}."

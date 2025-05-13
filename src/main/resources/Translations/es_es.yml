@@ -72,6 +72,11 @@ database:
     save_error: "Ocurrió un error al guardar el mapa de muerte: {0}"
   death_location:
     save_error: "Ocurrió un error al guardar la ubicación de muerte: {0}"
+  chest:
+    save_error: "Ocurrió un error al guardar el cofre: {0}"
+    load_error: "Ocurrió un error al cargar el cofre: {0}"
+    delete_error: "Ocurrió un error al eliminar el cofre: {0}"
+    deserialize_error: "Ocurrió un error al deserializar el cofre: {0}"
 
 module:
   enabled: "Módulo {0}: <green>habilitado"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>Ocurrió un error al verificar los permisos.</red>"
   error_lootin_container: "<red>Ocurrió un error al verificar el contenedor Lootin: {0}</red>"
   no_lootin_pickup: "<red>No puedes recoger este contenedor Lootin.</red>"
+  need_both_chest_parts: "<red>Necesitas ambas partes del cofre doble para recogerlo.</red>"
+  no_space_for_double_chest: "<red>No tienes suficiente espacio para recoger un cofre doble.</red>"
+  cannot_place_chest: "<red>No puedes colocar un cofre aquí.</red>"
+  placed_double_chest: "<green>Has colocado un cofre doble.</green>"
 
 death_chest:
   location_not_found: "No se encontró una ubicación segura para el cofre de muerte de {0}."

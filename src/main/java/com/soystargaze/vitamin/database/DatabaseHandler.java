@@ -161,6 +161,16 @@ public class DatabaseHandler {
                 """;
             stmt.executeUpdate(createMaps);
 
+            String createChestContents = """
+            CREATE TABLE IF NOT EXISTS chest_contents (
+              chest_id VARCHAR(36) NOT NULL,
+              slot INTEGER NOT NULL,
+              item_data TEXT NOT NULL,
+              PRIMARY KEY (chest_id, slot)
+            );
+            """;
+            stmt.executeUpdate(createChestContents);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);

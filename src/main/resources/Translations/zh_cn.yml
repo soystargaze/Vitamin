@@ -72,6 +72,11 @@ database:
     save_error: "保存死亡地图时发生错误: {0}"
   death_location:
     save_error: "保存死亡位置时发生错误: {0}"
+  chest:
+    save_error: "保存箱子时发生错误: {0}"
+    load_error: "加载箱子时发生错误: {0}"
+    delete_error: "删除箱子时发生错误: {0}"
+    deserialize_error: "反序列化箱子时发生错误: {0}"
 
 module:
   enabled: "模块 {0}: <green>已启用"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>检查权限时发生错误。</red>"
   error_lootin_container: "<red>检查 Lootin 容器时发生错误: {0}</red>"
   no_lootin_pickup: "<red>你没有权限拾取此容器。</red>"
+  need_both_chest_parts: "<red>你需要双箱的两个部分才能拾取它。</red>"
+  no_space_for_double_chest: "<red>你没有足够的空间来拾取双箱。</red>"
+  cannot_place_chest: "<red>你无法在此处放置箱子。</red>"
+  placed_double_chest: "<green>你已放置一个双箱。</green>"
 
 death_chest:
   location_not_found: "未找到 {0} 的死亡箱子安全位置。"

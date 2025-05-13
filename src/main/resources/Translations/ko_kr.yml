@@ -72,6 +72,11 @@ database:
     save_error: "사망 지도 저장 중 오류가 발생했습니다: {0}"
   death_location:
     save_error: "사망 위치 저장 중 오류가 발생했습니다: {0}"
+  chest:
+    save_error: "상자 저장 중 오류가 발생했습니다: {0}"
+    load_error: "상자 로드 중 오류가 발생했습니다: {0}"
+    delete_error: "상자 삭제 중 오류가 발생했습니다: {0}"
+    deserialize_error: "상자 역직렬화 중 오류가 발생했습니다: {0}"
 
 module:
   enabled: "모듈 {0}: <green>활성화됨"
@@ -111,6 +116,10 @@ carry_on:
   error_checking_permissions: "<red>권한 확인 중 오류가 발생했습니다.</red>"
   error_lootin_container: "<red>Lootin 컨테이너 확인 중 오류가 발생했습니다: {0}</red>"
   no_lootin_pickup: "<red>이 Lootin 컨테이너를 들어 올릴 수 없습니다.</red>"
+  need_both_chest_parts: "<red>더블 상자의 두 부분이 필요합니다.</red>"
+  no_space_for_double_chest: "<red>더블 상자를 들어 올릴 공간이 충분하지 않습니다.</red>"
+  cannot_place_chest: "<red>여기에 상자를 배치할 수 없습니다.</red>"
+  placed_double_chest: "<green>더블 상자를 배치했습니다.</green>"
 
 void_totem:
   activated: "보이드 토템이 활성화되었습니다! 안전한 곳으로 순간이동 중..."

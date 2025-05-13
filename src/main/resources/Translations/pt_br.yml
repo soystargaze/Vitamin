@@ -72,6 +72,11 @@ database:
     save_error: "Ocorreu um erro ao salvar o mapa da morte: {0}"
   death_location:
     save_error: "Ocorreu um erro ao salvar a localização da morte: {0}"
+  chest:
+    save_error: "Ocorreu um erro ao salvar o baú: {0}"
+    load_error: "Ocorreu um erro ao carregar o baú: {0}"
+    delete_error: "Ocorreu um erro ao excluir o baú: {0}"
+    deserialize_error: "Ocorreu um erro ao desserializar o baú: {0}"
 
 module:
   enabled: "Módulo {0}: <green>ativado"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>Ocorreu um erro ao verificar as permissões.</red>"
   error_lootin_container: "<red>Ocorreu um erro ao verificar o contêiner Lootin: {0}</red>"
   no_lootin_pickup: "<red>Você não pode pegar este contêiner, pois não é um contêiner Lootin.</red>"
+  need_both_chest_parts: "<red>Você precisa de ambas as partes do baú duplo para pegá-lo.</red>"
+  no_space_for_double_chest: "<red>Você não tem espaço suficiente para pegar um baú duplo.</red>"
+  cannot_place_chest: "<red>Você não pode colocar um baú aqui.</red>"
+  placed_double_chest: "<green>Você colocou um baú duplo.</green>"
 
 death_chest:
   location_not_found: "Nenhum local seguro encontrado para o baú de morte de {0}."

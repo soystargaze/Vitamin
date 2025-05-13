@@ -72,6 +72,11 @@ database:
     save_error: "Beim Speichern der Todeskarte ist ein Fehler aufgetreten: {0}"
   death_location:
     save_error: "Beim Speichern des Todesortes ist ein Fehler aufgetreten: {0}"
+  chest:
+    save_error: "Beim Speichern der Truhe ist ein Fehler aufgetreten: {0}"
+    load_error: "Beim Laden der Truhe ist ein Fehler aufgetreten: {0}"
+    delete_error: "Beim Löschen der Truhe ist ein Fehler aufgetreten: {0}"
+    deserialize_error: "Beim Deserialisieren der Truhe ist ein Fehler aufgetreten: {0}"
 
 module:
   enabled: "Modul {0}: <green>aktiviert"
@@ -99,6 +104,10 @@ carry_on:
   error_checking_permissions: "<red>Ein Fehler ist beim Überprüfen der Berechtigungen aufgetreten.</red>"
   error_lootin_container: "<red>Ein Fehler ist beim Überprüfen des Lootin-Containers aufgetreten: {0}</red>"
   no_lootin_pickup: "<red>Du kannst diese Entität nicht aufheben, da sie nicht in der Lootin-Container-Liste ist.</red>"
+  need_both_chest_parts: "<red>Du musst beide Teile der Truhe aufheben, um sie zu tragen.</red>"
+  no_space_for_double_chest: "<red>Du hast keinen Platz für eine Doppeltruhe.</red>"
+  cannot_place_chest: "<red>Du kannst diese Truhe nicht platzieren.</red>"
+  placed_double_chest: "<green>Du hast eine Doppeltruhe platziert.</green>"
 
 death_chest:
   location_not_found: "Kein sicherer Ort für die Todestruhe von {0} gefunden."
