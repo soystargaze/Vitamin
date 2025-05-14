@@ -84,6 +84,7 @@ public class CarryOnModule implements Listener {
 
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.carry_on") ||
+                !player.hasPermission("vitamin.module.carry_on.entity") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.carry_on")) {
             return;
         }
@@ -167,6 +168,7 @@ public class CarryOnModule implements Listener {
     public void onBlockPickup(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.carry_on") ||
+                !player.hasPermission("vitamin.module.carry_on.chest") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.carry_on")) {
             return;
         }
