@@ -1,4 +1,4 @@
-# Vitamin+ | Vanilla Enhancements for Minecraft
+# Vitamin+ | Take Vanilla to the next level
 
 **Vitamin+** is your Minecraft power-up—boosting gameplay with new mechanics and seamless upgrades while keeping the vanilla charm. Level up your experience without changing the game you love!
 
@@ -30,16 +30,16 @@
   <details>
     <summary>Materials</summary>
 
-    - **Copper**: Grants *Haste* for **15 seconds** when sneaking is initiated, with a **60-second cooldown**. **Stackable**.
-    - **Iron**: Attracts items with a magnet effect within a radius of **1.0 blocks per piece**. **Stackable**.
-    - **Redstone**: Gives *Speed* for **5 seconds** when sneaking is initiated, with an increase of **0.05 per piece**. **Stackable**.
-    - **Emerald**: Applies *Hero of the Village* when opening merchant inventories (up to **5 stacks**). **Stackable**.
-    - **Netherite**: Provides *Fire Resistance* for **10 seconds** with a **30-second cooldown** and *Knockback Resistance*. **Stackable**.
-    - **Lapis**: Boosts XP gain by **10% per piece** and may refund between **5% and 15% of XP** when enchanting. **Stackable**.
-    - **Quartz**: Grants *Night Vision* while sneaking (requires staying crouched). **Not stackable**.
-    - **Diamond**: Increases armor effectiveness by **8% per piece**. **Stackable**.
-    - **Amethyst**: Grants *Regeneration* to self and nearby players for **8 seconds** when damaged, with a **15-second cooldown** and a radius of **5.0 blocks**. **Stackable**.
-    - **Gold**: Prevents Piglins from attacking unless provoked. **Not stackable** (only one piece needed).
+  - **Copper**: Grants *Haste* for **15 seconds** when sneaking is initiated, with a **60-second cooldown**. **Stackable**.
+  - **Iron**: Attracts items with a magnet effect within a radius of **1.0 blocks per piece**. **Stackable**.
+  - **Redstone**: Gives *Speed* for **5 seconds** when sneaking is initiated, with an increase of **0.05 per piece**. **Stackable**.
+  - **Emerald**: Applies *Hero of the Village* when opening merchant inventories (up to **5 stacks**). **Stackable**.
+  - **Netherite**: Provides *Fire Resistance* for **10 seconds** with a **30-second cooldown** and *Knockback Resistance*. **Stackable**.
+  - **Lapis**: Boosts XP gain by **10% per piece** and may refund between **5% and 15% of XP** when enchanting. **Stackable**.
+  - **Quartz**: Grants *Night Vision* while sneaking (requires staying crouched). **Not stackable**.
+  - **Diamond**: Increases armor effectiveness by **8% per piece**. **Stackable**.
+  - **Amethyst**: Grants *Regeneration* to self and nearby players for **8 seconds** when damaged, with a **15-second cooldown** and a radius of **5.0 blocks**. **Stackable**.
+  - **Gold**: Prevents Piglins from attacking unless provoked. **Not stackable** (only one piece needed).
   </details>
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Bone Meal Expansion:** Use bone meal on crops that are not normally affected by it.
@@ -70,7 +70,7 @@
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
 - **Custom Recipes:** Adds new crafting recipes for items that are not normally craftable.
-    - [Recipes](https://imgur.com/a/3tePcrc) (You can enable/disable specific recipes using the permissions)
+  - [Recipes](https://imgur.com/a/3tePcrc) (You can enable/disable specific recipes using the permissions)
 
 </details>
 
