@@ -147,6 +147,8 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.bone_meal_expansion` - Allows the use of the Bone Meal Expansion module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
+- `vitamin.module.carry_on.chest` - Allows the pickup of chests with the Carry On module.
+- `vitamin.module.carry_on.entity` - Allows the pickup of entities with the Carry On module.
 - `vitamin.module.crop_protection` - Allows the use of the Crop Protection module.
 - `vitamin.module.death_chest` - Allows the use of the Death Chest module.
 - `vitamin.module.death_map` - Allows the use of the Death Map module.
