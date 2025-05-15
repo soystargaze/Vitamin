@@ -93,6 +93,12 @@ xpbook:
 
 carry_on:
   cannot_pickup_players: "<red>¡No puedes recoger jugadores!</red>"
+  cannot_carry_while_carrying: "<red>¡No puedes llevar una entidad mientras llevas otra!</red>"
+  cannot_carry_while_being_carried: "<red>¡No puedes llevar una entidad mientras eres llevado!</red>"
+  cannot_carry_someone_carrying: "<red>¡No puedes llevar a alguien que ya está llevando una entidad!</red>"
+  cannot_carry_someone_being_carried: "<red>¡No puedes llevar a alguien que está siendo llevado!</red>"
+  you_dismounted: "<red>¡Te has desmontado del jugador!</red>"
+  no_permissions: "<red>¡No tienes permiso para recoger esto!</red>"
   cannot_pickup_entity: "<red>¡Esta entidad no puede ser recogida!</red>"
   entity_too_heavy: "<red>¡Esta entidad es demasiado pesada para llevar!</red>"
   picked_up_entity: "<green>Has recogido una entidad (Peso: {0}/{1})</green>"
@@ -100,7 +106,6 @@ carry_on:
   picked_up_double_chest: "<green>Has recogido un cofre doble.</green>"
   picked_up_block: "<green>Has recogido un <yellow>Cofre</yellow>.</green>"
   placed_block: "<gold>Has colocado el bloque.</gold>"
-  no_permissions: "<red>No tienes permiso para recoger esta entidad/Cofre.</red>"
   error_checking_permissions: "<red>Ocurrió un error al verificar los permisos.</red>"
   error_lootin_container: "<red>Ocurrió un error al verificar el contenedor Lootin: {0}</red>"
   no_lootin_pickup: "<red>No puedes recoger este contenedor Lootin.</red>"

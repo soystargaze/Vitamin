@@ -93,6 +93,12 @@ xpbook:
 
 carry_on:
   cannot_pickup_players: "<red>Oyuncuları taşıyamazsınız!</red>"
+  cannot_carry_while_carrying: "<red>Taşırken başka bir varlığı taşıyamazsınız!</red>"
+  cannot_carry_while_being_carried: "<red>Taşınırken başka bir varlığı taşıyamazsınız!</red>"
+  cannot_carry_someone_carrying: "<red>Taşınan birini taşıyamazsınız!</red>"
+  cannot_carry_someone_being_carried: "<red>Taşınan birini taşıyamazsınız!</red>"
+  you_dismounted: "<red>Taşınmaktan ayrıldınız.</red>"
+  no_permissions: "<red>Bu varlığı taşımak için izniniz yok.</red>"
   cannot_pickup_entity: "<red>Bu varlık taşınamaz!</red>"
   entity_too_heavy: "<red>Bu varlık çok ağır!</red>"
   picked_up_entity: "<green>Varlık taşındı (Ağırlık: {0}/{1})</green>"
@@ -100,7 +106,6 @@ carry_on:
   picked_up_double_chest: "<green>Çift sandık taşındı.</green>"
   picked_up_block: "<green><yellow>Sandık</yellow> taşındı.</green>"
   placed_block: "<gold>Blok yerleştirildi.</gold>"
-  no_permissions: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"
   error_checking_permissions: "<red>İzinler kontrol edilirken bir hata oluştu.</red>"
   error_lootin_container: "<red>Lootin konteyneri kontrol edilirken bir hata oluştu: {0}</red>"
   no_lootin_pickup: "<red>Bu varlığı/sandığı taşıma izniniz yok.</red>"

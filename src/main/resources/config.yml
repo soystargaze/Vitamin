@@ -98,6 +98,7 @@ carry_on:
   max_weight: 100            # Weight is based on the max health of the mob
   allow_player_pickup: false # Allow players to pick up other players (need permission: vitamin.module.carry_on.entity.player)
   allow_lootin_pickup: false # Block Lootin chest pickup (only if Lootin plugin is on the server)
+  allow_stacking: false      # Allow stacking of players carrying other players
 
 # Death Chest settings
 death_chest:

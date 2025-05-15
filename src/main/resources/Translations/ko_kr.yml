@@ -105,6 +105,12 @@ death_map:
 
 carry_on:
   cannot_pickup_players: "<red>플레이어는 들어 올릴 수 없습니다!</red>"
+  cannot_carry_while_carrying: "<red>다른 엔티티를 들고 있는 동안 엔티티를 들어 올릴 수 없습니다!</red>"
+  cannot_carry_while_being_carried: "<red>들고 있는 동안 엔티티를 들어 올릴 수 없습니다!</red>"
+  cannot_carry_someone_carrying: "<red>들고 있는 엔티티를 들 수 없습니다!</red>"
+  cannot_carry_someone_being_carried: "<red>들고 있는 엔티티를 들 수 없습니다!</red>"
+  you_dismounted: "<red>플레이어에서 내렸습니다.</red>"
+  no_permissions: "<red>이 엔티티를 들어 올릴 권한이 없습니다!</red>"
   cannot_pickup_entity: "<red>이 엔티티는 들어 올릴 수 없습니다!</red>"
   entity_too_heavy: "<red>이 엔티티는 너무 무거워서 들 수 없습니다!</red>"
   picked_up_entity: "<green>엔티티를 들어 올렸습니다 (무게: {0}/{1})</green>"
@@ -112,7 +118,6 @@ carry_on:
   picked_up_double_chest: "<green>더블 상자를 들어 올렸습니다.</green>"
   picked_up_block: "<green><yellow>상자</yellow>를 들어 올렸습니다.</green>"
   placed_block: "<gold>블록을 배치했습니다.</gold>"
-  no_permissions: "<red>이 엔티티/상자를 들어 올릴 권한이 없습니다.</red>"
   error_checking_permissions: "<red>권한 확인 중 오류가 발생했습니다.</red>"
   error_lootin_container: "<red>Lootin 컨테이너 확인 중 오류가 발생했습니다: {0}</red>"
   no_lootin_pickup: "<red>이 Lootin 컨테이너를 들어 올릴 수 없습니다.</red>"

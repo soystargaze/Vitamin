@@ -93,6 +93,12 @@ xpbook:
 
 carry_on:
   cannot_pickup_players: "<red>Nie możesz podnosić graczy!</red>"
+  cannot_carry_while_carrying: "<red>Nie możesz nosić jednostki, gdy nosisz inną!</red>"
+  cannot_carry_while_being_carried: "<red>Nie możesz nosić jednostki, gdy jesteś noszony!</red>"
+  cannot_carry_someone_carrying: "<red>Nie możesz nosić kogoś, kto już nosi jednostkę!</red>"
+  cannot_carry_someone_being_carried: "<red>Nie możesz nosić kogoś, kto jest noszony!</red>"
+  you_dismounted: "<red>Zostałeś zrzucany z gracza.</red>"
+  no_permissions: "<red>Nie masz uprawnień do podnoszenia tej jednostki.</red>"
   cannot_pickup_entity: "<red>Nie możesz podnieść tej jednostki!</red>"
   entity_too_heavy: "<red>Ta jednostka jest za ciężka, aby ją podnieść!</red>"
   picked_up_entity: "<green>Podniosłeś jednostkę (Waga: {0}/{1})</green>"
@@ -100,7 +106,6 @@ carry_on:
   picked_up_double_chest: "<green>Podniosłeś podwójną skrzynię.</green>"
   picked_up_block: "<green>Podniosłeś <yellow>Skrzynię</yellow>.</green>"
   placed_block: "<gold>Umieściłeś blok.</gold>"
-  no_permissions: "<red>Nie masz uprawnień do podnoszenia tej jednostki/skrzyni.</red>"
   error_checking_permissions: "<red>Wystąpił błąd podczas sprawdzania uprawnień.</red>"
   error_lootin_container: "<red>Wystąpił błąd podczas sprawdzania kontenera Lootin: {0}</red>"
   no_lootin_pickup: "<red>Nie masz uprawnień do podnoszenia tej jednostki.</red>"

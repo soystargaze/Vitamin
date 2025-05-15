@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.event.entity.EntityDismountEvent;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,10 +53,12 @@ public class CarryOnModule implements Listener {
     private WorldGuardIntegrationHandler wgIntegration;
     private LandsIntegrationHandler landsIntegration;
     private LootinIntegrationHandler lootinIntegration;
+    private final boolean allowStacking;
 
     public CarryOnModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.maxCarryWeight = plugin.getConfig().getDouble("carry_on.max_weight", 100.0);
+        this.allowStacking = plugin.getConfig().getBoolean("carry_on.allow_stacking", false);
         this.storedBlockKey = new NamespacedKey(plugin, "stored_block");
         this.chestPartKey = new NamespacedKey(plugin, "chest_part");
         this.chestIdKey = new NamespacedKey(plugin, "chest_id");
@@ -89,16 +92,18 @@ public class CarryOnModule implements Listener {
             return;
         }
 
+        if (!player.getPassengers().isEmpty()) {
+            releaseEntity(player);
+            event.setCancelled(true);
+            return;
+        }
+
         Entity entity = event.getRightClicked();
         if (entity instanceof ItemFrame) return;
 
         if (!player.isSneaking() ||
                 !player.getInventory().getItemInMainHand().getType().isAir() ||
                 !player.getInventory().getItemInOffHand().getType().isAir()) {
-            return;
-        }
-
-        if (!player.getPassengers().isEmpty()) {
             return;
         }
 
@@ -109,6 +114,29 @@ public class CarryOnModule implements Listener {
                 TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_players");
                 event.setCancelled(true);
                 return;
+            }
+
+            if (!allowStacking) {
+                if (!player.getPassengers().isEmpty()) {
+                    TextHandler.get().sendMessage(player, "carry_on.cannot_carry_while_carrying");
+                    event.setCancelled(true);
+                    return;
+                }
+                if (player.getVehicle() != null) {
+                    TextHandler.get().sendMessage(player, "carry_on.cannot_carry_while_being_carried");
+                    event.setCancelled(true);
+                    return;
+                }
+                if (!((Player) entity).getPassengers().isEmpty()) {
+                    TextHandler.get().sendMessage(player, "carry_on.cannot_carry_someone_carrying");
+                    event.setCancelled(true);
+                    return;
+                }
+                if (entity.getVehicle() != null) {
+                    TextHandler.get().sendMessage(player, "carry_on.cannot_carry_someone_being_carried");
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
 
@@ -234,7 +262,8 @@ public class CarryOnModule implements Listener {
             return;
         }
 
-        if (!player.getPassengers().isEmpty() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (!player.getPassengers().isEmpty() &&
+                (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
             releaseEntity(player);
             event.setCancelled(true);
             return;
@@ -284,6 +313,26 @@ public class CarryOnModule implements Listener {
         Player player = event.getEntity();
         if (!player.getPassengers().isEmpty()) {
             releaseEntity(player);
+        }
+    }
+
+    @EventHandler
+    public void onEntityDismount(EntityDismountEvent event) {
+        Entity dismounted = event.getDismounted();
+        Entity entity = event.getEntity();
+
+        if (!(dismounted instanceof Player player) || !(entity instanceof Player mountedPlayer)) {
+            return;
+        }
+
+        if (mountedPlayer.getScoreboardTags().contains("being_carried")) {
+            mountedPlayer.setGravity(true);
+            mountedPlayer.removeScoreboardTag("being_carried");
+            player.removePassenger(mountedPlayer);
+            mountedPlayer.teleport(player.getLocation().add(0, 0.5, 0));
+            removeSlowness(player);
+            TextHandler.get().sendMessage(player, "carry_on.entity_dropped");
+            TextHandler.get().sendMessage(mountedPlayer, "carry_on.you_dismounted");
         }
     }
 
@@ -500,6 +549,9 @@ public class CarryOnModule implements Listener {
             entity.removeScoreboardTag("being_carried");
             if (entity instanceof Monster monster) {
                 monster.setAI(true);
+            }
+            if (entity instanceof Player mountedPlayer) {
+                mountedPlayer.setGravity(true);
             }
             player.removePassenger(entity);
             entity.teleport(player.getLocation().add(0, 0.5, 0));

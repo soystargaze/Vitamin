@@ -93,6 +93,12 @@ xpbook:
 
 carry_on:
   cannot_pickup_players: "<red>Vous ne pouvez pas ramasser les joueurs !</red>"
+  cannot_carry_while_carrying: "<red>Vous ne pouvez pas porter une entité tout en portant une autre !</red>"
+  cannot_carry_while_being_carried: "<red>Vous ne pouvez pas porter une entité tout en étant porté !</red>"
+  cannot_carry_someone_carrying: "<red>Vous ne pouvez pas porter quelqu'un qui porte une entité !</red>"
+  cannot_carry_someone_being_carried: "<red>Vous ne pouvez pas porter quelqu'un qui est porté !</red>"
+  you_dismounted: "<red>Vous avez été désarçonné du joueur.</red>"
+  no_permissions: "<red>Vous n'avez pas la permission de ramasser ceci.</red>"
   cannot_pickup_entity: "<red>Cette entité ne peut pas être ramassée !</red>"
   entity_too_heavy: "<red>Cette entité est trop lourde pour être portée !</red>"
   picked_up_entity: "<green>Vous avez ramassé une entité (Poids : {0}/{1})</green>"
@@ -100,7 +106,6 @@ carry_on:
   picked_up_double_chest: "<green>Vous avez ramassé un coffre double.</green>"
   picked_up_block: "<green>Vous avez ramassé un <yellow>Coffre</yellow>.</green>"
   placed_block: "<gold>Vous avez placé le bloc.</gold>"
-  no_permissions: "<red>Vous n'avez pas la permission de ramasser cette entité/Coffre.</red>"
   error_checking_permissions: "<red>Une erreur est survenue lors de la vérification des permissions.</red>"
   error_lootin_container: "<red>Une erreur est survenue lors de la vérification du conteneur Lootin : {0}</red>"
   no_lootin_pickup: "<red>Vous n'avez pas la permission de ramasser ce conteneur !</red>"

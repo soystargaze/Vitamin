@@ -93,6 +93,12 @@ xpbook:
 
 carry_on:
   cannot_pickup_players: "<red>You cannot pick up players!</red>"
+  cannot_carry_while_carrying: "<red>You cannot carry an entity while carrying another!</red>"
+  cannot_carry_while_being_carried: "<red>You cannot carry an entity while being carried!</red>"
+  cannot_carry_someone_carrying: "<red>You cannot carry someone who is already carrying an entity!</red>"
+  cannot_carry_someone_being_carried: "<red>You cannot carry someone who is being carried!</red>"
+  you_dismounted: "<red>You have dismounted from the player.</red>"
+  no_permissions: "<red>You do not have permission to pick up this.</red>"
   cannot_pickup_entity: "<red>This entity cannot be picked up!</red>"
   entity_too_heavy: "<red>This entity is too heavy to carry!</red>"
   picked_up_entity: "<green>You have picked up an entity (Weight: {0}/{1})</green>"
@@ -100,7 +106,6 @@ carry_on:
   picked_up_double_chest: "<green>You have picked up a double chest.</green>"
   picked_up_block: "<green>You have picked up a <yellow>Chest</yellow>.</green>"
   placed_block: "<gold>You have placed the block.</gold>"
-  no_permissions: "<red>You do not have permission to pick up this entity/Chest.</red>"
   error_checking_permissions: "<red>An error occurred while checking permissions.</red>"
   error_lootin_container: "<red>An error occurred while checking the Lootin container: {0}</red>"
   no_lootin_pickup: "<red>You cannot pick up this Lootin container.</red>"
