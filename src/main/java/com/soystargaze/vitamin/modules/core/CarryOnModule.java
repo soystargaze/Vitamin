@@ -146,7 +146,7 @@ public class CarryOnModule implements Listener {
             return;
         }
 
-        if (!entity.getScoreboardTags().isEmpty() && !entity.getScoreboardTags().contains("being_carried")) {
+        if (entity.getScoreboardTags().contains("being_carried")) {
             TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_entity");
             event.setCancelled(true);
             return;
