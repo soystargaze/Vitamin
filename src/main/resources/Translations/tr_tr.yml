@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Işınlanma hazırlanıyor: {0} saniye kaldı..."
   success: "Doğma noktanıza ışınlandınız!"
   no_bed: "<red>Işınlanma iptal edildi: Yatak yok!</red>"
+  cooldown: "<red>Işınlanma iptal edildi: {0} saniye beklemelisiniz!</red>"

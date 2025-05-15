@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Teleportation wird vorbereitet: {0} Sekunden verbleibend..."
   success: "Zum Wiederbelebungspunkt teleportiert!"
   no_bed: "<red>Du hast kein Bett gesetzt!</red>"
+  cooldown: "<red>Sie müssen {0} Sekunden warten, bevor Sie den Kompass wieder benutzen!"

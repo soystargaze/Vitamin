@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Canalizando teletransportación: {0} segundos restantes..."
   success: "¡Teletransportado a tu punto de reaparición!"
   no_bed: "<red>¡Necesitas primero dormir en una cama!</red>"
+  cooldown: "<red>¡Debes esperar {0} segundos antes de usar la brújula nuevamente!</red>"

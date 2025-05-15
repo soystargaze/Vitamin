@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Channeling teleportation: {0} seconds left..."
   success: "Teleported to your respawn point!"
   no_bed: "<red>You need to sleep in a bed first!"
+  cooldown: "<red>You must wait {0} seconds before using the compass again!"

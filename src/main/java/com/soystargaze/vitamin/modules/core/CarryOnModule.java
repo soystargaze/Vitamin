@@ -103,9 +103,13 @@ public class CarryOnModule implements Listener {
         }
 
         if (entity instanceof Player) {
-            TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_players");
-            event.setCancelled(true);
-            return;
+            boolean allowPickupPlayers = plugin.getConfig().getBoolean("carry_on.allow_player_pickup", false);
+
+            if (!allowPickupPlayers || !player.hasPermission("vitamin.module.carry_on.entity.player")) {
+                TextHandler.get().sendMessage(player, "carry_on.cannot_pickup_players");
+                event.setCancelled(true);
+                return;
+            }
         }
 
         if (!(entity instanceof LivingEntity livingEntity)) {

@@ -134,3 +134,4 @@ tpcompass:
   channeling: "传送引导中: {0} 秒剩余..."
   success: "已传送到你的重生点！"
   no_bed: "<red>你没有床！</red>"
+  cooldown: "<red>你需要等待 {0} 秒才能再次使用传送指南针！</red>"

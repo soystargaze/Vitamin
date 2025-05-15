@@ -55,7 +55,7 @@ module:
   armor_trim: true # Armor trim gives special effects depending on the material (Active with Shift or Passive)
   auto_tool: true # Automatically switch to the correct tool when breaking blocks
   bone_meal_expansion: true # Bone meal can be used to grow special crops
-  carry_on: true # Shift + Right Click to pick up entities and chests
+  carry_on: true # Shift + Right Click to pick up entities and containers
   crop_protection: true # Prevents crops from being trampled
   custom_recipes: true # Add custom recipes to the game
   death_chest: true # Create a chest with your items when you die
@@ -90,18 +90,19 @@ bone_meal_expansion:
     cactus: true
     bamboo: true
     nether_wart: true
-    pumpkin_stem: true # Just works with the pumpkin stem
-    melon_stem: true # Just works with the melon stem
+    pumpkin_stem: true  # Just works with the pumpkin stem
+    melon_stem: true    # Just works with the melon stem
 
 # Carry On settings
 carry_on:
-  max_weight: 100 # Weight is based on the max health of the mob
+  max_weight: 100            # Weight is based on the max health of the mob
+  allow_player_pickup: false # Allow players to pick up other players (need permission: vitamin.module.carry_on.entity.player)
   allow_lootin_pickup: false # Block Lootin chest pickup (only if Lootin plugin is on the server)
 
 # Death Chest settings
 death_chest:
-  vertical_search: 30 # Vertical safe search distance
-  horizontal_search: 50 # Horizontal safe search distance
+  vertical_search: 30     # Vertical safe search distance
+  horizontal_search: 50   # Horizontal safe search distance
 
 # Death Map settings
 death_map:
@@ -122,12 +123,14 @@ wall_jump:
 
 # TP to Respawn Point with Compass settings
 tp_with_compass:
-  channeling_time: 3 # Time in seconds to channel the compass
+  channeling_time: 3          # Time in seconds to channel the compass
+  cooldown_time: 0            # Cooldown time in seconds
+  require_stationary: true    # Require the player to be stationary
 
 # Enchants Back settings
 enchants_back:
-  max_returned: 5 # Maximum number of enchants returned
-  random_range: true # Random range from max_returned
+  max_returned: 5     # Maximum number of enchants returned
+  random_range: true  # Random range from max_returned
 
 # Leaf Decay settings
 leaf_decay:
@@ -136,10 +139,10 @@ leaf_decay:
 
 # Repair settings
 repair:
-  netherite_value: 0.8 # Percentage repaired with a netherite ingot: 80%
-  diamond_value: 0.4 # Percentage repaired with a diamond: 40%
-  ingot_value: 0.27 # Percentage repaired with an ingot: 27%
-  nugget_value: 0.03 # Percentage repaired with a nugget: 3%
+  netherite_value: 0.8  # Percentage repaired with a netherite ingot: 80%
+  diamond_value: 0.4    # Percentage repaired with a diamond: 40%
+  ingot_value: 0.27     # Percentage repaired with an ingot: 27%
+  nugget_value: 0.03    # Percentage repaired with a nugget: 3%
 
 # Oxygen Bottle settings
 oxygen_bottle:
@@ -163,7 +166,7 @@ armor_trims:
     speed_on_sneak:
       enabled: true
       speed_boost: 0.05  # base speed increase per piece
-      duration: 5  # seconds
+      duration: 5        # seconds
   EMERALD:
     enabled: true # Hero of the Village effect
   NETHERITE:
@@ -182,7 +185,7 @@ armor_trims:
     enchant_exp_refund:
       enabled: true
       probability_per_piece: 0.05  # chance per piece to refund XP
-      refund_percentage: 0.15  # percentage of spent XP refunded
+      refund_percentage: 0.15      # percentage of spent XP refunded
   QUARTZ:
     enabled: true
     night_vision_on_sneak:
@@ -196,9 +199,9 @@ armor_trims:
     enabled: true
     regeneration_on_damage:
       enabled: true
-      duration: 8  # seconds per piece
+      duration: 8   # seconds per piece
       cooldown: 15  # seconds
-      radius: 5.0  # blocks
+      radius: 5.0   # blocks
   GOLD:
     enabled: true  # Controls piglin neutrality behavior
 

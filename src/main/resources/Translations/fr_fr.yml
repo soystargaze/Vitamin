@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Canalisation de la téléportation : {0} secondes restantes..."
   success: "Téléporté à votre point de réapparition !"
   no_bed: "<red>Vous devez d'abord dormir dans un lit !"
+  cooldown: "<red>Vous devez attendre {0} secondes avant d'utiliser la boussole à nouveau !"

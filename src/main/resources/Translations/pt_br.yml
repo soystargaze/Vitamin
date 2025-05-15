@@ -134,3 +134,4 @@ tpcompass:
   channeling: "Canalizando teletransporte: {0} segundos restantes..."
   success: "Teletransportado para o seu ponto de renascimento!"
   no_bed: "<red>Você não pode se teletransportar para o ponto de renascimento, pois não há cama disponível!</red>"
+  cooldown: "<red>Você deve esperar {0} segundos antes de usar a bússola novamente!</red>"
