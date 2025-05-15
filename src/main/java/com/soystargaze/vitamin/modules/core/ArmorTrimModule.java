@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.potion.PotionEffect;
@@ -198,10 +199,12 @@ class ArmorTrimManager {
         Map<TrimMaterial, Integer> counts = new HashMap<>();
         for (ItemStack armor : player.getInventory().getArmorContents()) {
             if (armor != null && armor.hasItemMeta()) {
-                ArmorMeta meta = (ArmorMeta) armor.getItemMeta();
-                ArmorTrim trim = meta.getTrim();
-                if (trim != null) {
-                    counts.put(trim.getMaterial(), counts.getOrDefault(trim.getMaterial(), 0) + 1);
+                ItemMeta meta = armor.getItemMeta();
+                if (meta instanceof ArmorMeta armorMeta) {
+                    ArmorTrim trim = armorMeta.getTrim();
+                    if (trim != null) {
+                        counts.put(trim.getMaterial(), counts.getOrDefault(trim.getMaterial(), 0) + 1);
+                    }
                 }
             }
         }
