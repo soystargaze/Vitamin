@@ -7,17 +7,17 @@
 # Soporte: https://soystargaze.com/discord
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500>" # El color aplicado a {0}, {1}, etc. en traducciones
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamina</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "versión: {0}"
   author: "por {0}"
   website: "sitio web: {0}"
   enabled: "Vitamin+ habilitado correctamente."
   disabled: "Vitamin+ deshabilitado correctamente."
   language_loaded: "Idioma cargado: {0}.yml ({1} traducciones)"
-  enable_error: "Ocurrió un error al habilitar Vitamina+: {0}"
+  enable_error: "Ocurrió un error al habilitar Vitamin+: {0}"
   version_detected: "Versión detectada: {0}"
   paper_detected: "<color:#FFA500>Paper detectado:</color> Usando funciones de Paper para un mejor rendimiento."
   paper_not_detected: "<color:#FFA500>Spigot detectado:</color> Usando funciones Core."
