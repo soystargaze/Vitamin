@@ -86,7 +86,8 @@ public class Vitamin extends JavaPlugin implements Listener {
 
         String[] defaults = {
                 "en_us.yml","es_es.yml","fr_fr.yml","de_de.yml",
-                "pt_br.yml","pl_pl.yml","zh_cn.yml","ko_kr.yml","tr_tr.yml"
+                "pt_br.yml","pl_pl.yml","zh_cn.yml","ko_kr.yml","tr_tr.yml",
+                "ja_jp.yml"
         };
 
         boolean replace = getConfig().getBoolean("translations.force-update", true);

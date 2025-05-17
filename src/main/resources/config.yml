@@ -71,6 +71,7 @@ module:
   player_xp_to_books: true # Shift + Right Click with an empty book to store all your XP
   repair: true # Repair items with nuggets, ingots, diamonds and netherite
   seed_replanter: true # Right-Click a fully grown crop to harvest and replant it
+  replayable_vault: true # Make Vaults and Ominous Vaults replayable
   silk_spawners: true # Mine spawners with a silk touch pickaxe to get the spawner
   sponge_with_lava: true # Sponges can absorb lava
   totem_from_inventory: true # The totem of undying works from the inventory too
@@ -206,4 +207,6 @@ armor_trims:
   GOLD:
     enabled: true  # Controls piglin neutrality behavior
 
-# Future features will be added here ↓
+replayable_vault:
+  cooldown: 3600000  # Cooldown in milliseconds (1 hour default)
+  max_reactivations: 2  # Max additional openings beyond the first (total 3 openings)

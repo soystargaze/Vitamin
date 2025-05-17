@@ -171,9 +171,66 @@ public class DatabaseHandler {
             """;
             stmt.executeUpdate(createChestContents);
 
+            String createVaultReactivations = """
+            CREATE TABLE IF NOT EXISTS vault_reactivations (
+              vault_world VARCHAR(100) NOT NULL,
+              vault_x INT NOT NULL,
+              vault_y INT NOT NULL,
+              vault_z INT NOT NULL,
+              player_id VARCHAR(36) NOT NULL,
+              opening_count INT NOT NULL,
+              last_opening_time BIGINT NOT NULL,
+              PRIMARY KEY (vault_world, vault_x, vault_y, vault_z, player_id)
+             );
+            """;
+            stmt.executeUpdate(createVaultReactivations);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
+        }
+    }
+
+    public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {
+        String sql = "SELECT opening_count, last_opening_time FROM vault_reactivations WHERE vault_world = ? AND vault_x = ? AND vault_y = ? AND vault_z = ? AND player_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, vaultLoc.getWorld().getName());
+            ps.setInt(2, vaultLoc.getBlockX());
+            ps.setInt(3, vaultLoc.getBlockY());
+            ps.setInt(4, vaultLoc.getBlockZ());
+            ps.setString(5, playerId.toString());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int openingCount = rs.getInt("opening_count");
+                    long lastOpeningTime = rs.getLong("last_opening_time");
+                    return new ReactivationData(openingCount, lastOpeningTime);
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return null;
+    }
+
+    public static void saveReactivationData(Location vaultLoc, UUID playerId, ReactivationData data) {
+        String sql = """
+        REPLACE INTO vault_reactivations
+            (vault_world, vault_x, vault_y, vault_z, player_id, opening_count, last_opening_time)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, vaultLoc.getWorld().getName());
+            ps.setInt(2, vaultLoc.getBlockX());
+            ps.setInt(3, vaultLoc.getBlockY());
+            ps.setInt(4, vaultLoc.getBlockZ());
+            ps.setString(5, playerId.toString());
+            ps.setInt(6, data.openingCount());
+            ps.setLong(7, data.lastOpeningTime());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
         }
     }
 

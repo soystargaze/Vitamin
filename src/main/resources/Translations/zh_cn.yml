@@ -140,3 +140,9 @@ tpcompass:
   success: "已传送到你的重生点！"
   no_bed: "<red>你没有床！</red>"
   cooldown: "<red>你需要等待 {0} 秒才能再次使用传送指南针！</red>"
+
+replayable_vault:
+  first_use: "你已打开保险库。你还有 {0} 次可用机会。剩余时间：{1} 秒。"
+  remaining_uses: "你已打开保险库。你还有 {0} 次可用机会。"
+  cooldown: "保险库冷却中。剩余时间：{0} 秒。"
+  max_uses_reached: "你已达到此保险库的最大开启次数。"

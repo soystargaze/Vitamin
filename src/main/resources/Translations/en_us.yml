@@ -140,3 +140,9 @@ tpcompass:
   success: "Teleported to your respawn point!"
   no_bed: "<red>You need to sleep in a bed first!"
   cooldown: "<red>You must wait {0} seconds before using the compass again!"
+
+replayable_vault:
+  first_use: "You have opened the vault. You have {0} additional uses left. Time left: {1} seconds."
+  remaining_uses: "You have opened the vault. You have {0} additional uses left."
+  cooldown: "The vault is on cooldown. Time left: {0} seconds."
+  max_uses_reached: "You have reached the maximum openings for this vault."

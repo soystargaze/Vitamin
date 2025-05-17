@@ -140,3 +140,9 @@ tpcompass:
   success: "Doğma noktanıza ışınlandınız!"
   no_bed: "<red>Işınlanma iptal edildi: Yatak yok!</red>"
   cooldown: "<red>Işınlanma iptal edildi: {0} saniye beklemelisiniz!</red>"
+
+replayable_vault:
+  first_use: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı. Kalan süre: {1} saniye."
+  remaining_uses: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı."
+  cooldown: "Kasa bekleme süresinde. Kalan süre: {0} saniye."
+  max_uses_reached: "Bu kasayı açma hakkınız maksimum seviyeye ulaştı."

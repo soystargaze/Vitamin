@@ -86,6 +86,9 @@ public class ModuleManager {
                     RepairModule::new,
                     null
             ),
+            new ModuleDef("module.replayable_vault",
+                    ReplayableVaultModule::new,
+                    null),
             new ModuleDef("module.silk_spawners",
                     SilkSpawnersModule::new,
                     null

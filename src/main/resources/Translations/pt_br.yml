@@ -140,3 +140,9 @@ tpcompass:
   success: "Teletransportado para o seu ponto de renascimento!"
   no_bed: "<red>Você não pode se teletransportar para o ponto de renascimento, pois não há cama disponível!</red>"
   cooldown: "<red>Você deve esperar {0} segundos antes de usar a bússola novamente!</red>"
+
+replayable_vault:
+  first_use: "Você abriu o cofre. Você tem {0} usos adicionais restantes. Tempo restante: {1} segundos."
+  remaining_uses: "Você abriu o cofre. Você tem {0} usos adicionais restantes."
+  cooldown: "O cofre está em tempo de espera. Tempo restante: {0} segundos."
+  max_uses_reached: "Você atingiu o número máximo de aberturas para este cofre."

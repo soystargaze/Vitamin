@@ -140,3 +140,9 @@ tpcompass:
   success: "Zum Wiederbelebungspunkt teleportiert!"
   no_bed: "<red>Du hast kein Bett gesetzt!</red>"
   cooldown: "<red>Sie müssen {0} Sekunden warten, bevor Sie den Kompass wieder benutzen!"
+
+replayable_vault:
+  first_use: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen. Verbleibende Zeit: {1} Sekunden."
+  remaining_uses: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen."
+  cooldown: "Der Tresor befindet sich in der Abklingzeit. Verbleibende Zeit: {0} Sekunden."
+  max_uses_reached: "Du hast die maximale Anzahl an Öffnungen für diesen Tresor erreicht."

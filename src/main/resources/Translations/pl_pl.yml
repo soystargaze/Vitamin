@@ -140,3 +140,9 @@ tpcompass:
   success: "Teleportowano do punktu odrodzenia!"
   no_bed: "<red>Nie znaleziono łóżka w pobliżu!</red>"
   cooldown: "<red>Musisz poczekać {0} sekund przed ponownym użyciem kompasu!</red>"
+
+replayable_vault:
+  first_use: "Otworzyłeś skarbiec. Masz jeszcze {0} użyć. Pozostały czas: {1} sekund."
+  remaining_uses: "Otworzyłeś skarbiec. Masz jeszcze {0} użyć."
+  cooldown: "Skarbiec jest w czasie odnowienia. Pozostały czas: {0} sekund."
+  max_uses_reached: "Osiągnąłeś maksymalną liczbę otwarć tego skarbca."

@@ -1,0 +1,148 @@
+# __     ___ _                  _
+# \ \   / (_) |_ __ _ _ __ ___ (_)_ __    _
+#  \ \ / /| | __/ _` | '_ ` _ \| | '_ \ _| |_
+#   \ V / | | || (_| | | | | | | | | | |_   _|
+#    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
+
+# Support: https://soystargaze.com/discord
+
+plugin:
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>ビタミン</gradient><color:#FFA500>+</color><gray>]</gray> "
+  dynamic_color: "<color:#FFA500>"
+  separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
+  name: "<gradient:#FFA500:#FFFF00>ビタミン</gradient><color:#FFA500>+</color>"
+  version: "バージョン: {0}"
+  author: "作者: {0}"
+  website: "ウェブサイト: {0}"
+  enabled: "ビタミン+ が正常に有効化されました。"
+  disabled: "ビタミン+ が正常に無効化されました。"
+  language_loaded: "言語がロードされました: {0}.yml ({1} 翻訳)"
+  enable_error: "ビタミン+ の有効化中にエラーが発生しました: {0}"
+  version_detected: "検出されたバージョン: {0}"
+  paper_detected: "<color:#FFA500>Paper 検出:</color> より高いパフォーマンスのために Paper フックを使用。"
+  paper_not_detected: "<color:#FFA500>Spigot 検出:</color> コアフックを使用。"
+  update_available: "<color:#FFA500>アップデート利用可能:</color> ビタミン+ {0} を {1} でダウンロード"
+  no_update_available: "<color:#FFA500>アップデートなし。</color> 最新バージョンを使用中。"
+  update_check_failed: "<color:#FFA500>アップデートの確認に失敗:</color> {0}"
+  update_check_error: "<color:#FFA500>アップデート確認エラー:</color> {0}"
+
+items:
+  registered: "ビタミン+ のアイテムが正常に登録されました。"
+
+events:
+  registered: "イベントが正常に登録されました。"
+
+commands:
+  registered: "コマンドが正常に登録されました。"
+  usage: "使用法: /vitamin <args>"
+  reload:
+    success: "ビタミン+ が正常にリロードされました。"
+    error: "ビタミン+ のリロード中にエラーが発生しました。"
+  module:
+    usage: "使用法: /vitamin module <module> <enable|disable>"
+    not_found: "モジュールが見つかりません: {0}"
+    changed: "モジュール {0} が {1} に正常に変更されました。"
+  pmodule:
+    usage: "使用法: /vitamin pmodule <module> <enable|disable>"
+    player_only: "このコマンドはプレイヤーのみ実行可能です。"
+    module_not_active: "モジュール {0} はアクティブではありません。"
+    no_module_permission: "{0} を使用する権限がありません。"
+    changed: "モジュール {0} が {1} に正常に変更されました。"
+
+database:
+  already_initialized: "データベースは既に初期化されています。"
+  init_error: "データベースの初期化中にエラーが発生しました: {0}"
+  sqlite:
+    error_directory: "SQLite データベースディレクトリの作成に失敗: "
+    success: "SQLite データベースが正常に初期化されました。"
+  mysql:
+    success: "MySQL データベースが正常に初期化されました。"
+  mariadb:
+    success: "MariaDB データベースが正常に初期化されました。"
+  postgresql:
+    success: "PostgreSQL データベースが正常に初期化されました。"
+  tables:
+    success: "データベーステーブルが正常に作成されました。"
+    error: "データベーステーブルの作成中にエラーが発生しました: {0}"
+  query_error: "データベースクエリの実行中にエラーが発生しました: {0}"
+  update_error: "データベースの更新中にエラーが発生しました: {0}"
+  close:
+    success: "データベース接続が正常に閉じられました。"
+  death_map:
+    save_error: "デスマップの保存中にエラーが発生しました: {0}"
+  death_location:
+    save_error: "死亡場所の保存中にエラーが発生しました: {0}"
+  chest:
+    save_error: "チェストの保存中にエラーが発生しました: {0}"
+    load_error: "チェストの読み込み中にエラーが発生しました: {0}"
+    delete_error: "チェストの削除中にエラーが発生しました: {0}"
+    deserialize_error: "チェストのデシリアライズ中にエラーが発生しました: {0}"
+
+module:
+  enabled: "モジュール {0}: <green>有効"
+  disabled: "モジュール {0}: <red>無効"
+
+elevator:
+  item_name: "<gold>エレベーター</gold>"
+  cannot_open: "<red>エレベーターを開けません！</red>"
+
+xpbook:
+  item_name: "{0} XP の XP ブック"
+  created: "{0} XP の XP ブックが作成されました！"
+  used: "XP ブックを使用して {0} XP を獲得！"
+
+carry_on:
+  cannot_pickup_players: "<red>プレイヤーを拾えません！</red>"
+  cannot_carry_while_carrying: "<red>別のエンティティを運んでいる間は運べません！</red>"
+  cannot_carry_while_being_carried: "<red>運ばれている間はエンティティを運べません！</red>"
+  cannot_carry_someone_carrying: "<red>すでにエンティティを運んでいる人を運べません！</red>"
+  cannot_carry_someone_being_carried: "<red>運ばれている人を運べません！</red>"
+  you_dismounted: "<red>プレイヤーから降りました。</red>"
+  no_permissions: "<red>これを拾う権限がありません。</red>"
+  cannot_pickup_entity: "<red>このエンティティは拾えません！</red>"
+  entity_too_heavy: "<red>このエンティティは重すぎて運べません！</red>"
+  picked_up_entity: "<green>エンティティを拾いました (重量: {0}/{1})</green>"
+  entity_dropped: "エンティティを解放しました。"
+  picked_up_double_chest: "<green>ダブルチェストを拾いました。</green>"
+  picked_up_block: "<green><yellow>チェスト</yellow>を拾いました。</green>"
+  placed_block: "<gold>ブロックを配置しました。</gold>"
+  error_checking_permissions: "<red>権限の確認中にエラーが発生しました。</red>"
+  error_lootin_container: "<red>Lootin コンテナの確認中にエラーが発生しました: {0}</red>"
+  no_lootin_pickup: "<red>この Lootin コンテナは拾えません。</red>"
+  need_both_chest_parts: "<red>ダブルチェストの両方の部分が必要です。</red>"
+  no_space_for_double_chest: "<red>ダブルチェストを拾うスペースがありません。</red>"
+  cannot_place_chest: "<red>ここにチェストを配置できません。</red>"
+  placed_double_chest: "<green>ダブルチェストを配置しました。</green>"
+
+death_chest:
+  location_not_found: "{0} のデスチェストのための安全な場所が見つかりませんでした。"
+  could_not_set_chest: "{0} にチェストとしてブロックを設定できませんでした、実際のタイプ: {1}。"
+  blockstate_not_chest: "{0} のブロック状態はチェストではなく {1} です。"
+  created: "デスチェストが X: {0}, Y: {1}, Z: {2} に作成されました。"
+
+death_map:
+  map_item_name: "<gold>デスマップ</gold>"
+  map_item_lore: "<gray>このマップで死亡場所を見つけます。</gray>"
+  map_given: "最後の死亡場所 {0}, {1}, {2} を示すデスマップを受け取りました。"
+  map_renderer_error: "マップのレンダリング中にエラーが発生しました: {0}"
+
+void_totem:
+  activated: "ボイドトーテムが起動！安全な場所にテレポート中..."
+  cooldown: "次のボイドトーテムを使用するまで待つ必要があります！"
+  no_totem: "ボイドを生き延びるには不死のトーテムが必要です！"
+  teleport_safe: "安全な場所にテレポートしました。"
+  teleport_spawn: "近くに安全な場所が見つかりませんでした。ワールドスポーンにテレポートしました。"
+
+tpcompass:
+  already_teleporting: "<yellow>すでにテレポート中です！"
+  cancelled: "<red>テレポートがキャンセルされました！"
+  channeling: "テレポートをチャネリング中: 残り {0} 秒..."
+  success: "リスポーンポイントにテレポートしました！"
+  no_bed: "<red>まずベッドで寝る必要があります！"
+  cooldown: "<red>コンパスを再使用するまで {0} 秒待つ必要があります！"
+
+replayable_vault:
+  first_use: "金庫を開けました。残り {0} 回の使用可能。残り時間: {1} 秒。"
+  remaining_uses: "金庫を開けました。残り {0} 回の使用可能。"
+  cooldown: "金庫はクールダウン中です。残り時間: {0} 秒。"
+  max_uses_reached: "この金庫の最大開封回数に達しました。"
