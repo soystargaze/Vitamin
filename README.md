@@ -15,7 +15,7 @@
 - **Modular system:** Enable or disable each feature as needed
 - **Permissions support:** Controls player access to specific modules and crafting recipes
 - **New mechanics:** Features designed to enhance gameplay without breaking the vanilla feel
-- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **German**, **Polish**, **French**, **Korean**, **Turkish** and **Brazilian Portuguese**
+- **Multi-language support:** Easily translatable, with preconfigured translations for **English**, **Spanish**, **Chinese**, **German**, **Polish**, **French**, **Korean**, **Japanese**, **Turkish** and **Brazilian Portuguese**
 
 ---
 
@@ -58,6 +58,7 @@
 - **Player XP to Books:** Convert your XP into books by `Shift + Right-Clicking` with an empty book.
 - **Repair Tools:** Repairs gold, iron and diamond tools and weapons using nuggets, ingots or diamonds in the player's 2x2 inventory crafting grid.
 - **Seed Replanter:** Harvest and replant crops with a `Right-Click`.
+- **Replayable Vault:** Reuse Trial Vaults after a cooldown period, with a maximum number of uses.
 - **Silk Spawners:** Obtain spawners when mining them with `Silk Touch`.
 - **Sponge with Lava:** Sponges can now absorb lava.
 - **Totem from Inventory:** The Totem of Undying works from anywhere in your inventory.
@@ -163,6 +164,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.xp_books` - Allows the use of the Player XP to Books module.
 - `vitamin.module.repair` - Allows the use of the Repair Tools module.
 - `vitamin.module.seed_replanter` - Allows the use of the Seed Replanter module.
+- `vitamin.module.replayable_vault` - Allows the use of the Replayable Vault module.
 - `vitamin.module.silk_spawners` - Allows the use of the Silk Spawners module.
 - `vitamin.module.sponge_with_lava` - Allows the use of the Sponge with Lava module.
 - `vitamin.module.totem_from_inventory` - Allows the use of the Totem from Inventory module.
