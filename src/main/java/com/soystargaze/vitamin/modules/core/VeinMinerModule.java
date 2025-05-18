@@ -95,11 +95,9 @@ public class VeinMinerModule implements Listener {
     private void processVeinMining(Block block, ItemStack tool) {
         Set<Block> veinBlocks = new HashSet<>();
         findConnectedOres(block, block.getType(), veinBlocks);
-
         if (veinBlocks.size() > MAX_BLOCKS) {
             return;
         }
-
         for (Block ore : veinBlocks) {
             handleBlockDrop(ore, tool);
         }
@@ -109,9 +107,11 @@ public class VeinMinerModule implements Listener {
         boolean hasSilkTouch = tool.containsEnchantment(Enchantment.SILK_TOUCH);
         boolean hasFireAspect = tool.containsEnchantment(Enchantment.FIRE_ASPECT);
 
+        Material originalType = ore.getType();
+
         Collection<ItemStack> drops;
         if (hasSilkTouch) {
-            drops = Collections.singletonList(new ItemStack(ore.getType()));
+            drops = Collections.singletonList(new ItemStack(originalType));
         } else {
             drops = ore.getDrops(tool);
             if (hasFireAspect) {
@@ -129,18 +129,19 @@ public class VeinMinerModule implements Listener {
             }
         }
 
-        ore.setType(Material.AIR);
-        for (ItemStack drop : drops) {
-            ore.getWorld().dropItemNaturally(ore.getLocation(), drop);
-        }
-
-        if (!hasSilkTouch && XP_ORES.contains(ore.getType())) {
-            int[] range = getExperienceRange(ore.getType());
+        if (!hasSilkTouch && XP_ORES.contains(originalType)) {
+            int[] range = getExperienceRange(originalType);
             int exp = range[0] + RANDOM.nextInt(range[1] - range[0] + 1);
+
             if (exp > 0) {
                 ExperienceOrb orb = (ExperienceOrb) ore.getWorld().spawnEntity(ore.getLocation(), EntityType.EXPERIENCE_ORB);
                 orb.setExperience(exp);
             }
+        }
+
+        ore.setType(Material.AIR);
+        for (ItemStack drop : drops) {
+            ore.getWorld().dropItemNaturally(ore.getLocation(), drop);
         }
     }
 
