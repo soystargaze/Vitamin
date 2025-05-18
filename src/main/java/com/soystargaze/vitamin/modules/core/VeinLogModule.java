@@ -56,7 +56,9 @@ public class VeinLogModule implements Listener {
             return;
         }
 
-        processVeinMining(block);
+        if (!player.isSneaking()) {
+            processVeinMining(block);
+        }
     }
 
     private boolean isValidMining(Material blockType, Material toolType) {

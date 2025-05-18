@@ -67,8 +67,10 @@ public class VeinMinerModule implements Listener {
             return;
         }
 
-        event.setCancelled(true);
-        processVeinMining(block, tool);
+        if (!player.isSneaking()) {
+            event.setCancelled(true);
+            processVeinMining(block, tool);
+        }
     }
 
     private void processVeinMining(Block block, ItemStack tool) {
