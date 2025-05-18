@@ -19,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
-
 public class ElytraArmorModule implements Listener {
 
     private final double defaultArmorValue;
@@ -111,8 +109,9 @@ public class ElytraArmorModule implements Listener {
     private double getArmorValueFromItem(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return 0;
         ItemMeta meta = item.getItemMeta();
-        if (meta == null || !meta.hasAttributeModifiers()) return 0;
-        return Objects.requireNonNull(meta.getAttributeModifiers(Vitamin.getInstance().getVersionAdapter().getArmorAttribute()))
-                .stream().mapToDouble(AttributeModifier::getAmount).sum();
+        if (meta == null) return 0;
+        var modifiers = meta.getAttributeModifiers(Vitamin.getInstance().getVersionAdapter().getArmorAttribute());
+        if (modifiers == null) return 0;
+        return modifiers.stream().mapToDouble(AttributeModifier::getAmount).sum();
     }
 }

@@ -98,7 +98,6 @@ public class RepairModule implements Listener {
 
             if (isRepairableTool(item)) {
                 if (tool != null) {
-                    inv.setResult(null);
                     return;
                 }
                 tool = item.clone();
@@ -108,7 +107,6 @@ public class RepairModule implements Listener {
         }
 
         if (tool == null || repairMaterials.isEmpty()) {
-            inv.setResult(null);
             return;
         }
 
@@ -119,7 +117,6 @@ public class RepairModule implements Listener {
         int currentDamage = damageable.getDamage();
 
         if (currentDamage <= 0) {
-            inv.setResult(null);
             return;
         }
 
@@ -130,7 +127,6 @@ public class RepairModule implements Listener {
         }
 
         if (totalRepairAmount <= 0) {
-            inv.setResult(null);
             return;
         }
 
