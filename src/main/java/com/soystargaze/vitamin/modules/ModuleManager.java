@@ -113,6 +113,10 @@ public class ModuleManager {
                     VeinMinerModule::new,
                     null
             ),
+            new ModuleDef("module.health_indicator",
+                    HealthIndicatorModule::new,
+                    null
+            ),
             new ModuleDef("module.weather_effects",
                     WeatherEffectsModule::new,
                     null
