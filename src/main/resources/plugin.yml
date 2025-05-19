@@ -9,6 +9,7 @@ softdepend:
   - WorldGuard
   - Lands
   - Lootin
+  - GriefPrevention
 commands:
   vitamin:
     description: Main command for Vitamin

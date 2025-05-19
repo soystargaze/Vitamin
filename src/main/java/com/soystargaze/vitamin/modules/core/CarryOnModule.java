@@ -2,6 +2,7 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.integration.GriefPreventionIntegrationHandler;
 import com.soystargaze.vitamin.integration.LandsIntegrationHandler;
 import com.soystargaze.vitamin.integration.LootinIntegrationHandler;
 import com.soystargaze.vitamin.integration.WorldGuardIntegrationHandler;
@@ -54,6 +55,7 @@ public class CarryOnModule implements Listener {
     private LandsIntegrationHandler landsIntegration;
     private LootinIntegrationHandler lootinIntegration;
     private final boolean allowStacking;
+    private GriefPreventionIntegrationHandler gpIntegration;
 
     public CarryOnModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -68,6 +70,9 @@ public class CarryOnModule implements Listener {
         }
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
             landsIntegration = new LandsIntegrationHandler(plugin);
+        }
+        if (plugin.getServer().getPluginManager().getPlugin("GriefPrevention") != null) {
+            gpIntegration = new GriefPreventionIntegrationHandler(plugin);
         }
         if (plugin.getServer().getPluginManager().getPlugin("Lootin") != null) {
             lootinIntegration = new LootinIntegrationHandler(plugin);
@@ -127,7 +132,7 @@ public class CarryOnModule implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (!((Player) entity).getPassengers().isEmpty()) {
+                if (!entity.getPassengers().isEmpty()) {
                     TextHandler.get().sendMessage(player, "carry_on.cannot_carry_someone_carrying");
                     event.setCancelled(true);
                     return;
@@ -175,6 +180,14 @@ public class CarryOnModule implements Listener {
 
         if (landsIntegration != null) {
             if (!landsIntegration.canInteract(player, entity.getLocation())) {
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (gpIntegration != null) {
+            if (!gpIntegration.canInteract(player, entity.getLocation(), event)) {
                 TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
@@ -234,6 +247,14 @@ public class CarryOnModule implements Listener {
 
         if (landsIntegration != null) {
             if (!landsIntegration.canBreak(player, block.getLocation(), block.getType())) {
+                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (gpIntegration != null) {
+            if (!gpIntegration.canBuild(player, block.getLocation(), event)) {
                 TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
