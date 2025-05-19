@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>Sie müssen {0} Sekunden warten, bevor Sie den Kompass wieder benutzen!"
 
 replayable_vault:
-  first_use: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen. Verbleibende Zeit: {1} Sekunden."
+  first_use: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen. Verbleibende Zeit: {1}."
   remaining_uses: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen."
-  cooldown: "Der Tresor befindet sich in der Abklingzeit. Verbleibende Zeit: {0} Sekunden."
+  cooldown: "Der Tresor befindet sich in der Abklingzeit. Verbleibende Zeit: {0}."
   max_uses_reached: "Du hast die maximale Anzahl an Öffnungen für diesen Tresor erreicht."

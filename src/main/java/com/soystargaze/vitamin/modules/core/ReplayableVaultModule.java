@@ -73,8 +73,9 @@ public class ReplayableVaultModule implements Listener {
                 DatabaseHandler.saveReactivationData(vaultLoc, playerId, new ReactivationData(newOpeningCount, currentTime));
 
                 int remainingUses = maxOpenings - newOpeningCount;
+                String formattedCooldown = formatTime(cooldown / 1000);
                 if (newOpeningCount == 1) {
-                    TextHandler.get().sendMessage(player, "replayable_vault.first_use", remainingUses, cooldown / 1000);
+                    TextHandler.get().sendMessage(player, "replayable_vault.first_use", remainingUses, formattedCooldown);
                 } else {
                     TextHandler.get().sendMessage(player, "replayable_vault.remaining_uses", remainingUses);
                 }
@@ -87,8 +88,37 @@ public class ReplayableVaultModule implements Listener {
                 TextHandler.get().sendMessage(player, "replayable_vault.max_uses_reached");
             } else {
                 long timeLeft = (lastOpeningTime + cooldown - currentTime) / 1000;
-                TextHandler.get().sendMessage(player, "replayable_vault.cooldown", timeLeft);
+                String formattedTime = formatTime(timeLeft);
+                TextHandler.get().sendMessage(player, "replayable_vault.cooldown", formattedTime);
             }
+        }
+    }
+
+    private String formatTime(long seconds) {
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        List<String> parts = new ArrayList<>();
+        if (hours > 0) {
+            String hourUnit = hours == 1 ? "h" : "hr";
+            parts.add(hours + " " + hourUnit);
+        }
+        if (minutes > 0) {
+            String minuteUnit = "min";
+            parts.add(minutes + " " + minuteUnit);
+        }
+        if (secs > 0 || parts.isEmpty()) {
+            String secondUnit = "s";
+            parts.add(secs + " " + secondUnit);
+        }
+
+        if (parts.size() == 1) {
+            return parts.getFirst();
+        } else if (parts.size() == 2) {
+            return parts.get(0) + " " + parts.get(1);
+        } else {
+            return String.join(", ", parts.subList(0, parts.size() - 1)) + ", " + parts.getLast();
         }
     }
 

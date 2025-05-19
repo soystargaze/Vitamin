@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>Você deve esperar {0} segundos antes de usar a bússola novamente!</red>"
 
 replayable_vault:
-  first_use: "Você abriu o cofre. Você tem {0} usos adicionais restantes. Tempo restante: {1} segundos."
+  first_use: "Você abriu o cofre. Você tem {0} usos adicionais restantes. Tempo restante: {1}."
   remaining_uses: "Você abriu o cofre. Você tem {0} usos adicionais restantes."
-  cooldown: "O cofre está em tempo de espera. Tempo restante: {0} segundos."
+  cooldown: "O cofre está em tempo de espera. Tempo restante: {0}."
   max_uses_reached: "Você atingiu o número máximo de aberturas para este cofre."

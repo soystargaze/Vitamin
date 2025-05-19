@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>You must wait {0} seconds before using the compass again!"
 
 replayable_vault:
-  first_use: "You have opened the vault. You have {0} additional uses left. Time left: {1} seconds."
+  first_use: "You have opened the vault. You have {0} additional uses left. Time left: {1}."
   remaining_uses: "You have opened the vault. You have {0} additional uses left."
-  cooldown: "The vault is on cooldown. Time left: {0} seconds."
+  cooldown: "The vault is on cooldown. Time left: {0}."
   max_uses_reached: "You have reached the maximum openings for this vault."

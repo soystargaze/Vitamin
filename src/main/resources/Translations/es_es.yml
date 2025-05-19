@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>¡Debes esperar {0} segundos antes de usar la brújula nuevamente!</red>"
 
 replayable_vault:
-  first_use: "Has abierto el vault. Te quedan {0} usos adicionales. Tiempo restante: {1} segundos."
+  first_use: "Has abierto el vault. Te quedan {0} usos adicionales. Tiempo restante: {1}."
   remaining_uses: "Has abierto el vault. Te quedan {0} usos adicionales."
-  cooldown: "El vault está en cooldown. Tiempo restante: {0} segundos."
+  cooldown: "El vault está en cooldown. Tiempo restante: {0}."
   max_uses_reached: "Has alcanzado el límite de aperturas para este vault."

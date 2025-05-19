@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>Işınlanma iptal edildi: {0} saniye beklemelisiniz!</red>"
 
 replayable_vault:
-  first_use: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı. Kalan süre: {1} saniye."
+  first_use: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı. Kalan süre: {1}."
   remaining_uses: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı."
-  cooldown: "Kasa bekleme süresinde. Kalan süre: {0} saniye."
+  cooldown: "Kasa bekleme süresinde. Kalan süre: {0}."
   max_uses_reached: "Bu kasayı açma hakkınız maksimum seviyeye ulaştı."

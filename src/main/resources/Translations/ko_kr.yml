@@ -142,7 +142,7 @@ tpcompass:
   cooldown: "<red>다시 사용하기 전에 {0}초 기다려야 합니다!</red>"
 
 replayable_vault:
-  first_use: "금고를 열었습니다. 추가 사용 가능 횟수: {0}회. 남은 시간: {1}초."
+  first_use: "금고를 열었습니다. 추가 사용 가능 횟수: {0}회. 남은 시간: {1}."
   remaining_uses: "금고를 열었습니다. 추가 사용 가능 횟수: {0}회."
-  cooldown: "금고가 재사용 대기 중입니다. 남은 시간: {0}초."
+  cooldown: "금고가 재사용 대기 중입니다. 남은 시간: {0}."
   max_uses_reached: "이 금고의 최대 개방 횟수에 도달했습니다."
