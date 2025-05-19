@@ -84,10 +84,10 @@ public class ReplayableVaultModule implements Listener {
         } else {
             event.setCancelled(true);
             if (openingCount >= maxOpenings) {
-                TextHandler.get().sendAndLog(player, "replayable_vault.max_uses_reached");
+                TextHandler.get().sendMessage(player, "replayable_vault.max_uses_reached");
             } else {
                 long timeLeft = (lastOpeningTime + cooldown - currentTime) / 1000;
-                TextHandler.get().sendAndLog(player, "replayable_vault.cooldown", timeLeft);
+                TextHandler.get().sendMessage(player, "replayable_vault.cooldown", timeLeft);
             }
         }
     }
