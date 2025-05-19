@@ -21,7 +21,7 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **32 great power-ups** to enhance your gameplay!
+**Vitamin+** comes loaded with **31 great power-ups** to enhance your gameplay!
 
 <details>
   <summary>Explore</summary>
@@ -51,7 +51,6 @@
 - **Elytra Armor:** Elytra provides protection similar to Netherite chestplates (configurable).
 - **Enchants Back:** Recover enchantments when disenchanting using empty books in your inventory (configurable). It can also return the [AdvancedEnchantments](https://www.spigotmc.org/resources/1-17-1-21-5-⭕-advancedenchantments-⭐-500-custom-enchants-⭐create-custom-enchantments-✅.43058/) enchantments.
 - **Fire Aspect On Tools:** You can use an anvil to apply `Fire Aspect I/II` to tools. It auto-smelts drops when breaking blocks. `Level I` has a 40% chance, while `Level II` has a 100% chance.
-- **Health Indicator:** Displays the health and damage to mobs.
 - **Invisible Item Frames:** Toggle the visibility of item frames with `Shift + Right-Click (empty hand)`.
 - **Leaf Decay:** Leaves disappear faster when cutting down trees (configurable).
 - **Oxygen Bottle:** Using an empty bottle in the water gives you some oxygen to breathe (configurable).

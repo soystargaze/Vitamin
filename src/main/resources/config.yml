@@ -64,7 +64,6 @@ module:
   elytra_armor: true # Elytra gives armor like a chest plate
   enchants_back: true # Enchants are returned when disenchanting with a grindstone and has empty books
   fire_aspect_tools: true # Drop's smelting when the tool has Fire Aspect I (40%) and Fire Aspect II (100%)
-  health_indicator: true # Show health and damage on the screen
   invisible_item_frames: true # Right-click an item frame with an empty hand to make it invisible/visible
   leaf_decay: true # Leaves decay when the log is removed
   oxygen_bottle: true # Using an empty bottle in the water gives you some oxygen
