@@ -4,6 +4,7 @@ import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -569,7 +570,7 @@ class ArmorBoostEffect implements GenericDamageListenerEffect {
         double reduction = reductionPerPiece * stack;
         event.setDamage(event.getDamage() * (1 - reduction));
         Player player = (Player) event.getEntity();
-        player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, player.getLocation(), 10 * stack, 0.5, 0.5, 0.5, 0);
+        player.getWorld().spawnParticle(Particle.BLOCK, player.getLocation(), 10 * stack, 0.5, 0.5, 0.5, 0, Material.DIAMOND_BLOCK.createBlockData());
     }
 
     @Override
