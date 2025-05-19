@@ -66,8 +66,8 @@
 - **Void Totem:** The Totem of Undying activates when falling into the void.
 - **TP to Bed with Compass:** Use a compass with `Right-click` to teleport to your spawn point (configurable).
 - **Unlock All Recipes:** Unlock all crafting recipes upon joining the server.
-- **Tree Vein Miner:** Chop down entire trees when using `Efficiency V` tools.
-- **Vein Miner:** Mine connected ores in a vein using `Efficiency V` tools.
+- **Tree Vein Miner:** Chop down entire trees when using `Efficiency V` tools. Hold `Shift` to chop trees one block at a time.
+- **Vein Miner:** Mine connected ores in a vein using `Efficiency V` tools. Hold `Shift` to mine ores one block at a time.
 - **Villager Follow Emeralds:** Villagers follow players holding emeralds or dropped in the ground.
 - **Wall Jump:** Use `Shift` to propel yourself or slide off walls (configurable).
 - **Weather Effects:** Rain causes crops to grow faster and sunshine allows mobs to have more babies.
