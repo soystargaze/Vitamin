@@ -512,7 +512,7 @@ class KnockbackResistanceEffect implements DamageListenerEffect {
             Vector knockback = event.getDamager().getLocation().toVector()
                     .subtract(player.getLocation().toVector()).normalize();
             player.setVelocity(knockback.multiply(0.5 / stack));
-            player.getWorld().spawnParticle(Particle.ENCHANTED_HIT, player.getLocation(), 5 * stack, 0.5, 0.5, 0.5, 0);
+            player.getWorld().spawnParticle(Particle.BLOCK, player.getLocation(), 5 * stack, 0.5, 0.5, 0.5, 0, Material.BARRIER.createBlockData());
         }
     }
 
