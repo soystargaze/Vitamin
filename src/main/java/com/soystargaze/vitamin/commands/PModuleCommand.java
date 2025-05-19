@@ -47,18 +47,20 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
         }
 
         String moduleName = args[0];
-        String stateArg   = args[1];
-        String key        = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
+        String configKey = "module." + moduleName;         // Para configuración y base de datos
+        String permissionKey = "vitamin.module." + moduleName; // Para permisos
 
-        if (!plugin.getConfig().getBoolean(key, false)) {
-            TextHandler.get().sendMessage(player, "commands.pmodule.module_not_active", key);
-            return true;
-        }
-        if (!player.hasPermission(key)) {
-            TextHandler.get().sendMessage(player, "commands.pmodule.no_module_permission", key);
+        if (!plugin.getConfig().getBoolean(configKey, false)) {
+            TextHandler.get().sendMessage(player, "commands.pmodule.module_not_active", moduleName);
             return true;
         }
 
+        if (!player.hasPermission(permissionKey)) {
+            TextHandler.get().sendMessage(player, "commands.pmodule.no_module_permission", moduleName);
+            return true;
+        }
+
+        String stateArg = args[1];
         boolean enable;
         if (stateArg.equalsIgnoreCase("enable")) {
             enable = true;
@@ -69,9 +71,9 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        DatabaseHandler.setModuleEnabledForPlayer(player.getUniqueId(), key, enable);
-        boolean newState = DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), key);
-        TextHandler.get().sendMessage(player, "commands.pmodule.changed", key, newState ? "enabled" : "disabled");
+        DatabaseHandler.setModuleEnabledForPlayer(player.getUniqueId(), configKey, enable);
+        boolean newState = DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), configKey);
+        TextHandler.get().sendMessage(player, "commands.pmodule.changed", moduleName, newState ? "enabled" : "disabled");
 
         return true;
     }
@@ -87,22 +89,15 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             if (plugin.getConfig().contains("module")) {
-                Set<String> keys = Objects
-                        .requireNonNull(plugin.getConfig().getConfigurationSection("module"))
-                        .getKeys(false);
+                Set<String> keys = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("module")).getKeys(false);
                 for (String k : keys) {
                     if (plugin.getConfig().getBoolean("module." + k, true)) {
-                        suggestions.add("module." + k);
-                    }
-                }
-            } else {
-                for (String k : plugin.getConfig().getKeys(false)) {
-                    if (k.startsWith("module.") && plugin.getConfig().getBoolean(k, true)) {
                         suggestions.add(k);
                     }
                 }
             }
-        } else if (args.length == 2) {
+        }
+        else if (args.length == 2) {
             suggestions.add("enable");
             suggestions.add("disable");
         }

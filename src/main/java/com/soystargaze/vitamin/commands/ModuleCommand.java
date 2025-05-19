@@ -67,9 +67,10 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
+            String key = "module." + moduleName; // Construir la clave completa
+
             if (!plugin.getConfig().contains(key)) {
-                TextHandler.get().sendMessage(player, "commands.module.not_found", key);
+                TextHandler.get().sendMessage(player, "commands.module.not_found", moduleName);
                 return true;
             }
 
@@ -84,7 +85,7 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             }
 
             moduleManager.reloadModules();
-            TextHandler.get().sendMessage(player, "commands.module.changed", key, enable ? "enabled" : "disabled");
+            TextHandler.get().sendMessage(player, "commands.module.changed", moduleName, enable ? "enabled" : "disabled");
 
         } catch (Exception e) {
             TextHandler.get().sendMessage(player, "commands.reload.error");
@@ -108,15 +109,7 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
                 Set<String> keys = Objects
                         .requireNonNull(plugin.getConfig().getConfigurationSection("module"))
                         .getKeys(false);
-                for (String k : keys) {
-                    suggestions.add("module." + k);
-                }
-            } else {
-                for (String k : plugin.getConfig().getKeys(false)) {
-                    if (k.startsWith("module.")) {
-                        suggestions.add(k);
-                    }
-                }
+                suggestions.addAll(keys);
             }
         } else if (args.length == 2) {
             suggestions.add("enable");
