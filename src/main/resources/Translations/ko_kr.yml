@@ -25,6 +25,14 @@ plugin:
   no_update_available: "<color:#FFA500>업데이트 없음.</color> 최신 버전을 사용하고 있습니다."
   update_check_failed: "<color:#FFA500>업데이트 확인 실패:</color> {0}"
   update_check_error: "<color:#FFA500>업데이트 확인 중 오류 발생:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard 감지됨: 모듈 상호작용을 위해 사용됩니다."
+    lands_detected: "Lands 감지됨: 모듈 상호작용을 위해 사용됩니다."
+    lootin_detected: "Lootin 감지됨: 모듈 상호작용을 위해 사용됩니다."
+    griefprevention_detected: "GriefPrevention 감지됨: 모듈 상호작용을 위해 사용됩니다."
+    griefprevention_integration_success: "GriefPrevention 통합 성공: 모듈 상호작용을 위해 사용됩니다."
+    griefprevention_integration_failed: "GriefPrevention 통합 실패: {0}"
+    griefprevention_error: "GriefPrevention 오류: {0}"
 
 items:
   registered: "Vitamin+ 아이템이 성공적으로 등록되었습니다."

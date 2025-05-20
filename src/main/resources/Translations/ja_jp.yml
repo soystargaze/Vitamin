@@ -7,27 +7,35 @@
 # Support: https://soystargaze.com/discord
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>ビタミン</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500>"
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>ビタミン</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "バージョン: {0}"
   author: "作者: {0}"
   website: "ウェブサイト: {0}"
-  enabled: "ビタミン+ が正常に有効化されました。"
-  disabled: "ビタミン+ が正常に無効化されました。"
+  enabled: "Vitamin+ が正常に有効化されました。"
+  disabled: "Vitamin+ が正常に無効化されました。"
   language_loaded: "言語がロードされました: {0}.yml ({1} 翻訳)"
-  enable_error: "ビタミン+ の有効化中にエラーが発生しました: {0}"
+  enable_error: "Vitamin+ の有効化中にエラーが発生しました: {0}"
   version_detected: "検出されたバージョン: {0}"
   paper_detected: "<color:#FFA500>Paper 検出:</color> より高いパフォーマンスのために Paper フックを使用。"
   paper_not_detected: "<color:#FFA500>Spigot 検出:</color> コアフックを使用。"
-  update_available: "<color:#FFA500>アップデート利用可能:</color> ビタミン+ {0} を {1} でダウンロード"
+  update_available: "<color:#FFA500>アップデート利用可能:</color> Vitamin+ {0} を {1} でダウンロード"
   no_update_available: "<color:#FFA500>アップデートなし。</color> 最新バージョンを使用中。"
   update_check_failed: "<color:#FFA500>アップデートの確認に失敗:</color> {0}"
   update_check_error: "<color:#FFA500>アップデート確認エラー:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard 検出: モジュールの相互作用に使用。"
+    lands_detected: "Lands 検出: モジュールの相互作用に使用。"
+    lootin_detected: "Lootin 検出: モジュールの相互作用に使用。"
+    griefprevention_detected: "GriefPrevention 検出: モジュールの相互作用に使用。"
+    griefprevention_integration_success: "GriefPrevention の統合が成功しました。"
+    griefprevention_integration_failed: "GriefPrevention の統合に失敗: {0}"
+    griefprevention_error: "GriefPrevention エラー: {0}"
 
 items:
-  registered: "ビタミン+ のアイテムが正常に登録されました。"
+  registered: "Vitamin+ のアイテムが正常に登録されました。"
 
 events:
   registered: "イベントが正常に登録されました。"
@@ -36,8 +44,8 @@ commands:
   registered: "コマンドが正常に登録されました。"
   usage: "使用法: /vitamin <args>"
   reload:
-    success: "ビタミン+ が正常にリロードされました。"
-    error: "ビタミン+ のリロード中にエラーが発生しました。"
+    success: "Vitamin+ が正常にリロードされました。"
+    error: "Vitamin+ のリロード中にエラーが発生しました。"
   module:
     usage: "使用法: /vitamin module <module> <enable|disable>"
     not_found: "モジュールが見つかりません: {0}"

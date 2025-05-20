@@ -25,6 +25,14 @@ plugin:
   no_update_available: "<color:#FFA500>No updates available.</color> You are using the latest version."
   update_check_failed: "<color:#FFA500>Failed to check for updates:</color> {0}"
   update_check_error: "<color:#FFA500>Error checking for updates:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard detected for module interactions."
+    lands_detected: "Lands detected for module interactions."
+    lootin_detected: "Lootin detected for module interactions."
+    griefprevention_detected: "GriefPrevention detected for module interactions."
+    griefprevention_integration_success: "GriefPrevention integration for module successful."
+    griefprevention_integration_failed: "GriefPrevention integration for modules failed: {0}"
+    griefprevention_error: "Error with GriefPrevention: {0}"
 
 items:
   registered: "Registered Vitamin+'s items successfully."

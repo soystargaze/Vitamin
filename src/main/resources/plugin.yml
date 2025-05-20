@@ -1,5 +1,5 @@
 name: Vitamin
-version: '1.5.1'
+version: '1.5.2'
 main: com.soystargaze.vitamin.Vitamin
 api-version: '1.21'
 load: STARTUP

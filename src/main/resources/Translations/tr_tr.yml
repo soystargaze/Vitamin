@@ -25,6 +25,14 @@ plugin:
   no_update_available: "<color:#FFA500>Güncelleme yok.</color> En son sürümü kullanıyorsunuz."
   update_check_failed: "<color:#FFA500>Güncelleme kontrolü başarısız oldu:</color> {0}"
   update_check_error: "<color:#FFA500>Güncelleme kontrolü sırasında hata oluştu:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard modül etkileşimleri için algılandı."
+    lands_detected: "Lands modül etkileşimleri için algılandı."
+    lootin_detected: "Lootin modül etkileşimleri için algılandı."
+    griefprevention_detected: "GriefPrevention modül etkileşimleri için algılandı."
+    griefprevention_integration_success: "GriefPrevention modül entegrasyonu başarıyla tamamlandı."
+    griefprevention_integration_failed: "GriefPrevention modül entegrasyonu başarısız oldu: {0}"
+    griefprevention_error: "GriefPrevention ile ilgili hata: {0}"
 
 items:
   registered: "Vitamin+ öğeleri başarıyla kaydedildi."

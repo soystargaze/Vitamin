@@ -7,17 +7,17 @@
 # Support : https://soystargaze.com/discord
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamine</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500>" # La couleur appliquée à {0}, {1}, etc. dans les traductions
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>Vitamine</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "version : {0}"
   author: "par {0}"
   website: "site : {0}"
-  enabled: "Vitamine+ activé avec succès."
-  disabled: "Vitamine+ désactivé avec succès."
+  enabled: "Vitamin+ activé avec succès."
+  disabled: "Vitamin+ désactivé avec succès."
   language_loaded: "Langue chargée : {0}.yml ({1} traductions)"
-  enable_error: "Une erreur est survenue lors de l'activation de Vitamine+ : {0}"
+  enable_error: "Une erreur est survenue lors de l'activation de Vitamin+ : {0}"
   version_detected: "Version détectée : {0}"
   paper_detected: "<color:#FFA500>Paper détecté:</color> Utilisation des hooks Paper pour de meilleures performances."
   paper_not_detected: "<color:#FFA500>Spigot détecté:</color> Utilisation des hooks du noyau."
@@ -25,25 +25,33 @@ plugin:
   no_update_available: "<color:#FFA500>Aucune mise à jour disponible.</color> Vous utilisez la dernière version."
   update_check_failed: "<color:#FFA500>Échec de la vérification des mises à jour:</color> {0}"
   update_check_error: "<color:#FFA500>Erreur lors de la vérification des mises à jour:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard détecté pour les interactions de module."
+    lands_detected: "Lands détecté pour les interactions de module."
+    lootin_detected: "Lootin détecté pour les interactions de module."
+    griefprevention_detected: "GriefPrevention détecté pour les interactions de module."
+    griefprevention_integration_success: "Intégration de GriefPrevention pour le module réussie."
+    griefprevention_integration_failed: "L'intégration de GriefPrevention pour les modules a échoué : {0}"
+    griefprevention_error: "Erreur avec GriefPrevention : {0}"
 
 items:
-  registered: "Les objets de Vitamine+ ont été enregistrés avec succès."
+  registered: "Les objets de Vitamin+ ont été enregistrés avec succès."
 
 events:
   registered: "Les événements ont été enregistrés avec succès."
 
 commands:
   registered: "Les commandes ont été enregistrées avec succès."
-  usage: "Utilisation : /vitamine <args>"
+  usage: "Utilisation : /Vitamin <args>"
   reload:
-    success: "Vitamine+ rechargé avec succès."
-    error: "Une erreur est survenue lors du rechargement de Vitamine+."
+    success: "Vitamin+ rechargé avec succès."
+    error: "Une erreur est survenue lors du rechargement de Vitamin+."
   module:
-    usage: "Utilisation : /vitamine module <module> <activer|désactiver>"
+    usage: "Utilisation : /Vitamin module <module> <activer|désactiver>"
     not_found: "Module introuvable : {0}"
     changed: "Module {0} {1} avec succès."
   pmodule:
-    usage: "Utilisation : /vitamine pmodule <module> <activer|désactiver>"
+    usage: "Utilisation : /Vitamin pmodule <module> <activer|désactiver>"
     player_only: "Cette commande ne peut être exécutée que par un joueur."
     module_not_active: "Le module {0} n'est pas actif."
     no_module_permission: "Vous n'avez pas la permission d'utiliser {0}."

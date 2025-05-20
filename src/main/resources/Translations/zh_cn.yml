@@ -7,27 +7,35 @@
 # 支持: https://soystargaze.com/discord
 
 plugin:
-  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>维生素</gradient><color:#FFA500>+</color><gray>]</gray> "
+  prefix: "<gray>[</gray><gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> "
   dynamic_color: "<color:#FFA500>" # 应用于 {0}, {1} 等翻译变量的颜色
   separator: "<gradient:#FFA500:#FFFF00><bold>--------------------------------------------</gradient>"
-  name: "<gradient:#FFA500:#FFFF00>维生素</gradient><color:#FFA500>+</color>"
+  name: "<gradient:#FFA500:#FFFF00>Vitamin</gradient><color:#FFA500>+</color>"
   version: "版本: {0}"
   author: "作者: {0}"
   website: "网站: {0}"
-  enabled: "维生素+ 启用成功。"
-  disabled: "维生素+ 已禁用。"
+  enabled: "Vitamin+ 启用成功。"
+  disabled: "Vitamin+ 已禁用。"
   language_loaded: "语言已加载: {0}.yml ({1} 条翻译)"
-  enable_error: "启用维生素+ 时发生错误: {0}"
+  enable_error: "启用Vitamin+ 时发生错误: {0}"
   version_detected: "检测到的版本: {0}"
   paper_detected: "<color:#FFA500>检测到 Paper:</color> 使用 Paper 钩子以获得更好的性能。"
   paper_not_detected: "<color:#FFA500>检测到 Spigot:</color> 使用核心钩子。"
-  update_available: "<color:#FFA500>可用更新:</color> 在 {1} 下载维生素+ {0}"
+  update_available: "<color:#FFA500>可用更新:</color> 在 {1} 下载Vitamin+ {0}"
   no_update_available: "<color:#FFA500>没有可用更新。</color> 您正在使用最新版本。"
   update_check_failed: "<color:#FFA500>检查更新失败:</color> {0}"
   update_check_error: "<color:#FFA500>检查更新时发生错误:</color> {0}"
+  integration:
+    worldguard_detected: "WorldGuard 检测到用于模块交互。"
+    lands_detected: "Lands 检测到用于模块交互。"
+    lootin_detected: "Lootin 检测到用于模块交互。"
+    griefprevention_detected: "GriefPrevention 检测到用于模块交互。"
+    griefprevention_integration_success: "GriefPrevention 集成模块成功。"
+    griefprevention_integration_failed: "GriefPrevention 集成模块失败: {0}"
+    griefprevention_error: "GriefPrevention 错误: {0}"
 
 items:
-  registered: "维生素+ 的物品已成功注册。"
+  registered: "Vitamin+ 的物品已成功注册。"
 
 events:
   registered: "事件已成功注册。"
@@ -36,8 +44,8 @@ commands:
   registered: "命令已成功注册。"
   usage: "用法: /vitamin <参数>"
   reload:
-    success: "维生素+ 重新加载成功。"
-    error: "重新加载维生素+ 时发生错误。"
+    success: "Vitamin+ 重新加载成功。"
+    error: "重新加载Vitamin+ 时发生错误。"
   module:
     usage: "用法: /vitamin module <模块> <enable|disable>"
     not_found: "未找到模块: {0}"

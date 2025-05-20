@@ -65,17 +65,43 @@ public class CarryOnModule implements Listener {
         this.chestPartKey = new NamespacedKey(plugin, "chest_part");
         this.chestIdKey = new NamespacedKey(plugin, "chest_id");
 
+        setupIntegrations(plugin);
+    }
+
+    private void setupIntegrations(JavaPlugin plugin) {
+        // Initiation WorldGuard
         if (plugin.getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            TextHandler.get().logTranslated("plugin.integration.worldguard_detected");
             wgIntegration = new WorldGuardIntegrationHandler(plugin);
         }
+
+        // Initiation Lands
         if (plugin.getServer().getPluginManager().getPlugin("Lands") != null) {
+            TextHandler.get().logTranslated("plugin.integration.lands_detected");
             landsIntegration = new LandsIntegrationHandler(plugin);
         }
-        if (plugin.getServer().getPluginManager().getPlugin("GriefPrevention") != null) {
-            gpIntegration = new GriefPreventionIntegrationHandler(plugin);
-        }
+
+        // Initiation Lootin
         if (plugin.getServer().getPluginManager().getPlugin("Lootin") != null) {
+            TextHandler.get().logTranslated("plugin.integration.lootin_detected");
             lootinIntegration = new LootinIntegrationHandler(plugin);
+        }
+
+        // Initiation GriefPrevention
+        if (plugin.getServer().getPluginManager().getPlugin("GriefPrevention") != null) {
+            TextHandler.get().logTranslated("plugin.integration.griefprevention_detected");
+            try {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (me.ryanhamshire.GriefPrevention.GriefPrevention.instance != null) {
+                        gpIntegration = new GriefPreventionIntegrationHandler(plugin);
+                        TextHandler.get().logTranslated("plugin.integration.griefprevention_integration_success");
+                    } else {
+                        TextHandler.get().logTranslated("plugin.integration.griefprevention_integration_failed");
+                    }
+                }, 20L);
+            } catch (Exception e) {
+                TextHandler.get().logTranslated("plugin.integration.griefprevention_integration_failed", e.getMessage());
+            }
         }
     }
 
@@ -187,8 +213,14 @@ public class CarryOnModule implements Listener {
         }
 
         if (gpIntegration != null) {
-            if (!gpIntegration.canInteract(player, entity.getLocation(), event)) {
-                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+            try {
+                if (!gpIntegration.canInteract(player, entity.getLocation(), event)) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+                    event.setCancelled(true);
+                    return;
+                }
+            } catch (Exception e) {
+                TextHandler.get().logTranslated("plugin.integration.griefprevention_error", e.getMessage());
                 event.setCancelled(true);
                 return;
             }
@@ -254,8 +286,14 @@ public class CarryOnModule implements Listener {
         }
 
         if (gpIntegration != null) {
-            if (!gpIntegration.canBuild(player, block.getLocation(), event)) {
-                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+            try {
+                if (!gpIntegration.hasContainerPermissions(player, block.getLocation(), event)) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+                    event.setCancelled(true);
+                    return;
+                }
+            } catch (Exception e) {
+                TextHandler.get().logTranslated("plugin.integration.griefprevention_error", e.getMessage());
                 event.setCancelled(true);
                 return;
             }
@@ -290,6 +328,8 @@ public class CarryOnModule implements Listener {
             return;
         }
 
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR || !item.hasItemMeta()) return;
         if (!(item.getItemMeta() instanceof BlockStateMeta meta)) return;
@@ -298,10 +338,74 @@ public class CarryOnModule implements Listener {
         Block targetBlock = player.getTargetBlockExact(5);
         if (targetBlock == null || !targetBlock.getType().isAir()) return;
 
+        // WorldGuard
+        if (wgIntegration != null && !wgIntegration.canBuild(player, targetBlock.getLocation())) {
+            TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+            event.setCancelled(true);
+            return;
+        }
+
         Material blockType = Material.valueOf(
                 meta.getPersistentDataContainer().get(storedBlockKey, PersistentDataType.STRING)
         );
+
+        // Lands temporary block break check
+        if (landsIntegration != null && !landsIntegration.canBreak(player, targetBlock.getLocation(), blockType)) {
+            TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+            event.setCancelled(true);
+            return;
+        }
+
+        // GriefPrevention
+        if (gpIntegration != null) {
+            try {
+                if (!gpIntegration.hasContainerPermissions(player, targetBlock.getLocation(), event)) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+                    event.setCancelled(true);
+                    return;
+                }
+            } catch (Exception e) {
+                TextHandler.get().logTranslated("plugin.integration.griefprevention_error", e.getMessage());
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         String chestPart = meta.getPersistentDataContainer().get(chestPartKey, PersistentDataType.STRING);
+
+        if ((blockType == Material.CHEST || blockType == Material.TRAPPED_CHEST) && chestPart != null && !chestPart.equals("SINGLE")) {
+            Block otherHalfLocation = null;
+            for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST}) {
+                Block adjacent = targetBlock.getRelative(face);
+                if (adjacent.getType().isAir()) {
+                    otherHalfLocation = adjacent;
+                    break;
+                }
+            }
+
+            if (otherHalfLocation != null) {
+                // WorldGuard
+                if (wgIntegration != null && !wgIntegration.canBuild(player, otherHalfLocation.getLocation())) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions_double_chest");
+                    event.setCancelled(true);
+                    return;
+                }
+
+                // Lands temporally block break check
+                if (landsIntegration != null && !landsIntegration.canBreak(player, otherHalfLocation.getLocation(), blockType)) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions_double_chest");
+                    event.setCancelled(true);
+                    return;
+                }
+
+                // GriefPrevention
+                if (gpIntegration != null && !gpIntegration.hasContainerPermissions(player, otherHalfLocation.getLocation(), event)) {
+                    TextHandler.get().sendMessage(player, "carry_on.no_permissions_double_chest");
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
 
         if ((blockType == Material.CHEST || blockType == Material.TRAPPED_CHEST) && chestPart != null) {
             if (chestPart.equals("SINGLE")) {

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.soystargaze'
-version = '1.5.1'
+version = '1.5.2'
 
 repositories {
     mavenCentral()
@@ -36,7 +36,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.20.0")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.2")
-    compileOnly("com.github.GriefPrevention:GriefPrevention:17.0.0")
+    compileOnly("com.github.GriefPrevention:GriefPrevention:16.18.4")
     compileOnly("com.github.angeschossen:LandsAPI:7.10.13")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.13")
     compileOnly files('APIs/AdvancedEnchantments-8.7.4.jar')

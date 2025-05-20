@@ -25,6 +25,14 @@ plugin:
   no_update_available: "<color:#FFA500>Brak dostępnych aktualizacji.</color> Używasz najnowszej wersji."
   update_check_failed: "<color:#FFA500>Nie udało się sprawdzić aktualizacji:</color> {0}"
   update_check_error: "<color:#FFA500>Wystąpił błąd podczas sprawdzania aktualizacji:</color> {0}"
+  integration:
+    worldguard_detected: "Wykryto WorldGuard do interakcji modułów."
+    lands_detected: "Wykryto Lands do interakcji modułów."
+    lootin_detected: "Wykryto Lootin do interakcji modułów."
+    griefprevention_detected: "Wykryto GriefPrevention do interakcji modułów."
+    griefprevention_integration_success: "Integracja GriefPrevention dla modułów powiodła się."
+    griefprevention_integration_failed: "Integracja GriefPrevention dla modułów nie powiodła się: {0}"
+    griefprevention_error: "Wystąpił błąd z GriefPrevention: {0}"
 
 items:
   registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."
