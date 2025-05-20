@@ -142,11 +142,20 @@ public class Vitamin extends JavaPlugin implements Listener {
 
     private void setupVersionAdapter() {
         String raw = Bukkit.getBukkitVersion();
-        String version = raw.replaceFirst(".*?(\\d+\\.\\d+\\.\\d+).*", "$1");
+        String versionPattern = ".*?(\\d+\\.\\d+(?:\\.\\d+)?).*";
+        String version = raw.replaceFirst(versionPattern, "$1");
+
+        if (version.equals(raw)) {
+            TextHandler.get().logTranslated("version.parse_error", raw);
+            versionAdapter = new VersionAdapter_1_21_1();
+            return;
+        }
+
         String[] parts = version.split("\\.");
         int major = Integer.parseInt(parts[0]);
         int minor = Integer.parseInt(parts[1]);
-        int patch = Integer.parseInt(parts[2]);
+        int patch = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
+
         if (major == 1 && minor == 21 && patch >= 3) {
             versionAdapter = new VersionAdapter_1_21_4();
         } else {
