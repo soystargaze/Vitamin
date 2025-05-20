@@ -43,7 +43,7 @@
   </details>
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Bone Meal Expansion:** Use bone meal on crops that are not normally affected by it.
-- **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard) or [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) to work with members only, also respects `Lootin Chests` if [Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/) is in the server (can be disabled).
+- **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard), [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) or [GriefPrevention](https://www.spigotmc.org/resources/griefprevention.1884/) to work with members only, also respects `Lootin Chests` if [Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/) is in the server (can be disabled).
 - **Crop Protection:** Prevents crops from being trampled by players.
 - **Death Chest:** Automatically creates a chest with your items when you die if it finds a safe location (configurable).
 - **Death Map:** It gives you a map with the location of your death on respawn (configurable).
@@ -157,7 +157,6 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.elytra_armor` - Allows the use of the Elytra Armor module.
 - `vitamin.module.enchants_back` - Allows the use of the Enchants Back module.
 - `vitamin.module.fire_aspect_tools` - Allows the use of the Fire Aspect On Tools module.
-- `vitamin.module.health_indicator` - Allows the use of the Health Indicator module.
 - `vitamin.module.invisible_item_frames` - Allows the use of the Invisible Item Frames module.
 - `vitamin.module.leaf_decay` - Allows the use of the Leaf Decay module.
 - `vitamin.module.oxygen_bottle` - Allows the use of the Oxygen Bottle module.
