@@ -13,7 +13,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -34,13 +33,8 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
             @NotNull String label,
             @NotNull String @NotNull [] args
     ) {
-        if (!(sender instanceof Player player)) {
-            sendToSender(sender, "commands.pmodule.player_only");
-            return true;
-        }
-
-        if (!player.hasPermission("vitamin.reload")) {
-            TextHandler.get().sendMessage(player, "commands.reload.no_permission");
+        if (!sender.hasPermission("vitamin.reload")) {
+            sendToSender(sender, "commands.reload.no_permission");
             return true;
         }
 
@@ -59,10 +53,10 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
             moduleManager.reloadModules();
 
             int loadedTranslations = reloadTranslations();
-            TextHandler.get().sendMessage(player, "commands.reload.success", loadedTranslations);
+            sendToSender(sender, "commands.reload.success", loadedTranslations);
 
         } catch (Exception e) {
-            TextHandler.get().sendMessage(player, "commands.reload.error");
+            sendToSender(sender, "commands.reload.error");
             TextHandler.get().logTranslated("commands.reload.error", e.getMessage());
             e.printStackTrace();
         }

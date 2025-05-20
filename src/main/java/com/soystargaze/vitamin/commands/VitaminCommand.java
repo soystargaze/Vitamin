@@ -7,7 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -34,25 +33,16 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             @NotNull String label,
             @NotNull String @NotNull [] args
     ) {
-        // 1) Solo jugadores
-        if (!(sender instanceof Player player)) {
-            sendToSender(sender, "commands.pmodule.player_only");
+        if (!sender.hasPermission("vitamin.use")) {
+            sendToSender(sender, "commands.no_permission");
             return true;
         }
 
-        // 2) Permiso base
-        if (!player.hasPermission("vitamin.use")) {
-            TextHandler.get().sendMessage(player, "commands.no_permission");
-            return true;
-        }
-
-        // 3) Sin args → usage
         if (args.length == 0) {
-            TextHandler.get().sendMessage(player, "commands.usage");
+            sendToSender(sender, "commands.usage");
             return true;
         }
 
-        // 4) Dispatch al subcomando
         String sub = args[0].toLowerCase();
         String[] subArgs = Arrays.copyOfRange(args, 1, args.length);
 
@@ -61,7 +51,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             case "module"  -> moduleCommand.onCommand(sender, command, label, subArgs);
             case "pmodule" -> pModuleCommand.onCommand(sender, command, label, subArgs);
             default -> {
-                TextHandler.get().sendMessage(player, "commands.usage");
+                sendToSender(sender, "commands.usage");
                 yield true;
             }
         };
@@ -94,10 +84,6 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 
-    /**
-     * Envía un mensaje al sender (Player o consola) usando TextHandler.
-     * Comprueba si devuelve Component o String.
-     */
     private void sendToSender(CommandSender sender, String key, Object... args) {
         Object msg = TextHandler.get().getMessage(key, args);
         if (msg instanceof Component comp) {

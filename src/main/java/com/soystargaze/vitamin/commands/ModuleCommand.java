@@ -9,7 +9,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,18 +31,13 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             @NotNull String label,
             @NotNull String @NotNull [] args
     ) {
-        if (!(sender instanceof Player player)) {
-            sendToSender(sender, "commands.pmodule.player_only");
-            return true;
-        }
-
-        if (!player.hasPermission("vitamin.module")) {
-            TextHandler.get().sendMessage(player, "commands.module.no_permission");
+        if (!sender.hasPermission("vitamin.module")) {
+            sendToSender(sender, "commands.module.no_permission");
             return true;
         }
 
         if (args.length != 2) {
-            TextHandler.get().sendMessage(player, "commands.module.usage");
+            sendToSender(sender, "commands.module.usage");
             return true;
         }
 
@@ -63,14 +57,14 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             } else if (stateArg.equalsIgnoreCase("disable")) {
                 enable = false;
             } else {
-                TextHandler.get().sendMessage(player, "commands.module.usage");
+                sendToSender(sender, "commands.module.usage");
                 return true;
             }
 
-            String key = "module." + moduleName; // Construir la clave completa
+            String key = "module." + moduleName;
 
             if (!plugin.getConfig().contains(key)) {
-                TextHandler.get().sendMessage(player, "commands.module.not_found", moduleName);
+                sendToSender(sender, "commands.module.not_found", moduleName);
                 return true;
             }
 
@@ -85,10 +79,10 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             }
 
             moduleManager.reloadModules();
-            TextHandler.get().sendMessage(player, "commands.module.changed", moduleName, enable ? "enabled" : "disabled");
+            sendToSender(sender, "commands.module.changed", moduleName, enable ? "enabled" : "disabled");
 
         } catch (Exception e) {
-            TextHandler.get().sendMessage(player, "commands.reload.error");
+            sendToSender(sender, "commands.reload.error");
             TextHandler.get().logTranslated("commands.reload.error", e.getMessage());
             e.printStackTrace();
         }
