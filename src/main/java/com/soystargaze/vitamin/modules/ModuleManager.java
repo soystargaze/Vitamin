@@ -179,13 +179,18 @@ public class ModuleManager {
     }
 
     private void addModule(String configPath, Listener module) {
+        String moduleName = getModuleName(configPath);
         if (plugin.getConfig().getBoolean(configPath, true)) {
             modules.put(configPath, module);
             Bukkit.getPluginManager().registerEvents(module, plugin);
-            TextHandler.get().logTranslated("module.enabled", configPath);
+            TextHandler.get().logTranslated("module.enabled", moduleName);
         } else {
-            TextHandler.get().logTranslated("module.disabled", configPath);
+            TextHandler.get().logTranslated("module.disabled", moduleName);
         }
+    }
+
+    private static String getModuleName(String configPath) {
+        return configPath.replace("module.", "");
     }
 
     public void reloadModules() {
