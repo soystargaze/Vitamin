@@ -165,7 +165,7 @@ waystone:
   destroyed: "Waystone '{0}' has been destroyed."
   teleported: "You have been teleported to Waystone '{0}'."
   inventory:
-    title: "&eWaystones"
+    title: "Waystones"
     item:
-      location: "&7Location: &e{0}, {1}, {2}"
-      click_to_teleport: "&7Click to teleport"
+      location: "Location: {0}, {1}, {2}"
+      click_to_teleport: "Click to teleport"
