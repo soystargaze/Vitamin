@@ -2,7 +2,9 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class WaystoneModule implements Listener {
 
     private final JavaPlugin plugin;
@@ -229,7 +232,8 @@ public class WaystoneModule implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (!event.getView().getTitle().equals("Waystones Registradas")) return;
+        String translatedTitle = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
+        if (!event.getView().getTitle().equals(translatedTitle)) return;
 
         event.setCancelled(true);
         ItemStack clickedItem = event.getCurrentItem();
@@ -240,25 +244,28 @@ public class WaystoneModule implements Listener {
             if (waystone.getName().equals(name) && waystone.isRegistered(player.getUniqueId())) {
                 player.closeInventory();
                 player.teleport(waystone.getLocation().clone().add(0.5, 1, 0.5));
-                player.sendMessage("§aTeletransportado a '" + name + "'.");
+                player.sendMessage(LegacyTranslationHandler.getPlayerMessage("waystone.teleported", name));
                 break;
             }
         }
     }
 
     private void openWaystoneInventory(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 27, "Waystones Registradas");
+        String title = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
+        Inventory inv = Bukkit.createInventory(null, 27, title);
         for (Waystone waystone : waystones.values()) {
             if (waystone.isRegistered(player.getUniqueId())) {
                 ItemStack item = new ItemStack(Material.LODESTONE);
                 ItemMeta meta = item.getItemMeta();
                 meta.setDisplayName("§e" + waystone.getName());
-                meta.setLore(Arrays.asList(
-                        "§7Ubicación: " + waystone.getLocation().getBlockX() + ", " +
-                                waystone.getLocation().getBlockY() + ", " +
-                                waystone.getLocation().getBlockZ(),
-                        "§7Clic para teletransportarte"
+                String locationText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.getFormatted(
+                        "waystone.inventory.item.location",
+                        waystone.getLocation().getBlockX(),
+                        waystone.getLocation().getBlockY(),
+                        waystone.getLocation().getBlockZ()
                 ));
+                String clickText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.item.click_to_teleport"));
+                meta.setLore(Arrays.asList(locationText, clickText));
                 item.setItemMeta(meta);
                 inv.addItem(item);
             }

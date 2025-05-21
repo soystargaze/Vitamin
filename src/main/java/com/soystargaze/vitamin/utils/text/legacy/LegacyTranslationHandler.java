@@ -107,6 +107,14 @@ public class LegacyTranslationHandler {
         return MiniMessage.miniMessage().deserialize(fullMessage);
     }
 
+    public static String getFormatted(String key, Object... args) {
+        String message = get(key);
+        for (int i = 0; i < args.length; i++) {
+            message = message.replace("{" + i + "}", args[i].toString());
+        }
+        return message;
+    }
+
     public static Component getLogMessage(String key, Object... args) {
         String prefix = translations.getOrDefault("plugin.prefix", "<gray>[</gray><gradient:#FFA500#FFFF00>Vitamin</gradient><color:#FFA500>+</color><gray>]</gray> ");
         String template = translations.getOrDefault(key, "Translation not found: " + key + "!");
