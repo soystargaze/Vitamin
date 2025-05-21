@@ -154,3 +154,18 @@ replayable_vault:
   remaining_uses: "You have opened the vault. You have {0} additional uses left."
   cooldown: "The vault is on cooldown. Time left: {0}."
   max_uses_reached: "You have reached the maximum openings for this vault."
+
+waystone:
+  enter_new_name: "Please enter a name for the new Waystone."
+  already_exists: "A Waystone already exists at this location."
+  created: "Waystone '{0}' has been created."
+  registered: "You have been registered to the Waystone '{0}'."
+  only_creator_can_break: "Only the creator of this Waystone can break it."
+  only_operator_or_creator_can_break: "Only operators or the creator can break this Waystone."
+  destroyed: "Waystone '{0}' has been destroyed."
+  teleported: "You have been teleported to Waystone '{0}'."
+  inventory:
+    title: "&eWaystones"
+    item:
+      location: "&7Location: &e{0}, {1}, {2}"
+      click_to_teleport: "&7Click to teleport"
