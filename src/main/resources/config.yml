@@ -215,4 +215,7 @@ replayable_vault:
 
 # Waystone settings
 waystone:
-  only_creator_can_break: true # Only the creator can break the waystone
+  only_creator_can_break: true          # Only the creator can break the waystone
+  auto_create_time: 30000               # Time in milliseconds (default: 30 seconds)
+  auto_create_distance_squared: 100.0   # Distance squared (default: 10 blocks squared)
+  default_name: "Waystone"              # Default name for the waystone

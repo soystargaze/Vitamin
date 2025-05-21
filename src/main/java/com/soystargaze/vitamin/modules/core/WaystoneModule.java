@@ -37,13 +37,18 @@ public class WaystoneModule implements Listener {
     private final Map<UUID, PendingWaystone> pendingWaystones = new HashMap<>();
     private final Map<UUID, Waystone> renamingWaystones = new HashMap<>();
     private final boolean onlyCreatorCanBreak;
+    private final long autoCreateTime;
+    private final double autoCreateDistanceSquared;
+    private final String defaultWaystoneName;
 
     public WaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.onlyCreatorCanBreak = plugin.getConfig().getBoolean("waystone.only_creator_can_break", false);
+        this.autoCreateTime = plugin.getConfig().getLong("waystone.auto_create_time", 30000L);
+        this.autoCreateDistanceSquared = plugin.getConfig().getDouble("waystone.auto_create_distance_squared", 100.0);
+        this.defaultWaystoneName = plugin.getConfig().getString("waystone.default_name", "Waystone");
         loadWaystones();
 
-        // Tarea periódica para verificar y recrear hologramas
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Waystone waystone : new ArrayList<>(waystones.values())) {
                 Location loc = waystone.getLocation();
@@ -60,7 +65,7 @@ public class WaystoneModule implements Listener {
                     }
                 }
             }
-        }, 100L, 100L); // Cada 5 segundos
+        }, 100L, 100L);
     }
 
     private void loadWaystones() {
@@ -295,24 +300,17 @@ public class WaystoneModule implements Listener {
 
         PendingWaystone pending = pendingWaystones.get(playerId);
         long timeElapsed = System.currentTimeMillis() - pending.creationTime();
-        if (timeElapsed > 30000) { // 30 seconds
+        if (timeElapsed > autoCreateTime) {
             Location loc = pending.location();
-            if (player.getLocation().distanceSquared(loc) > 100) { // 10 blocks squared
+            if (player.getLocation().distanceSquared(loc) > autoCreateDistanceSquared) {
                 if (loc.getBlock().getType() == Material.LODESTONE && loc.clone().add(0, 1, 0).getBlock().getType() == Material.LODESTONE) {
-                    String defaultName = "Waystone";
-                    TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
-                            loc.clone().add(0.5, 1.5, 0.5), EntityType.TEXT_DISPLAY);
-                    hologram.setText("§e" + defaultName);
-                    hologram.setBillboard(Display.Billboard.CENTER);
-                    hologram.setSeeThrough(true);
-                    hologram.setShadowed(false);
-                    hologram.setBrightness(new Display.Brightness(15, 15));
-                    Waystone waystone = new Waystone(-1, loc, defaultName, playerId);
+                    TextDisplay hologram = createHologram(loc, defaultWaystoneName);
+                    Waystone waystone = new Waystone(-1, loc, defaultWaystoneName, playerId);
                     waystone.registerPlayer(playerId);
                     waystone.setHologram(hologram);
                     waystones.put(loc, waystone);
                     saveWaystone(waystone);
-                    TextHandler.get().sendMessage(player, "waystone.created_with_default", defaultName);
+                    TextHandler.get().sendMessage(player, "waystone.created_with_default", defaultWaystoneName);
                     pendingWaystones.remove(playerId);
                 }
             }
