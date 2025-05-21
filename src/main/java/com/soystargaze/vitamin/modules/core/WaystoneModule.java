@@ -50,7 +50,7 @@ public class WaystoneModule implements Listener {
             waystones.put(loc, waystone);
             TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
                     loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
-            hologram.setText("§e" + data.name());
+            hologram.setText("§r" + data.name());
             hologram.setBillboard(Display.Billboard.CENTER);
             hologram.setSeeThrough(true);
             hologram.setShadowed(false);
