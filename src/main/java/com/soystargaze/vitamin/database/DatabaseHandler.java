@@ -12,10 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class DatabaseHandler {
 
@@ -185,10 +182,123 @@ public class DatabaseHandler {
             """;
             stmt.executeUpdate(createVaultReactivations);
 
+            String createWaystones = """
+                CREATE TABLE IF NOT EXISTS waystones (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    world VARCHAR(100) NOT NULL,
+                    x DOUBLE NOT NULL,
+                    y DOUBLE NOT NULL,
+                    z DOUBLE NOT NULL,
+                    name VARCHAR(255) NOT NULL,
+                    creator VARCHAR(36) NOT NULL
+                );
+                """;
+            stmt.executeUpdate(createWaystones);
+
+            String createRegistrations = """
+                CREATE TABLE IF NOT EXISTS waystone_registrations (
+                    waystone_id INTEGER NOT NULL,
+                    player_id VARCHAR(36) NOT NULL,
+                    PRIMARY KEY (waystone_id, player_id),
+                    FOREIGN KEY (waystone_id) REFERENCES waystones(id) ON DELETE CASCADE
+                );
+                """;
+            stmt.executeUpdate(createRegistrations);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
         }
+    }
+
+    public static List<WaystoneData> loadWaystones() {
+        List<WaystoneData> waystones = new ArrayList<>();
+        String sql = "SELECT id, world, x, y, z, name, creator FROM waystones";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String worldName = rs.getString("world");
+                World world = Bukkit.getWorld(worldName);
+                if (world == null) continue;
+                double x = rs.getDouble("x");
+                double y = rs.getDouble("y");
+                double z = rs.getDouble("z");
+                String name = rs.getString("name");
+                UUID creator = UUID.fromString(rs.getString("creator"));
+                Location location = new Location(world, x, y, z);
+                waystones.add(new WaystoneData(id, location, name, creator));
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return waystones;
+    }
+
+    public static int saveWaystone(WaystoneData waystone) {
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, waystone.location().getWorld().getName());
+            ps.setDouble(2, waystone.location().getX());
+            ps.setDouble(3, waystone.location().getY());
+            ps.setDouble(4, waystone.location().getZ());
+            ps.setString(5, waystone.name());
+            ps.setString(6, waystone.creator().toString());
+            ps.executeUpdate();
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+        return -1;
+    }
+
+    public static void removeWaystone(int waystoneId) {
+        String sql = "DELETE FROM waystones WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void registerPlayerToWaystone(int waystoneId, UUID playerId) {
+        String sql = "INSERT INTO waystone_registrations (waystone_id, player_id) VALUES (?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            ps.setString(2, playerId.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static Set<UUID> getRegisteredPlayers(int waystoneId) {
+        Set<UUID> players = new HashSet<>();
+        String sql = "SELECT player_id FROM waystone_registrations WHERE waystone_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    players.add(UUID.fromString(rs.getString("player_id")));
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return players;
+    }
+
+    public record WaystoneData(int id, Location location, String name, UUID creator) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {

@@ -113,6 +113,10 @@ public class ModuleManager {
                     VeinMinerModule::new,
                     null
             ),
+            new ModuleDef("module.waystone",
+                    WaystoneModule::new,
+                    null
+            ),
             new ModuleDef("module.weather_effects",
                     WeatherEffectsModule::new,
                     null
