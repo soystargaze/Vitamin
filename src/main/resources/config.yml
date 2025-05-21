@@ -208,6 +208,11 @@ armor_trims:
   GOLD:
     enabled: true  # Controls piglin neutrality behavior
 
+# Replayable Vault settings
 replayable_vault:
   cooldown: 3600000  # Cooldown in milliseconds (1 hour default)
   max_reactivations: 2  # Max additional openings beyond the first (total 3 openings)
+
+# Waystone settings
+waystone:
+  only_creator_can_break: true # Only the creator can break the waystone
