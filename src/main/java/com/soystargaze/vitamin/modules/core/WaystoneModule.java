@@ -19,6 +19,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,7 +34,8 @@ public class WaystoneModule implements Listener {
 
     private final JavaPlugin plugin;
     private final Map<Location, Waystone> waystones = new HashMap<>();
-    private final Map<UUID, Location> pendingWaystones = new HashMap<>();
+    private final Map<UUID, PendingWaystone> pendingWaystones = new HashMap<>();
+    private final Map<UUID, Waystone> renamingWaystones = new HashMap<>();
     private final boolean onlyCreatorCanBreak;
 
     public WaystoneModule(JavaPlugin plugin) {
@@ -89,10 +92,10 @@ public class WaystoneModule implements Listener {
         Location above = loc.clone().add(0, 1, 0);
 
         if (below.getBlock().getType() == Material.LODESTONE) {
-            pendingWaystones.put(player.getUniqueId(), below);
+            pendingWaystones.put(player.getUniqueId(), new PendingWaystone(below, System.currentTimeMillis()));
             TextHandler.get().sendMessage(player, "waystone.enter_new_name");
         } else if (above.getBlock().getType() == Material.LODESTONE) {
-            pendingWaystones.put(player.getUniqueId(), loc);
+            pendingWaystones.put(player.getUniqueId(), new PendingWaystone(loc, System.currentTimeMillis()));
             TextHandler.get().sendMessage(player, "waystone.enter_new_name");
         }
     }
@@ -102,33 +105,50 @@ public class WaystoneModule implements Listener {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
-        if (!pendingWaystones.containsKey(playerId)) return;
+        if (renamingWaystones.containsKey(playerId)) {
+            event.setCancelled(true);
+            String newName = event.getMessage().trim();
+            Waystone waystone = renamingWaystones.remove(playerId);
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                waystone.getHologram().setText("§e" + newName);
+                waystone.setName(newName);
+                DatabaseHandler.updateWaystoneName(waystone.getId(), newName);
+            });
+            TextHandler.get().sendMessage(player, "waystone.renamed", newName);
+            return;
+        }
 
-        event.setCancelled(true);
-        String name = event.getMessage().trim();
-        Location loc = pendingWaystones.remove(playerId);
-
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            if (waystones.containsKey(loc)) {
-                TextHandler.get().sendMessage(player, "waystone.already_exists");
+        if (pendingWaystones.containsKey(playerId)) {
+            event.setCancelled(true);
+            PendingWaystone pending = pendingWaystones.get(playerId);
+            Location loc = pending.location();
+            if (loc.getBlock().getType() != Material.LODESTONE || loc.clone().add(0, 1, 0).getBlock().getType() != Material.LODESTONE) {
+                TextHandler.get().sendMessage(player, "waystone.blocks_missing");
+                pendingWaystones.remove(playerId);
                 return;
             }
-
-            TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
-                    loc.clone().add(0.5, 1.5, 0.5), EntityType.TEXT_DISPLAY);
-            hologram.setText("§e" + name);
-            hologram.setBillboard(Display.Billboard.CENTER);
-            hologram.setSeeThrough(true);
-            hologram.setShadowed(false);
-            hologram.setBrightness(new Display.Brightness(15, 15));
-
-            Waystone waystone = new Waystone(-1, loc, name, playerId);
-            waystone.registerPlayer(playerId);
-            waystone.setHologram(hologram);
-            waystones.put(loc, waystone);
-            saveWaystone(waystone);
-            TextHandler.get().sendMessage(player, "waystone.created", name);
-        });
+            String name = event.getMessage().trim();
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                if (waystones.containsKey(loc)) {
+                    TextHandler.get().sendMessage(player, "waystone.already_exists");
+                    return;
+                }
+                TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
+                        loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
+                hologram.setText("§e" + name);
+                hologram.setBillboard(Display.Billboard.CENTER);
+                hologram.setSeeThrough(true);
+                hologram.setShadowed(false);
+                hologram.setBrightness(new Display.Brightness(15, 15));
+                Waystone waystone = new Waystone(-1, loc, name, playerId);
+                waystone.registerPlayer(playerId);
+                waystone.setHologram(hologram);
+                waystones.put(loc, waystone);
+                saveWaystone(waystone);
+                TextHandler.get().sendMessage(player, "waystone.created", name);
+            });
+            pendingWaystones.remove(playerId);
+        }
     }
 
     @EventHandler
@@ -166,6 +186,12 @@ public class WaystoneModule implements Listener {
         event.setCancelled(true);
         UUID playerId = player.getUniqueId();
 
+        if (player.isSneaking() && waystone.getCreator().equals(playerId)) {
+            renamingWaystones.put(playerId, waystone);
+            TextHandler.get().sendMessage(player, "waystone.enter_new_name_for_rename");
+            return;
+        }
+
         if (!waystone.isRegistered(playerId)) {
             waystone.registerPlayer(playerId);
             DatabaseHandler.registerPlayerToWaystone(waystone.getId(), playerId);
@@ -179,8 +205,22 @@ public class WaystoneModule implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Location loc = event.getBlock().getLocation();
-        Waystone waystone = waystones.get(loc);
 
+        for (Map.Entry<UUID, PendingWaystone> entry : pendingWaystones.entrySet()) {
+            Location baseLoc = entry.getValue().location();
+            Location topLoc = baseLoc.clone().add(0, 1, 0);
+            if (loc.equals(baseLoc) || loc.equals(topLoc)) {
+                UUID playerId = entry.getKey();
+                pendingWaystones.remove(playerId);
+                Player targetPlayer = Bukkit.getPlayer(playerId);
+                if (targetPlayer != null) {
+                    TextHandler.get().sendMessage(targetPlayer, "waystone.creation_canceled");
+                }
+                return;
+            }
+        }
+
+        Waystone waystone = waystones.get(loc);
         if (waystone == null) {
             Location below = loc.clone().subtract(0, 1, 0);
             waystone = waystones.get(below);
@@ -230,6 +270,45 @@ public class WaystoneModule implements Listener {
     }
 
     @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        UUID playerId = player.getUniqueId();
+        if (!pendingWaystones.containsKey(playerId)) return;
+
+        PendingWaystone pending = pendingWaystones.get(playerId);
+        long timeElapsed = System.currentTimeMillis() - pending.creationTime();
+        if (timeElapsed > 30000) { // 30 seconds
+            Location loc = pending.location();
+            if (player.getLocation().distanceSquared(loc) > 100) { // 10 blocks squared
+                if (loc.getBlock().getType() == Material.LODESTONE && loc.clone().add(0, 1, 0).getBlock().getType() == Material.LODESTONE) {
+                    String defaultName = "Waystone";
+                    TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
+                            loc.clone().add(0.5, 1.5, 0.5), EntityType.TEXT_DISPLAY);
+                    hologram.setText("§e" + defaultName);
+                    hologram.setBillboard(Display.Billboard.CENTER);
+                    hologram.setSeeThrough(true);
+                    hologram.setShadowed(false);
+                    hologram.setBrightness(new Display.Brightness(15, 15));
+                    Waystone waystone = new Waystone(-1, loc, defaultName, playerId);
+                    waystone.registerPlayer(playerId);
+                    waystone.setHologram(hologram);
+                    waystones.put(loc, waystone);
+                    saveWaystone(waystone);
+                    TextHandler.get().sendMessage(player, "waystone.created_with_default", defaultName);
+                    pendingWaystones.remove(playerId);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        pendingWaystones.remove(playerId);
+        renamingWaystones.remove(playerId);
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         String translatedTitle = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
@@ -270,14 +349,13 @@ public class WaystoneModule implements Listener {
                 inv.addItem(item);
             }
         }
-
         Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(inv));
     }
 
     private static class Waystone {
         private int id;
         private final Location location;
-        private final String name;
+        private String name;
         private final UUID creator;
         private final Set<UUID> registeredPlayers;
         private TextDisplay hologram;
@@ -316,6 +394,10 @@ public class WaystoneModule implements Listener {
             return name;
         }
 
+        public void setName(String name) {
+            this.name = name;
+        }
+
         public UUID getCreator() {
             return creator;
         }
@@ -340,5 +422,8 @@ public class WaystoneModule implements Listener {
         public boolean isAdminCreated() {
             return isAdminCreated;
         }
+    }
+
+    private record PendingWaystone(Location location, long creationTime) {
     }
 }

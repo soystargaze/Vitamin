@@ -269,6 +269,18 @@ public class DatabaseHandler {
         }
     }
 
+    public static void updateWaystoneName(int id, String name) {
+        String sql = "UPDATE waystones SET name = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
     public static void registerPlayerToWaystone(int waystoneId, UUID playerId) {
         String sql = "INSERT INTO waystone_registrations (waystone_id, player_id) VALUES (?, ?)";
         try (Connection conn = getConnection();
