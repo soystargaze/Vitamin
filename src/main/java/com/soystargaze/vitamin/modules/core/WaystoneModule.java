@@ -26,6 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -36,10 +37,13 @@ public class WaystoneModule implements Listener {
     private final Map<Location, Waystone> waystones = new HashMap<>();
     private final Map<UUID, PendingWaystone> pendingWaystones = new HashMap<>();
     private final Map<UUID, Waystone> renamingWaystones = new HashMap<>();
+    private final Map<UUID, BukkitTask> pendingTeleports = new HashMap<>();
     private final boolean onlyCreatorCanBreak;
     private final long autoCreateTime;
     private final double autoCreateDistanceSquared;
     private final String defaultWaystoneName;
+    private final int teleportDelay;
+    private final boolean cancelTeleportOnMove;
 
     public WaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -47,6 +51,8 @@ public class WaystoneModule implements Listener {
         this.autoCreateTime = plugin.getConfig().getLong("waystone.auto_create_time", 30000L);
         this.autoCreateDistanceSquared = plugin.getConfig().getDouble("waystone.auto_create_distance_squared", 100.0);
         this.defaultWaystoneName = plugin.getConfig().getString("waystone.default_name", "Waystone");
+        this.teleportDelay = plugin.getConfig().getInt("waystone.teleport_delay", 3);
+        this.cancelTeleportOnMove = plugin.getConfig().getBoolean("waystone.cancel_teleport_on_move", true);
         loadWaystones();
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -152,7 +158,7 @@ public class WaystoneModule implements Listener {
             PendingWaystone pending = pendingWaystones.get(playerId);
             Location loc = pending.location();
             if (loc.getBlock().getType() != Material.LODESTONE || loc.clone().add(0, 1, 0).getBlock().getType() != Material.LODESTONE) {
-                TextHandler.get().sendMessage(player, "waystone.blocks_missing");
+                TextHandler.get().sendMessage(player, "waystone.keys_missing");
                 pendingWaystones.remove(playerId);
                 return;
             }
@@ -296,6 +302,18 @@ public class WaystoneModule implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+
+        if (cancelTeleportOnMove && pendingTeleports.containsKey(playerId)) {
+            Location from = event.getFrom();
+            Location to = event.getTo();
+            if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
+                pendingTeleports.get(playerId).cancel();
+                pendingTeleports.remove(playerId);
+                TextHandler.get().sendMessage(player, "waystone.teleport_canceled");
+            }
+            return;
+        }
+
         if (!pendingWaystones.containsKey(playerId)) return;
 
         PendingWaystone pending = pendingWaystones.get(playerId);
@@ -322,6 +340,10 @@ public class WaystoneModule implements Listener {
         UUID playerId = event.getPlayer().getUniqueId();
         pendingWaystones.remove(playerId);
         renamingWaystones.remove(playerId);
+        if (pendingTeleports.containsKey(playerId)) {
+            pendingTeleports.get(playerId).cancel();
+            pendingTeleports.remove(playerId);
+        }
     }
 
     @EventHandler
@@ -338,8 +360,21 @@ public class WaystoneModule implements Listener {
         for (Waystone waystone : waystones.values()) {
             if (waystone.getName().equals(name) && waystone.isRegistered(player.getUniqueId())) {
                 player.closeInventory();
-                player.teleport(waystone.getLocation().clone().add(0.5, 1, 0.5));
-                player.sendMessage(LegacyTranslationHandler.getPlayerMessage("waystone.teleported", name));
+                UUID playerId = player.getUniqueId();
+
+                if (pendingTeleports.containsKey(playerId)) {
+                    pendingTeleports.get(playerId).cancel();
+                    pendingTeleports.remove(playerId);
+                }
+
+                BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    player.teleport(waystone.getLocation().clone().add(0.5, 1, 0.5));
+                    player.sendMessage(LegacyTranslationHandler.getPlayerMessage("waystone.teleported", name));
+                    pendingTeleports.remove(playerId);
+                }, teleportDelay * 20L);
+
+                pendingTeleports.put(playerId, task);
+                TextHandler.get().sendMessage(player, "waystone.teleporting_in", String.valueOf(teleportDelay));
                 break;
             }
         }
