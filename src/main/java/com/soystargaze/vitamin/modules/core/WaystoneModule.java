@@ -42,6 +42,25 @@ public class WaystoneModule implements Listener {
         this.plugin = plugin;
         this.onlyCreatorCanBreak = plugin.getConfig().getBoolean("waystone.only_creator_can_break", false);
         loadWaystones();
+
+        // Tarea periódica para verificar y recrear hologramas
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Waystone waystone : new ArrayList<>(waystones.values())) {
+                Location loc = waystone.getLocation();
+                if (loc.getBlock().getType() != Material.LODESTONE ||
+                        loc.clone().add(0, 1, 0).getBlock().getType() != Material.LODESTONE) {
+                    waystone.getHologram().remove();
+                    waystones.remove(loc);
+                    removeWaystone(waystone);
+                } else {
+                    TextDisplay hologram = waystone.getHologram();
+                    if (hologram.isDead()) {
+                        TextDisplay newHologram = createHologram(loc, waystone.getName());
+                        waystone.setHologram(newHologram);
+                    }
+                }
+            }
+        }, 100L, 100L); // Cada 5 segundos
     }
 
     private void loadWaystones() {
@@ -51,15 +70,20 @@ public class WaystoneModule implements Listener {
             Waystone waystone = new Waystone(data.id(), loc, data.name(), data.creator());
             waystone.setRegisteredPlayers(DatabaseHandler.getRegisteredPlayers(data.id()));
             waystones.put(loc, waystone);
-            TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
-                    loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
-            hologram.setText("§r" + data.name());
-            hologram.setBillboard(Display.Billboard.CENTER);
-            hologram.setSeeThrough(true);
-            hologram.setShadowed(false);
-            hologram.setBrightness(new Display.Brightness(15, 15));
+            TextDisplay hologram = createHologram(loc, data.name());
             waystone.setHologram(hologram);
         }
+    }
+
+    private TextDisplay createHologram(Location loc, String name) {
+        TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
+                loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
+        hologram.setText("§e" + name);
+        hologram.setBillboard(Display.Billboard.CENTER);
+        hologram.setSeeThrough(true);
+        hologram.setShadowed(false);
+        hologram.setBrightness(new Display.Brightness(15, 15));
+        return hologram;
     }
 
     private void saveWaystone(Waystone waystone) {
@@ -133,13 +157,7 @@ public class WaystoneModule implements Listener {
                     TextHandler.get().sendMessage(player, "waystone.already_exists");
                     return;
                 }
-                TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
-                        loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
-                hologram.setText("§e" + name);
-                hologram.setBillboard(Display.Billboard.CENTER);
-                hologram.setSeeThrough(true);
-                hologram.setShadowed(false);
-                hologram.setBrightness(new Display.Brightness(15, 15));
+                TextDisplay hologram = createHologram(loc, name);
                 Waystone waystone = new Waystone(-1, loc, name, playerId);
                 waystone.registerPlayer(playerId);
                 waystone.setHologram(hologram);
