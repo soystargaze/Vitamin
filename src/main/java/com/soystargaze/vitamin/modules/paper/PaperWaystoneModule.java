@@ -241,7 +241,7 @@ public class PaperWaystoneModule implements Listener {
                 loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
 
         // Usar componentes modernos
-        Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + name);
+        Component nameComponent = MiniMessage.miniMessage().deserialize(name);
         hologram.text(nameComponent);
         hologram.setBillboard(Display.Billboard.CENTER);
         hologram.setSeeThrough(true);
@@ -309,7 +309,7 @@ public class PaperWaystoneModule implements Listener {
             Waystone waystone = renamingWaystones.remove(playerId);
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + newName);
+                Component nameComponent = MiniMessage.miniMessage().deserialize(newName);
                 waystone.getHologram().text(nameComponent);
                 waystone.setName(newName);
 

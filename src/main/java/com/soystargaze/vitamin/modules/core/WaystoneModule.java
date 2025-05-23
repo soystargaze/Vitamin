@@ -239,7 +239,7 @@ public class WaystoneModule implements Listener {
     private TextDisplay createHologram(Location loc, String name) {
         TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
                 loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
-        hologram.setText("§e" + name);
+        hologram.setText(name);
         hologram.setBillboard(Display.Billboard.CENTER);
         hologram.setSeeThrough(true);
         hologram.setShadowed(false);
@@ -302,7 +302,7 @@ public class WaystoneModule implements Listener {
             String newName = event.getMessage().trim();
             Waystone waystone = renamingWaystones.remove(playerId);
             Bukkit.getScheduler().runTask(plugin, () -> {
-                waystone.getHologram().setText("§e" + newName);
+                waystone.getHologram().setText(newName);
                 waystone.setName(newName);
 
                 // Actualización asíncrona de base de datos
