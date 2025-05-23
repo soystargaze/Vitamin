@@ -90,7 +90,12 @@ public class WaystoneModule implements Listener {
                 // Verificar estructura de waystone de forma asíncrona
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     if (!isValidWaystoneStructure(loc)) {
-                        waystone.getHologram().remove();
+                        // Eliminar holograma y establecer a null
+                        TextDisplay hologram = waystone.getHologram();
+                        if (hologram != null) {
+                            hologram.remove();
+                            waystone.setHologram(null);
+                        }
                         waystones.remove(loc);
                         removeWaystone(waystone);
                     } else {
@@ -492,8 +497,13 @@ public class WaystoneModule implements Listener {
             return;
         }
 
+        // Eliminar holograma y establecer a null
+        TextDisplay hologram = waystone.getHologram();
+        if (hologram != null) {
+            hologram.remove();
+            waystone.setHologram(null);
+        }
         waystones.remove(loc);
-        waystone.getHologram().remove();
         removeWaystone(waystone);
 
         playWaystoneBreakSound(loc);
