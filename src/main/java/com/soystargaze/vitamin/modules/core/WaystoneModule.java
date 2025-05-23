@@ -3,8 +3,11 @@ package com.soystargaze.vitamin.modules.core;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +22,7 @@ import org.bukkit.entity.Display;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,6 +40,8 @@ import org.bukkit.Particle.DustOptions;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class WaystoneModule implements Listener {
@@ -119,7 +125,10 @@ public class WaystoneModule implements Listener {
     }
 
     private boolean hasPlayersNearby(Location location) {
-        return !location.getWorld().getNearbyPlayers(location, particleViewDistance).isEmpty();
+        double distanceSquared = particleViewDistance * particleViewDistance;
+        return Bukkit.getOnlinePlayers().stream()
+                .anyMatch(p -> p.getWorld().equals(location.getWorld()) &&
+                        p.getLocation().distanceSquared(location) <= distanceSquared);
     }
 
     private void spawnAmbientParticles(Location location) {
@@ -357,7 +366,7 @@ public class WaystoneModule implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND || !event.getAction().isRightClick()) return;
+        if (event.getHand() != EquipmentSlot.HAND || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.waystone") ||
@@ -398,7 +407,7 @@ public class WaystoneModule implements Listener {
             waystoneLoc.getWorld().spawnParticle(
                     Particle.HAPPY_VILLAGER,
                     waystoneLoc.clone().add(0.5, 2.0, 0.5),
-                    8, // Reducido
+                    8,
                     0.3, 0.3, 0.3,
                     0.08);
             return;
@@ -407,7 +416,6 @@ public class WaystoneModule implements Listener {
         if (!waystone.isRegistered(playerId)) {
             waystone.registerPlayer(playerId);
 
-            // Registro asíncrono en base de datos
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
                     DatabaseHandler.registerPlayerToWaystone(waystone.getId(), playerId)
             );
@@ -419,7 +427,7 @@ public class WaystoneModule implements Listener {
             waystoneLoc.getWorld().spawnParticle(
                     Particle.COMPOSTER,
                     waystoneLoc.clone().add(0.5, 1.8, 0.5),
-                    12, // Reducido
+                    12,
                     0.25, 0.25, 0.25,
                     0.08);
         } else {
@@ -582,8 +590,16 @@ public class WaystoneModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        String translatedTitle = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
-        if (!event.getView().getTitle().equals(translatedTitle)) return;
+
+        // Usar MiniMessage y convertir a legacy para compatibilidad
+        Component titleComponent = MiniMessage.miniMessage()
+                .deserialize(LegacyTranslationHandler.get("waystone.inventory.title"))
+                .decoration(TextDecoration.ITALIC, false);
+
+        LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+        String legacyTitle = legacy.serialize(titleComponent);
+
+        if (!event.getView().getTitle().equals(legacyTitle)) return;
 
         event.setCancelled(true);
         ItemStack clickedItem = event.getCurrentItem();
@@ -613,24 +629,27 @@ public class WaystoneModule implements Listener {
                     originalLoc.getWorld().spawnParticle(
                             Particle.REVERSE_PORTAL,
                             originalLoc.clone().add(0, 1, 0),
-                            30, // Reducido
+                            30,
                             0.3, 0.6, 0.3,
                             0.08);
 
-                    player.sendMessage(LegacyTranslationHandler.getPlayerMessage("waystone.teleported", name));
+                    // Updated line: Use TextHandler instead of direct sendMessage
+                    TextHandler.get().sendMessage(player, "waystone.teleported", name);
+
                     pendingTeleports.remove(playerId);
                     playerTeleportLocations.remove(playerId);
                 }, teleportDelay * 20L);
 
                 pendingTeleports.put(playerId, task);
 
+                // Rest of the method remains unchanged
                 for (int i = 1; i <= teleportDelay; i++) {
                     final int count = i;
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         player.getWorld().spawnParticle(
                                 Particle.ELECTRIC_SPARK,
                                 player.getLocation().add(0, 1.8, 0),
-                                8, // Reducido
+                                8,
                                 0.25, 0.25, 0.25,
                                 0);
                         if (count < teleportDelay) {
@@ -646,21 +665,45 @@ public class WaystoneModule implements Listener {
     }
 
     private void openWaystoneInventory(Player player) {
-        String title = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
-        Inventory inv = Bukkit.createInventory(null, 27, title);
+        // Crear component y convertir a legacy
+        Component titleComponent = MiniMessage.miniMessage()
+                .deserialize(LegacyTranslationHandler.get("waystone.inventory.title"))
+                .decoration(TextDecoration.ITALIC, false);
+
+        LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+        String legacyTitle = legacy.serialize(titleComponent);
+
+        Inventory inv = Bukkit.createInventory(null, 27, legacyTitle);
+
         for (Waystone waystone : waystones.values()) {
             if (waystone.isRegistered(player.getUniqueId())) {
                 ItemStack item = new ItemStack(Material.LODESTONE);
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName("§e" + waystone.getName());
-                String locationText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.getFormatted(
-                        "waystone.inventory.item.location",
-                        waystone.getLocation().getBlockX(),
-                        waystone.getLocation().getBlockY(),
-                        waystone.getLocation().getBlockZ()
-                ));
-                String clickText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.item.click_to_teleport"));
-                meta.setLore(Arrays.asList(locationText, clickText));
+
+                // Crear component para el nombre y convertir a legacy
+                Component nameComponent = MiniMessage.miniMessage()
+                        .deserialize(waystone.getName())
+                        .decoration(TextDecoration.ITALIC, false);
+                meta.setDisplayName(legacy.serialize(nameComponent));
+
+                // Crear components para el lore y convertir a legacy
+                Component locationComponent = MiniMessage.miniMessage()
+                        .deserialize(LegacyTranslationHandler.getFormatted(
+                                "waystone.inventory.item.location",
+                                waystone.getLocation().getBlockX(),
+                                waystone.getLocation().getBlockY(),
+                                waystone.getLocation().getBlockZ()
+                        )).decoration(TextDecoration.ITALIC, false);
+
+                Component clickComponent = MiniMessage.miniMessage()
+                        .deserialize(LegacyTranslationHandler.get("waystone.inventory.item.click_to_teleport"))
+                        .decoration(TextDecoration.ITALIC, false);
+
+                List<String> legacyLore = Stream.of(locationComponent, clickComponent)
+                        .map(legacy::serialize)
+                        .collect(Collectors.toList());
+
+                meta.setLore(legacyLore);
                 item.setItemMeta(meta);
                 inv.addItem(item);
             }

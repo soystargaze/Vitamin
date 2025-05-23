@@ -2,6 +2,7 @@ package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Display;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -370,7 +372,7 @@ public class PaperWaystoneModule implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND || !event.getAction().isRightClick()) return;
+        if (event.getHand() != EquipmentSlot.HAND || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.waystone") ||
@@ -611,7 +613,7 @@ public class PaperWaystoneModule implements Listener {
         if (displayNameComponent == null) return;
 
         String name = PlainTextComponentSerializer.plainText().serialize(displayNameComponent)
-                .replace("§e", "").trim();
+                .replace("§", "").trim();
 
         for (Waystone waystone : waystones.values()) {
             if (waystone.getName().equals(name) && waystone.isRegistered(player.getUniqueId())) {
@@ -680,17 +682,16 @@ public class PaperWaystoneModule implements Listener {
                 ItemMeta meta = item.getItemMeta();
 
                 // Usar MiniMessage para el nombre
-                Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + waystone.getName());
+                Component nameComponent = MiniMessage.miniMessage().deserialize(waystone.getName()).decoration(TextDecoration.ITALIC, false);
                 meta.displayName(nameComponent);
-
                 // Usar Adventure Components para el lore
                 Component locationComponent = ModernTranslationHandler.getComponent(
                         "waystone.inventory.item.location",
                         waystone.getLocation().getBlockX(),
                         waystone.getLocation().getBlockY(),
                         waystone.getLocation().getBlockZ()
-                );
-                Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport");
+                ).decoration(TextDecoration.ITALIC, false);
+                Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport").decoration(TextDecoration.ITALIC, false);
 
                 meta.lore(Arrays.asList(locationComponent, clickComponent));
                 item.setItemMeta(meta);
