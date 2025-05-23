@@ -441,12 +441,11 @@ public class PaperWaystoneModule implements Listener {
                 return;
             }
 
-            // Verificar límite de waystones ANTES de crear
             if (!canCreateWaystone(player)) {
                 int limit = getPlayerWaystoneLimit(player);
                 player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.limit_reached", String.valueOf(limit)));
                 pendingWaystones.remove(playerId);
-                playWaystoneDeactivateSound(loc);
+                Bukkit.getScheduler().runTask(plugin, () -> playWaystoneDeactivateSound(loc));
                 return;
             }
 
@@ -460,7 +459,6 @@ public class PaperWaystoneModule implements Listener {
                     return;
                 }
 
-                // Verificar límite nuevamente en el hilo principal por seguridad
                 if (!canCreateWaystone(player)) {
                     int limit = getPlayerWaystoneLimit(player);
                     player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.limit_reached", String.valueOf(limit)));
@@ -682,11 +680,10 @@ public class PaperWaystoneModule implements Listener {
             Location loc = pending.location();
             if (player.getLocation().distanceSquared(loc) > autoCreateDistanceSquared) {
                 if (isValidWaystoneStructure(loc)) {
-                    // Verificar límite antes de crear automáticamente
                     if (!canCreateWaystone(player)) {
                         player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.auto_creation_canceled_limit"));
                         pendingWaystones.remove(playerId);
-                        playWaystoneDeactivateSound(loc);
+                        Bukkit.getScheduler().runTask(plugin, () -> playWaystoneDeactivateSound(loc));
                         return;
                     }
 
