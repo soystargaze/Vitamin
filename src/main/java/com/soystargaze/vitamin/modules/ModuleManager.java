@@ -113,10 +113,6 @@ public class ModuleManager {
                     VeinMinerModule::new,
                     null
             ),
-            new ModuleDef("module.waystone",
-                    WaystoneModule::new,
-                    null
-            ),
             new ModuleDef("module.weather_effects",
                     WeatherEffectsModule::new,
                     null
@@ -146,6 +142,10 @@ public class ModuleManager {
             new ModuleDef("module.wall_jump",
                     WallJumpModule::new,
                     PaperWallJumpModule::new
+            ),
+            new ModuleDef("module.waystone",
+                    WaystoneModule::new,
+                    PaperWaystoneModule::new
             )
     );
 

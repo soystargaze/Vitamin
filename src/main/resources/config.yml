@@ -206,18 +206,20 @@ armor_trims:
       cooldown: 15  # seconds
       radius: 5.0   # blocks
   GOLD:
-    enabled: true  # Controls piglin neutrality behavior
+    enabled: true   # Controls piglin neutrality behavior
 
 # Replayable Vault settings
 replayable_vault:
-  cooldown: 3600000  # Cooldown in milliseconds (1 hour default)
-  max_reactivations: 2  # Max additional openings beyond the first (total 3 openings)
+  cooldown: 3600000      # Cooldown in milliseconds (1 hour default)
+  max_reactivations: 2   # Max additional openings beyond the first (total 3 openings)
 
 # Waystone settings
 waystone:
-  only_creator_can_break: true          # Only the creator can break the waystone
-  auto_create_time: 30000               # Time in milliseconds (default: 30 seconds)
-  auto_create_distance_squared: 100.0   # Distance squared (default: 10 blocks squared)
-  default_name: "Waystone"              # Default name for the waystone
-  teleport_delay: 3                     # Time in seconds to teleport
+  only_creator_can_break: false         # Only the creator can break the waystone
+  auto_create_time: 30000               # Time in milliseconds to auto-create the waystone (30 seconds)
+  auto_create_distance_squared: 100.0   # Distance squared to auto-create the waystone (10 blocks)
+  default_name: "Waystone"              # Default name of the waystone
+  teleport_delay: 3                     # Delay in seconds before teleporting
   cancel_teleport_on_move: true         # Cancel teleport if the player moves
+  particle_view_distance: 32            # Particle view distance
+  hologram_refresh_rate: 100            # Refresh rate in milliseconds

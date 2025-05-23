@@ -1,10 +1,8 @@
-package com.soystargaze.vitamin.modules.core;
+package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -33,12 +30,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.Particle.DustOptions;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@SuppressWarnings("deprecation")
-public class WaystoneModule implements Listener {
+public class PaperWaystoneModule implements Listener {
 
     private final JavaPlugin plugin;
     private final ConcurrentHashMap<Location, Waystone> waystones = new ConcurrentHashMap<>();
@@ -47,7 +47,7 @@ public class WaystoneModule implements Listener {
     private final ConcurrentHashMap<UUID, BukkitTask> pendingTeleports = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Location> playerTeleportLocations = new ConcurrentHashMap<>();
 
-    // Configuración optimizada
+    // Configuración optimizada para Paper
     private final boolean onlyCreatorCanBreak;
     private final long autoCreateTime;
     private final double autoCreateDistanceSquared;
@@ -57,7 +57,7 @@ public class WaystoneModule implements Listener {
     private final int particleViewDistance;
     private final int holoRefreshRate;
 
-    public WaystoneModule(JavaPlugin plugin) {
+    public PaperWaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.onlyCreatorCanBreak = plugin.getConfig().getBoolean("waystone.only_creator_can_break", false);
         this.autoCreateTime = plugin.getConfig().getLong("waystone.auto_create_time", 30000L);
@@ -239,11 +239,15 @@ public class WaystoneModule implements Listener {
     private TextDisplay createHologram(Location loc, String name) {
         TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
                 loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
-        hologram.setText("§e" + name);
+
+        // Usar componentes modernos
+        Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + name);
+        hologram.text(nameComponent);
         hologram.setBillboard(Display.Billboard.CENTER);
         hologram.setSeeThrough(true);
         hologram.setShadowed(false);
         hologram.setBrightness(new Display.Brightness(15, 15));
+
         return hologram;
     }
 
@@ -284,25 +288,29 @@ public class WaystoneModule implements Listener {
         if (below.getBlock().getType() == Material.LODESTONE) {
             pendingWaystones.put(player.getUniqueId(), new PendingWaystone(below, System.currentTimeMillis()));
             playWaystoneActivateSound(below);
-            TextHandler.get().sendMessage(player, "waystone.enter_new_name");
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.enter_new_name"));
         } else if (above.getBlock().getType() == Material.LODESTONE) {
             pendingWaystones.put(player.getUniqueId(), new PendingWaystone(loc, System.currentTimeMillis()));
             playWaystoneActivateSound(loc);
-            TextHandler.get().sendMessage(player, "waystone.enter_new_name");
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.enter_new_name"));
         }
     }
 
+    // Usar AsyncChatEvent de Paper para mejor rendimiento
     @EventHandler(priority = EventPriority.HIGH)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
+    public void onAsyncPlayerChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
 
         if (renamingWaystones.containsKey(playerId)) {
             event.setCancelled(true);
-            String newName = event.getMessage().trim();
+            Component messageComponent = event.message();
+            String newName = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
             Waystone waystone = renamingWaystones.remove(playerId);
+
             Bukkit.getScheduler().runTask(plugin, () -> {
-                waystone.getHologram().setText("§e" + newName);
+                Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + newName);
+                waystone.getHologram().text(nameComponent);
                 waystone.setName(newName);
 
                 // Actualización asíncrona de base de datos
@@ -319,7 +327,7 @@ public class WaystoneModule implements Listener {
                         0.4, 0.4, 0.4,
                         0.8);
             });
-            TextHandler.get().sendMessage(player, "waystone.renamed", newName);
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.renamed", newName));
             return;
         }
 
@@ -327,18 +335,23 @@ public class WaystoneModule implements Listener {
             event.setCancelled(true);
             PendingWaystone pending = pendingWaystones.get(playerId);
             Location loc = pending.location();
+
             if (!isValidWaystoneStructure(loc)) {
-                TextHandler.get().sendMessage(player, "waystone.keys_missing");
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.keys_missing"));
                 pendingWaystones.remove(playerId);
                 return;
             }
-            String name = event.getMessage().trim();
+
+            Component messageComponent = event.message();
+            String name = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
+
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (waystones.containsKey(loc)) {
-                    TextHandler.get().sendMessage(player, "waystone.already_exists");
+                    player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.already_exists"));
                     playWaystoneDeactivateSound(loc);
                     return;
                 }
+
                 TextDisplay hologram = createHologram(loc, name);
                 Waystone waystone = new Waystone(-1, loc, name, playerId);
                 waystone.registerPlayer(playerId);
@@ -349,7 +362,7 @@ public class WaystoneModule implements Listener {
                 playWaystoneCreateSound(loc);
                 spawnCreationParticles(loc);
 
-                TextHandler.get().sendMessage(player, "waystone.created", name);
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.created", name));
             });
             pendingWaystones.remove(playerId);
         }
@@ -392,7 +405,7 @@ public class WaystoneModule implements Listener {
 
         if (player.isSneaking() && waystone.getCreator().equals(playerId)) {
             renamingWaystones.put(playerId, waystone);
-            TextHandler.get().sendMessage(player, "waystone.enter_new_name_for_rename");
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.enter_new_name_for_rename"));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
             Location waystoneLoc = waystone.getLocation();
             waystoneLoc.getWorld().spawnParticle(
@@ -412,7 +425,7 @@ public class WaystoneModule implements Listener {
                     DatabaseHandler.registerPlayerToWaystone(waystone.getId(), playerId)
             );
 
-            TextHandler.get().sendMessage(player, "waystone.registered", waystone.getName());
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.registered", waystone.getName()));
 
             player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 0.7f, 1.2f);
             Location waystoneLoc = waystone.getLocation();
@@ -446,7 +459,7 @@ public class WaystoneModule implements Listener {
                 playWaystoneDeactivateSound(baseLoc);
                 Player targetPlayer = Bukkit.getPlayer(playerId);
                 if (targetPlayer != null) {
-                    TextHandler.get().sendMessage(targetPlayer, "waystone.creation_canceled");
+                    targetPlayer.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.creation_canceled"));
                 }
                 return;
             }
@@ -470,7 +483,7 @@ public class WaystoneModule implements Listener {
 
         if (onlyCreatorCanBreak && !isCreator) {
             if (!(isAdmin && (isOp || waystone.isAdminCreated()))) {
-                TextHandler.get().sendMessage(player, "waystone.only_creator_can_break");
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.only_creator_can_break"));
                 event.setCancelled(true);
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
                 return;
@@ -478,7 +491,7 @@ public class WaystoneModule implements Listener {
         }
 
         if (waystone.isAdminCreated() && !(isOp || isCreator)) {
-            TextHandler.get().sendMessage(player, "waystone.only_operator_or_creator_can_break");
+            player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.only_operator_or_creator_can_break"));
             event.setCancelled(true);
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
             return;
@@ -496,7 +509,7 @@ public class WaystoneModule implements Listener {
                 0.4, 0.8, 0.4,
                 0.15);
 
-        TextHandler.get().sendMessage(player, "waystone.destroyed", waystone.getName());
+        player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.destroyed", waystone.getName()));
 
         Location otherLoc;
         if (event.getBlock().getLocation().equals(loc)) {
@@ -536,7 +549,7 @@ public class WaystoneModule implements Listener {
                         0.25, 0.4, 0.25,
                         0.04);
 
-                TextHandler.get().sendMessage(player, "waystone.teleport_canceled");
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.teleport_canceled"));
             }
             return;
         }
@@ -560,7 +573,7 @@ public class WaystoneModule implements Listener {
                     playWaystoneCreateSound(loc);
                     spawnCreationParticles(loc);
 
-                    TextHandler.get().sendMessage(player, "waystone.created_with_default", defaultWaystoneName);
+                    player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.created_with_default", defaultWaystoneName));
                     pendingWaystones.remove(playerId);
                 }
             }
@@ -582,13 +595,23 @@ public class WaystoneModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        String translatedTitle = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
-        if (!event.getView().getTitle().equals(translatedTitle)) return;
+
+        // Usar Adventure API completamente
+        Component titleComponent = ModernTranslationHandler.getComponent("waystone.inventory.title");
+        Component viewTitleComponent = event.getView().title();
+
+        if (!titleComponent.equals(viewTitleComponent)) return;
 
         event.setCancelled(true);
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || !clickedItem.hasItemMeta()) return;
-        String name = clickedItem.getItemMeta().getDisplayName().replace("§e", "");
+
+        // Obtener el nombre usando Adventure API
+        Component displayNameComponent = clickedItem.getItemMeta().displayName();
+        if (displayNameComponent == null) return;
+
+        String name = PlainTextComponentSerializer.plainText().serialize(displayNameComponent)
+                .replace("§e", "").trim();
 
         for (Waystone waystone : waystones.values()) {
             if (waystone.getName().equals(name) && waystone.isRegistered(player.getUniqueId())) {
@@ -617,7 +640,7 @@ public class WaystoneModule implements Listener {
                             0.3, 0.6, 0.3,
                             0.08);
 
-                    player.sendMessage(LegacyTranslationHandler.getPlayerMessage("waystone.teleported", name));
+                    player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.teleported", name));
                     pendingTeleports.remove(playerId);
                     playerTeleportLocations.remove(playerId);
                 }, teleportDelay * 20L);
@@ -639,32 +662,42 @@ public class WaystoneModule implements Listener {
                     }, i * 20L);
                 }
 
-                TextHandler.get().sendMessage(player, "waystone.teleporting_in", String.valueOf(teleportDelay));
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.teleporting_in", String.valueOf(teleportDelay)));
                 break;
             }
         }
     }
 
     private void openWaystoneInventory(Player player) {
-        String title = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.title"));
-        Inventory inv = Bukkit.createInventory(null, 27, title);
+        Component titleComponent = ModernTranslationHandler.getComponent("waystone.inventory.title");
+
+        // Usar Adventure API para crear el inventario
+        Inventory inv = Bukkit.createInventory(null, 27, titleComponent);
+
         for (Waystone waystone : waystones.values()) {
             if (waystone.isRegistered(player.getUniqueId())) {
                 ItemStack item = new ItemStack(Material.LODESTONE);
                 ItemMeta meta = item.getItemMeta();
-                meta.setDisplayName("§e" + waystone.getName());
-                String locationText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.getFormatted(
+
+                // Usar MiniMessage para el nombre
+                Component nameComponent = MiniMessage.miniMessage().deserialize("<yellow>" + waystone.getName());
+                meta.displayName(nameComponent);
+
+                // Usar Adventure Components para el lore
+                Component locationComponent = ModernTranslationHandler.getComponent(
                         "waystone.inventory.item.location",
                         waystone.getLocation().getBlockX(),
                         waystone.getLocation().getBlockY(),
                         waystone.getLocation().getBlockZ()
-                ));
-                String clickText = ChatColor.translateAlternateColorCodes('&', LegacyTranslationHandler.get("waystone.inventory.item.click_to_teleport"));
-                meta.setLore(Arrays.asList(locationText, clickText));
+                );
+                Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport");
+
+                meta.lore(Arrays.asList(locationComponent, clickComponent));
                 item.setItemMeta(meta);
                 inv.addItem(item);
             }
         }
+
         Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(inv));
     }
 
