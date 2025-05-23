@@ -61,7 +61,6 @@ public class WaystoneModule implements Listener {
         this.cancelTeleportOnMove = plugin.getConfig().getBoolean("waystone.cancel_teleport_on_move", true);
         loadWaystones();
 
-        // Verifica las waystones y genera partículas ambientales
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Waystone waystone : new ArrayList<>(waystones.values())) {
                 Location loc = waystone.getLocation();
@@ -77,15 +76,13 @@ public class WaystoneModule implements Listener {
                         waystone.setHologram(newHologram);
                     }
 
-                    // Efecto de partícula ambiental
-                    if (Math.random() < 0.1) { // Solo 10% de probabilidad para reducir sobrecarga
+                    if (Math.random() < 0.1) { // Just 10%
                         spawnAmbientParticles(loc);
                     }
                 }
             }
         }, 100L, 100L);
 
-        // Animación para las waystones durante teleportación
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Map.Entry<UUID, Location> entry : playerTeleportLocations.entrySet()) {
                 Player player = Bukkit.getPlayer(entry.getKey());
@@ -108,7 +105,6 @@ public class WaystoneModule implements Listener {
     }
 
     private void spawnTeleportParticles(Location playerLoc, Location targetLoc) {
-        // Partículas en la ubicación del jugador
         playerLoc.getWorld().spawnParticle(
                 Particle.PORTAL,
                 playerLoc.clone().add(0, 1, 0),
@@ -116,7 +112,6 @@ public class WaystoneModule implements Listener {
                 0.5, 1, 0.5,
                 0.1);
 
-        // Partículas en la Waystone de destino
         DustOptions dustOptions = new DustOptions(Color.fromRGB(55, 166, 229), 1.0f);
         targetLoc.getWorld().spawnParticle(
                 Particle.DUST,
@@ -265,7 +260,6 @@ public class WaystoneModule implements Listener {
                 waystone.setName(newName);
                 DatabaseHandler.updateWaystoneName(waystone.getId(), newName);
 
-                // Efectos al renombrar
                 player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.8f);
                 Location waystoneLoc = waystone.getLocation();
                 waystoneLoc.getWorld().spawnParticle(
@@ -302,7 +296,6 @@ public class WaystoneModule implements Listener {
                 waystones.put(loc, waystone);
                 saveWaystone(waystone);
 
-                // Efectos al crear una waystone
                 playWaystoneCreateSound(loc);
                 spawnCreationParticles(loc);
 
@@ -350,7 +343,6 @@ public class WaystoneModule implements Listener {
         if (player.isSneaking() && waystone.getCreator().equals(playerId)) {
             renamingWaystones.put(playerId, waystone);
             TextHandler.get().sendMessage(player, "waystone.enter_new_name_for_rename");
-            // Efectos al iniciar el renombrado
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
             Location waystoneLoc = waystone.getLocation();
             waystoneLoc.getWorld().spawnParticle(
@@ -367,7 +359,6 @@ public class WaystoneModule implements Listener {
             DatabaseHandler.registerPlayerToWaystone(waystone.getId(), playerId);
             TextHandler.get().sendMessage(player, "waystone.registered", waystone.getName());
 
-            // Efectos al registrar
             player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 0.7f, 1.2f);
             Location waystoneLoc = waystone.getLocation();
             waystoneLoc.getWorld().spawnParticle(
@@ -377,7 +368,6 @@ public class WaystoneModule implements Listener {
                     0.3, 0.3, 0.3,
                     0.1);
         } else {
-            // Efecto al interactuar con una waystone ya registrada
             player.playSound(player.getLocation(), Sound.BLOCK_CONDUIT_AMBIENT, SoundCategory.PLAYERS, 0.8f, 1.5f);
         }
 
@@ -424,7 +414,6 @@ public class WaystoneModule implements Listener {
             if (!(isAdmin && (isOp || waystone.isAdminCreated()))) {
                 TextHandler.get().sendMessage(player, "waystone.only_creator_can_break");
                 event.setCancelled(true);
-                // Sonido de negación
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
                 return;
             }
@@ -433,7 +422,6 @@ public class WaystoneModule implements Listener {
         if (waystone.isAdminCreated() && !(isOp || isCreator)) {
             TextHandler.get().sendMessage(player, "waystone.only_operator_or_creator_can_break");
             event.setCancelled(true);
-            // Sonido de negación
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
             return;
         }
@@ -442,7 +430,6 @@ public class WaystoneModule implements Listener {
         waystone.getHologram().remove();
         removeWaystone(waystone);
 
-        // Efectos de destrucción
         playWaystoneBreakSound(loc);
         loc.getWorld().spawnParticle(
                 Particle.LAVA,
@@ -482,7 +469,6 @@ public class WaystoneModule implements Listener {
                 }
                 playerTeleportLocations.remove(playerId);
 
-                // Efectos de teleportación cancelada
                 player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5f, 1.0f);
                 player.getWorld().spawnParticle(
                         Particle.SMOKE,
@@ -511,7 +497,6 @@ public class WaystoneModule implements Listener {
                     waystones.put(loc, waystone);
                     saveWaystone(waystone);
 
-                    // Efectos de creación automática
                     playWaystoneCreateSound(loc);
                     spawnCreationParticles(loc);
 
@@ -556,13 +541,11 @@ public class WaystoneModule implements Listener {
                     playerTeleportLocations.remove(playerId);
                 }
 
-                // Efectos al iniciar el teleporte
                 playTeleportBeginSound(player);
                 final Location destination = waystone.getLocation().clone().add(0.5, 1, 0.5);
                 playerTeleportLocations.put(playerId, destination);
 
                 BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    // Efectos de teleportación
                     Location originalLoc = player.getLocation();
                     playTeleportSound(player, destination);
                     player.teleport(destination);
@@ -581,7 +564,6 @@ public class WaystoneModule implements Listener {
 
                 pendingTeleports.put(playerId, task);
 
-                // Genera un "countdown" visual con partículas
                 for (int i = 1; i <= teleportDelay; i++) {
                     final int count = i;
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
