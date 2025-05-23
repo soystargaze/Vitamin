@@ -33,6 +33,13 @@ plugin:
     griefprevention_integration_success: "Intégration de GriefPrevention pour le module réussie."
     griefprevention_integration_failed: "L'intégration de GriefPrevention pour les modules a échoué : {0}"
     griefprevention_error: "Erreur avec GriefPrevention : {0}"
+  worldguard:
+    entity_flag_registered: "Le drapeau 'vitamin-carryon-entity' a été enregistré avec succès."
+    entity_flag_conflict_resolved: "Un conflit avec le drapeau 'vitamin-carryon-entity' a été résolu en utilisant le drapeau existant."
+    entity_flag_conflict_error: "Il y a eu un conflit avec le drapeau 'vitamin-carryon-entity' qui n'a pas pu être résolu."
+    container_flag_registered: "Le drapeau 'vitamin-carryon-container' a été enregistré avec succès."
+    container_flag_conflict_resolved: "Un conflit avec le drapeau 'vitamin-carryon-container' a été résolu en utilisant le drapeau existant."
+    container_flag_conflict_error: "Il y a eu un conflit avec le drapeau 'vitamin-carryon-container' qui n'a pas pu être résolu."
 
 items:
   registered: "Les objets de Vitamin+ ont été enregistrés avec succès."

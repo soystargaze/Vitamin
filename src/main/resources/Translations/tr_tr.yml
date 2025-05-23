@@ -33,6 +33,13 @@ plugin:
     griefprevention_integration_success: "GriefPrevention modül entegrasyonu başarıyla tamamlandı."
     griefprevention_integration_failed: "GriefPrevention modül entegrasyonu başarısız oldu: {0}"
     griefprevention_error: "GriefPrevention ile ilgili hata: {0}"
+  worldguard:
+    entity_flag_registered: "'vitamin-carryon-entity' bayrağı başarıyla kaydedildi."
+    entity_flag_conflict_resolved: "'vitamin-carryon-entity' bayrağıyla bir çakışma, mevcut bayrak kullanılarak çözüldü."
+    entity_flag_conflict_error: "'vitamin-carryon-entity' bayrağıyla çözülemeyen bir çakışma oluştu."
+    container_flag_registered: "'vitamin-carryon-container' bayrağı başarıyla kaydedildi."
+    container_flag_conflict_resolved: "'vitamin-carryon-container' bayrağıyla bir çakışma, mevcut bayrak kullanılarak çözüldü."
+    container_flag_conflict_error: "'vitamin-carryon-container' bayrağıyla çözülemeyen bir çakışma oluştu."
 
 items:
   registered: "Vitamin+ öğeleri başarıyla kaydedildi."

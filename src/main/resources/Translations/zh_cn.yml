@@ -33,6 +33,13 @@ plugin:
     griefprevention_integration_success: "GriefPrevention 集成模块成功。"
     griefprevention_integration_failed: "GriefPrevention 集成模块失败: {0}"
     griefprevention_error: "GriefPrevention 错误: {0}"
+  worldguard:
+    entity_flag_registered: "'vitamin-carryon-entity' 标志已成功注册。"
+    entity_flag_conflict_resolved: "与 'vitamin-carryon-entity' 标志的冲突已通过使用现有标志解决。"
+    entity_flag_conflict_error: "与 'vitamin-carryon-entity' 标志存在无法解决的冲突。"
+    container_flag_registered: "'vitamin-carryon-container' 标志已成功注册。"
+    container_flag_conflict_resolved: "与 'vitamin-carryon-container' 标志的冲突已通过使用现有标志解决。"
+    container_flag_conflict_error: "与 'vitamin-carryon-container' 标志存在无法解决的冲突。"
 
 items:
   registered: "Vitamin+ 的物品已成功注册。"

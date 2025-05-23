@@ -197,7 +197,7 @@ public class CarryOnModule implements Listener {
         }
 
         if (wgIntegration != null) {
-            if (!wgIntegration.canInteract(player, entity.getLocation())) {
+            if (!wgIntegration.canInteractEntity(player, entity.getLocation())) {
                 TextHandler.get().sendMessage(player, "carry_on.no_permissions");
                 event.setCancelled(true);
                 return;
@@ -269,12 +269,10 @@ public class CarryOnModule implements Listener {
             }
         }
 
-        if (wgIntegration != null) {
-            if (!wgIntegration.canBuild(player, block.getLocation())) {
-                TextHandler.get().sendMessage(player, "carry_on.no_permissions");
-                event.setCancelled(true);
-                return;
-            }
+        if (wgIntegration != null && !wgIntegration.canInteractContainer(player, block.getLocation())) {
+            TextHandler.get().sendMessage(player, "carry_on.no_permissions");
+            event.setCancelled(true);
+            return;
         }
 
         if (landsIntegration != null) {
@@ -339,7 +337,7 @@ public class CarryOnModule implements Listener {
         if (targetBlock == null || !targetBlock.getType().isAir()) return;
 
         // WorldGuard
-        if (wgIntegration != null && !wgIntegration.canBuild(player, targetBlock.getLocation())) {
+        if (wgIntegration != null && !wgIntegration.canInteractContainer(player, targetBlock.getLocation())) {
             TextHandler.get().sendMessage(player, "carry_on.no_permissions");
             event.setCancelled(true);
             return;
@@ -385,7 +383,7 @@ public class CarryOnModule implements Listener {
 
             if (otherHalfLocation != null) {
                 // WorldGuard
-                if (wgIntegration != null && !wgIntegration.canBuild(player, otherHalfLocation.getLocation())) {
+                if (wgIntegration != null && !wgIntegration.canInteractContainer(player, otherHalfLocation.getLocation())) {
                     TextHandler.get().sendMessage(player, "carry_on.no_permissions_double_chest");
                     event.setCancelled(true);
                     return;

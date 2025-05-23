@@ -33,6 +33,13 @@ plugin:
     griefprevention_integration_success: "GriefPrevention 통합 성공: 모듈 상호작용을 위해 사용됩니다."
     griefprevention_integration_failed: "GriefPrevention 통합 실패: {0}"
     griefprevention_error: "GriefPrevention 오류: {0}"
+  worldguard:
+    entity_flag_registered: "'vitamin-carryon-entity' 플래그가 성공적으로 등록되었습니다."
+    entity_flag_conflict_resolved: "'vitamin-carryon-entity' 플래그의 충돌이 기존 플래그를 사용하여 해결되었습니다."
+    entity_flag_conflict_error: "'vitamin-carryon-entity' 플래그와의 충돌을 해결할 수 없습니다."
+    container_flag_registered: "'vitamin-carryon-container' 플래그가 성공적으로 등록되었습니다."
+    container_flag_conflict_resolved: "'vitamin-carryon-container' 플래그의 충돌이 기존 플래그를 사용하여 해결되었습니다."
+    container_flag_conflict_error: "'vitamin-carryon-container' 플래그와의 충돌을 해결할 수 없습니다."
 
 items:
   registered: "Vitamin+ 아이템이 성공적으로 등록되었습니다."

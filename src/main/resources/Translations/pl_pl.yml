@@ -33,6 +33,13 @@ plugin:
     griefprevention_integration_success: "Integracja GriefPrevention dla modułów powiodła się."
     griefprevention_integration_failed: "Integracja GriefPrevention dla modułów nie powiodła się: {0}"
     griefprevention_error: "Wystąpił błąd z GriefPrevention: {0}"
+  worldguard:
+    entity_flag_registered: "Flaga 'vitamin-carryon-entity' została pomyślnie zarejestrowana."
+    entity_flag_conflict_resolved: "Konflikt z flagą 'vitamin-carryon-entity' został rozwiązany przy użyciu istniejącej flagi."
+    entity_flag_conflict_error: "Wystąpił konflikt z flagą 'vitamin-carryon-entity', którego nie udało się rozwiązać."
+    container_flag_registered: "Flaga 'vitamin-carryon-container' została pomyślnie zarejestrowana."
+    container_flag_conflict_resolved: "Konflikt z flagą 'vitamin-carryon-container' został rozwiązany przy użyciu istniejącej flagi."
+    container_flag_conflict_error: "Wystąpił konflikt z flagą 'vitamin-carryon-container', którego nie udało się rozwiązać."
 
 items:
   registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."

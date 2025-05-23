@@ -33,7 +33,14 @@ plugin:
     griefprevention_integration_success: "GriefPrevention の統合が成功しました。"
     griefprevention_integration_failed: "GriefPrevention の統合に失敗: {0}"
     griefprevention_error: "GriefPrevention エラー: {0}"
-
+  worldguard:
+    entity_flag_registered: "「vitamin-carryon-entity」フラグが正常に登録されました。"
+    entity_flag_conflict_resolved: "「vitamin-carryon-entity」フラグの競合が既存のフラグを使用して解決されました。"
+    entity_flag_conflict_error: "「vitamin-carryon-entity」フラグとの競合を解決できませんでした。"
+    container_flag_registered: "「vitamin-carryon-container」フラグが正常に登録されました。"
+    container_flag_conflict_resolved: "「vitamin-carryon-container」フラグの競合が既存のフラグを使用して解決されました。"
+    container_flag_conflict_error: "「vitamin-carryon-container」フラグとの競合を解決できませんでした。"
+    
 items:
   registered: "Vitamin+ のアイテムが正常に登録されました。"
 

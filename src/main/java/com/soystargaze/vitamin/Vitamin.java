@@ -5,6 +5,7 @@ import com.soystargaze.vitamin.adapter.*;
 import com.soystargaze.vitamin.commands.VitaminCommandManager;
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.integration.WorldGuardFlags;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.utils.*;
 import com.soystargaze.vitamin.utils.text.*;
@@ -31,6 +32,9 @@ public class Vitamin extends JavaPlugin implements Listener {
         try {
             setupVersionAdapter();
             initializePlugin();
+            if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+                WorldGuardFlags.registerFlags(this);
+            }
         } catch (Exception e) {
             final String KEY = "plugin.enable_error";
             TextHandler.get().registerTemporaryTranslation(KEY, "Plugin cannot be enabled: {0}");
