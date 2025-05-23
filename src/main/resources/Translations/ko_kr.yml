@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "금고를 열었습니다. 추가 사용 가능 횟수: {0}회."
   cooldown: "금고가 재사용 대기 중입니다. 남은 시간: {0}."
   max_uses_reached: "이 금고의 최대 개방 횟수에 도달했습니다."
+
+waystone:
+  enter_new_name: "웨이스톤의 이름을 입력하세요:"
+  enter_new_name_for_rename: "웨이스톤의 새 이름을 입력하세요:"
+  renamed: "웨이스톤이 {0}(으)로 이름이 변경되었습니다."
+  keys_missing: "웨이스톤 구조가 불완전합니다!"
+  already_exists: "이 위치에 이미 웨이스톤이 존재합니다!"
+  created: "웨이스톤 {0}이(가) 성공적으로 생성되었습니다!"
+  created_with_default: "웨이스톤 {0}이(가) 자동으로 생성되었습니다!"
+  registered: "웨이스톤 {0}에 등록되었습니다!"
+  destroyed: "웨이스톤 {0}이(가) 파괴되었습니다!"
+  creation_canceled: "웨이스톤 생성이 취소되었습니다!"
+  only_creator_can_break: "생성자만 이 웨이스톤을 파괴할 수 있습니다!"
+  only_operator_or_creator_can_break: "운영자 또는 생성자만 이 웨이스톤을 파괴할 수 있습니다!"
+  teleported: "{0}(으)로 텔레포트되었습니다!"
+  teleporting_in: "{0}초 후에 텔레포트됩니다..."
+  teleport_canceled: "이동으로 인해 텔레포트가 취소되었습니다!"
+  limit_reached: "웨이스톤 최대 한도({0})에 도달했습니다. 더 이상 생성할 수 없습니다."
+  auto_creation_canceled_limit: "한도에 도달하여 자동 웨이스톤 생성이 취소되었습니다."
+  inventory:
+    title: "웨이스톤"
+    item:
+      location: "위치: {0}, {1}, {2}"
+      click_to_teleport: "클릭하여 텔레포트"

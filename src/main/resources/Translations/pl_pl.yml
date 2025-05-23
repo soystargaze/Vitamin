@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "Otworzyłeś skarbiec. Masz jeszcze {0} użyć."
   cooldown: "Skarbiec jest w czasie odnowienia. Pozostały czas: {0}."
   max_uses_reached: "Osiągnąłeś maksymalną liczbę otwarć tego skarbca."
+
+waystone:
+  enter_new_name: "Wprowadź nazwę dla swojego kamienia drogi:"
+  enter_new_name_for_rename: "Wprowadź nową nazwę dla swojego kamienia drogi:"
+  renamed: "Kamień drogi został przemianowany na: {0}"
+  keys_missing: "Struktura kamienia drogi jest niekompletna!"
+  already_exists: "Kamień drogi już istnieje w tym miejscu!"
+  created: "Kamień drogi {0} został pomyślnie utworzony!"
+  created_with_default: "Kamień drogi {0} został automatycznie utworzony!"
+  registered: "Zarejestrowałeś się do kamienia drogi {0}!"
+  destroyed: "Kamień drogi {0} został zniszczony!"
+  creation_canceled: "Tworzenie kamienia drogi zostało anulowane!"
+  only_creator_can_break: "Tylko twórca może zniszczyć ten kamień drogi!"
+  only_operator_or_creator_can_break: "Tylko operator lub twórca mogą zniszczyć ten kamień drogi!"
+  teleported: "Zostałeś teleportowany do {0}!"
+  teleporting_in: "Teleportacja za {0} sekund..."
+  teleport_canceled: "Teleportacja anulowana z powodu ruchu!"
+  limit_reached: "Osiągnąłeś maksymalny limit kamieni drogi ({0}). Nie możesz tworzyć więcej."
+  auto_creation_canceled_limit: "Automatyczne tworzenie kamienia drogi zostało anulowane, ponieważ osiągnąłeś limit."
+  inventory:
+    title: "Kamienie drogi"
+    item:
+      location: "Lokalizacja: {0}, {1}, {2}"
+      click_to_teleport: "Kliknij, aby się teleportować"

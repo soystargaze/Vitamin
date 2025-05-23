@@ -59,6 +59,7 @@ public class PaperWaystoneModule implements Listener {
     private final boolean cancelTeleportOnMove;
     private final int particleViewDistance;
     private final int holoRefreshRate;
+    private final int defaultWaystoneLimit;
 
     public PaperWaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -70,6 +71,7 @@ public class PaperWaystoneModule implements Listener {
         this.cancelTeleportOnMove = plugin.getConfig().getBoolean("waystone.cancel_teleport_on_move", true);
         this.particleViewDistance = plugin.getConfig().getInt("waystone.particle_view_distance", 32);
         this.holoRefreshRate = plugin.getConfig().getInt("waystone.hologram_refresh_rate", 100);
+        this.defaultWaystoneLimit = plugin.getConfig().getInt("waystone.default_limit", 5);
 
         loadWaystones();
         startOptimizedTasks();
@@ -182,6 +184,37 @@ public class PaperWaystoneModule implements Listener {
                 spawnTeleportParticles(player.getLocation(), targetLocation);
             }
         }), 2L, 2L);
+    }
+
+    private boolean canCreateWaystone(Player player) {
+        UUID playerId = player.getUniqueId();
+
+        // Verificar permiso infinito
+        if (player.hasPermission("vitamin.module.waystone.limit.infinite")) {
+            return true;
+        }
+
+        // Buscar permiso específico de límite
+        int limit = getPlayerWaystoneLimit(player);
+
+        // Contar waystones creados por el jugador
+        long playerWaystones = waystones.values().stream()
+                .filter(waystone -> waystone.getCreator().equals(playerId))
+                .count();
+
+        return playerWaystones < limit;
+    }
+
+    private int getPlayerWaystoneLimit(Player player) {
+        // Verificar permisos específicos de límite
+        for (int i = 1; i <= 100; i++) { // Verificar hasta 100 como límite máximo
+            if (player.hasPermission("vitamin.module.waystone.limit." + i)) {
+                return i;
+            }
+        }
+
+        // Si no tiene ningún permiso específico, usar el límite por defecto
+        return defaultWaystoneLimit;
     }
 
     private boolean isValidWaystoneStructure(Location loc) {
@@ -408,12 +441,29 @@ public class PaperWaystoneModule implements Listener {
                 return;
             }
 
+            // Verificar límite de waystones ANTES de crear
+            if (!canCreateWaystone(player)) {
+                int limit = getPlayerWaystoneLimit(player);
+                player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.limit_reached", String.valueOf(limit)));
+                pendingWaystones.remove(playerId);
+                playWaystoneDeactivateSound(loc);
+                return;
+            }
+
             Component messageComponent = event.message();
             String name = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (waystones.containsKey(loc)) {
                     player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.already_exists"));
+                    playWaystoneDeactivateSound(loc);
+                    return;
+                }
+
+                // Verificar límite nuevamente en el hilo principal por seguridad
+                if (!canCreateWaystone(player)) {
+                    int limit = getPlayerWaystoneLimit(player);
+                    player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.limit_reached", String.valueOf(limit)));
                     playWaystoneDeactivateSound(loc);
                     return;
                 }
@@ -632,6 +682,14 @@ public class PaperWaystoneModule implements Listener {
             Location loc = pending.location();
             if (player.getLocation().distanceSquared(loc) > autoCreateDistanceSquared) {
                 if (isValidWaystoneStructure(loc)) {
+                    // Verificar límite antes de crear automáticamente
+                    if (!canCreateWaystone(player)) {
+                        player.sendMessage(ModernTranslationHandler.getPlayerComponent("waystone.auto_creation_canceled_limit"));
+                        pendingWaystones.remove(playerId);
+                        playWaystoneDeactivateSound(loc);
+                        return;
+                    }
+
                     TextDisplay hologram = createHologram(loc, defaultWaystoneName);
                     Waystone waystone = new Waystone(-1, loc, defaultWaystoneName, playerId);
                     waystone.registerPlayer(playerId);

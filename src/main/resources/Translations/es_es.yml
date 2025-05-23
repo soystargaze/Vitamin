@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "Has abierto el vault. Te quedan {0} usos adicionales."
   cooldown: "El vault está en cooldown. Tiempo restante: {0}."
   max_uses_reached: "Has alcanzado el límite de aperturas para este vault."
+
+waystone:
+  enter_new_name: "Ingresa el nombre para tu waystone:"
+  enter_new_name_for_rename: "Ingresa el nuevo nombre para tu waystone:"
+  renamed: "Waystone renombrada a: {0}"
+  keys_missing: "¡La estructura de la waystone está incompleta!"
+  already_exists: "¡Ya existe una waystone en esta ubicación!"
+  created: "¡Waystone {0} creada con éxito!"
+  created_with_default: "¡Waystone {0} creada automáticamente!"
+  registered: "¡Te has registrado en la waystone {0}!"
+  destroyed: "¡La waystone {0} ha sido destruida!"
+  creation_canceled: "¡La creación de la waystone fue cancelada!"
+  only_creator_can_break: "¡Solo el creador puede romper esta waystone!"
+  only_operator_or_creator_can_break: "¡Solo el operador o el creador pueden romper esta waystone!"
+  teleported: "¡Has sido teletransportado a {0}!"
+  teleporting_in: "Teletransportando en {0} segundos..."
+  teleport_canceled: "¡Teletransportación cancelada debido al movimiento!"
+  limit_reached: "Has alcanzado el límite máximo de waystones ({0}). No puedes crear más."
+  auto_creation_canceled_limit: "La creación automática de waystone fue cancelada porque has alcanzado tu límite."
+  inventory:
+    title: "Waystones"
+    item:
+      location: "Ubicación: {0}, {1}, {2}"
+      click_to_teleport: "Haz clic para teletransportarte"

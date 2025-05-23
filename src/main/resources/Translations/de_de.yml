@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "Du hast den Tresor geöffnet. Du hast noch {0} weitere Verwendungen."
   cooldown: "Der Tresor befindet sich in der Abklingzeit. Verbleibende Zeit: {0}."
   max_uses_reached: "Du hast die maximale Anzahl an Öffnungen für diesen Tresor erreicht."
+
+waystone:
+  enter_new_name: "Geben Sie den Namen für Ihren Wegstein ein:"
+  enter_new_name_for_rename: "Geben Sie den neuen Namen für Ihren Wegstein ein:"
+  renamed: "Wegstein umbenannt in: {0}"
+  keys_missing: "Die Struktur des Wegsteins ist unvollständig!"
+  already_exists: "Es existiert bereits ein Wegstein an diesem Ort!"
+  created: "Wegstein {0} erfolgreich erstellt!"
+  created_with_default: "Wegstein {0} automatisch erstellt!"
+  registered: "Sie haben sich beim Wegstein {0} registriert!"
+  destroyed: "Wegstein {0} wurde zerstört!"
+  creation_canceled: "Die Erstellung des Wegsteins wurde abgebrochen!"
+  only_creator_can_break: "Nur der Ersteller kann diesen Wegstein zerstören!"
+  only_operator_or_creator_can_break: "Nur der Betreiber oder der Ersteller können diesen Wegstein zerstören!"
+  teleported: "Sie wurden zu {0} teleportiert!"
+  teleporting_in: "Teleportation in {0} Sekunden..."
+  teleport_canceled: "Teleportation aufgrund von Bewegung abgebrochen!"
+  limit_reached: "Sie haben das maximale Limit für Wegsteine ({0}) erreicht. Sie können keine weiteren erstellen."
+  auto_creation_canceled_limit: "Die automatische Erstellung des Wegsteins wurde abgebrochen, da Sie Ihr Limit erreicht haben."
+  inventory:
+    title: "Wegsteine"
+    item:
+      location: "Ort: {0}, {1}, {2}"
+      click_to_teleport: "Klicken Sie, um zu teleportieren"

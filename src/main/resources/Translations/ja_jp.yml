@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "金庫を開けました。残り {0} 回の使用可能。"
   cooldown: "金庫はクールダウン中です。残り時間: {0}。"
   max_uses_reached: "この金庫の最大開封回数に達しました。"
+
+waystone:
+  enter_new_name: "あなたの道石の名前を入力してください:"
+  enter_new_name_for_rename: "あなたの道石の新しい名前を入力してください:"
+  renamed: "道石の名前が{0}に変更されました。"
+  keys_missing: "道石の構造が不完全です！"
+  already_exists: "この場所にはすでに道石が存在します！"
+  created: "道石{0}が正常に作成されました！"
+  created_with_default: "道石{0}が自動的に作成されました！"
+  registered: "道石{0}に登録しました！"
+  destroyed: "道石{0}が破壊されました！"
+  creation_canceled: "道石の作成がキャンセルされました！"
+  only_creator_can_break: "作成者のみがこの道石を破壊できます！"
+  only_operator_or_creator_can_break: "オペレーターまたは作成者のみがこの道石を破壊できます！"
+  teleported: "{0}にテレポートしました！"
+  teleporting_in: "{0}秒後にテレポートします..."
+  teleport_canceled: "移動によりテレポートがキャンセルされました！"
+  limit_reached: "道石の最大制限({0})に達しました。これ以上作成できません。"
+  auto_creation_canceled_limit: "制限に達したため、自動道石作成がキャンセルされました。"
+  inventory:
+    title: "道石"
+    item:
+      location: "場所: {0}, {1}, {2}"
+      click_to_teleport: "クリックしてテレポート"

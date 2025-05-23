@@ -154,3 +154,27 @@ replayable_vault:
   remaining_uses: "Kasayı açtınız. {0} ek kullanım hakkınız kaldı."
   cooldown: "Kasa bekleme süresinde. Kalan süre: {0}."
   max_uses_reached: "Bu kasayı açma hakkınız maksimum seviyeye ulaştı."
+
+waystone:
+  enter_new_name: "Waystone'unuz için isim girin:"
+  enter_new_name_for_rename: "Waystone'unuz için yeni isim girin:"
+  renamed: "Waystone {0} olarak yeniden adlandırıldı."
+  keys_missing: "Waystone yapısı eksik!"
+  already_exists: "Bu konumda zaten bir waystone var!"
+  created: "Waystone {0} başarıyla oluşturuldu!"
+  created_with_default: "Waystone {0} otomatik olarak oluşturuldu!"
+  registered: "Waystone {0}'a kaydoldunuz!"
+  destroyed: "Waystone {0} yok edildi!"
+  creation_canceled: "Waystone oluşturma iptal edildi!"
+  only_creator_can_break: "Sadece oluşturan kişi bu waystone'u kırabilir!"
+  only_operator_or_creator_can_break: "Sadece operatör veya oluşturan kişi bu waystone'u kırabilir!"
+  teleported: "{0}'a ışınlandınız!"
+  teleporting_in: "{0} saniye içinde ışınlanıyor..."
+  teleport_canceled: "Hareket nedeniyle ışınlanma iptal edildi!"
+  limit_reached: "Maksimum waystone limitine ({0}) ulaştınız. Daha fazla oluşturamazsınız."
+  auto_creation_canceled_limit: "Limitinize ulaştığınız için otomatik waystone oluşturma iptal edildi."
+  inventory:
+    title: "Waystones"
+    item:
+      location: "Konum: {0}, {1}, {2}"
+      click_to_teleport: "Işınlanmak için tıklayın"
