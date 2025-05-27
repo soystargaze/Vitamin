@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConfigHandler {
@@ -83,5 +84,13 @@ public class ConfigHandler {
 
     public static int getInt(String path, int def) {
         return config.getInt(path, def);
+    }
+
+    public static String getString(String path, String def) {
+        return config.getString(path, def);
+    }
+
+    public static List<String> getStringList(String path) {
+        return config.getStringList(path);
     }
 }

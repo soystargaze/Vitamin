@@ -33,7 +33,7 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
             @NotNull String label,
             @NotNull String @NotNull [] args
     ) {
-        if (!sender.hasPermission("vitamin.reload")) {
+        if (!sender.hasPermission("vitamin.use.reload")) {
             sendToSender(sender, "commands.reload.no_permission");
             return true;
         }
@@ -50,7 +50,10 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
                     ((CustomRecipesModule) mod).unregisterRecipes();
                 }
             }
+
             moduleManager.reloadModules();
+
+            plugin.reregisterCommandListeners();
 
             int loadedTranslations = reloadTranslations();
             sendToSender(sender, "commands.reload.success", loadedTranslations);

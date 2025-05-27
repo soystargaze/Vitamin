@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.utils.AsyncExecutor;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import org.bukkit.entity.Player;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -20,7 +21,7 @@ public class UpdateChecker {
     private static final String CURRENT_VERSION = Vitamin.getInstance().getDescription().getVersion();
     private static final String DOWNLOAD_URL = "https://modrinth.com/plugin/vitamin";
 
-    public static void checkForUpdates() {
+    public static void checkForUpdates(Player player) {
         AsyncExecutor.getExecutor().execute(() -> {
             try {
                 String url = String.format(API_URL, PROJECT_ID);
@@ -47,16 +48,32 @@ public class UpdateChecker {
                         String latestVersionNumber = latestVersion.get("version_number").getAsString();
 
                         if (!CURRENT_VERSION.equals(latestVersionNumber)) {
-                            TextHandler.get().logTranslated("plugin.update_available", latestVersionNumber, DOWNLOAD_URL);
+                            if (player != null && player.isOnline()) {
+                                TextHandler.get().sendAndLog(player, "plugin.update_available", latestVersionNumber, DOWNLOAD_URL);
+                            } else {
+                                TextHandler.get().logTranslated("plugin.update_available", latestVersionNumber, DOWNLOAD_URL);
+                            }
                         } else {
-                            TextHandler.get().logTranslated("plugin.no_update_available");
+                            if (player != null && player.isOnline()) {
+                                TextHandler.get().sendAndLog(player, "plugin.no_update_available");
+                            } else {
+                                TextHandler.get().logTranslated("plugin.no_update_available");
+                            }
                         }
                     }
                 } else {
-                    TextHandler.get().logTranslated("plugin.update_check_failed", responseCode);
+                    if (player != null && player.isOnline()) {
+                        TextHandler.get().sendAndLog(player, "plugin.update_check_failed", String.valueOf(responseCode));
+                    } else {
+                        TextHandler.get().logTranslated("plugin.update_check_failed", String.valueOf(responseCode));
+                    }
                 }
             } catch (Exception e) {
-                TextHandler.get().logTranslated("plugin.update_check_error", e.getMessage());
+                if (player != null && player.isOnline()) {
+                    TextHandler.get().sendAndLog(player, "plugin.update_check_error", e.getMessage());
+                } else {
+                    TextHandler.get().logTranslated("plugin.update_check_error", e.getMessage());
+                }
             }
         });
     }

@@ -15,7 +15,7 @@ public class UpdateOnJoinListener implements Listener {
         }
         Player player = event.getPlayer();
         if (player.isOp()) {
-            UpdateChecker.checkForUpdates();
+            UpdateChecker.checkForUpdates(player);
         }
     }
 

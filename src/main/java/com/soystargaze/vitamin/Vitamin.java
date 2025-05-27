@@ -9,7 +9,6 @@ import com.soystargaze.vitamin.integration.WorldGuardFlags;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.utils.*;
 import com.soystargaze.vitamin.utils.text.*;
-import com.soystargaze.vitamin.utils.updater.*;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,9 +55,10 @@ public class Vitamin extends JavaPlugin implements Listener {
             loadConfigurations();
             DatabaseHandler.initialize(this);
             TextHandler.get().logTranslated("plugin.separator");
+
             moduleManager = new ModuleManager(this);
-            getServer().getPluginManager().registerEvents(new UpdateOnFullLoad(), this);
-            getServer().getPluginManager().registerEvents(new UpdateOnJoinListener(), this);
+            initializeCommandManager();
+
             TextHandler.get().logTranslated("plugin.separator");
             initializeMetrics();
         } catch (Exception e) {
@@ -73,11 +73,11 @@ public class Vitamin extends JavaPlugin implements Listener {
         saveConfig();
 
         TextHandler.init(this);
+        LogUtils.init(this);
         setupTranslations();
         ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
-        initializeCommandManager();
         ConsoleUtils.displaySuccessMessage(this);
     }
 
@@ -129,6 +129,12 @@ public class Vitamin extends JavaPlugin implements Listener {
         } catch (Exception e) {
             TextHandler.get().logTranslated("command.register_error", e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
+        }
+    }
+
+    public void reregisterCommandListeners() {
+        if (commandManager != null) {
+            commandManager.reregisterListeners();
         }
     }
 

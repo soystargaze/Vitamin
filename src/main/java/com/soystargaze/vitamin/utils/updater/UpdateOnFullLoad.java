@@ -13,7 +13,7 @@ public class UpdateOnFullLoad implements Listener {
         if (event.getType() == ServerLoadEvent.LoadType.STARTUP) {
             Bukkit.getScheduler().runTaskAsynchronously(
                     Vitamin.getInstance(),
-                    UpdateChecker::checkForUpdates
+                    () -> UpdateChecker.checkForUpdates(null)
             );
         }
     }

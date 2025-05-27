@@ -36,7 +36,7 @@ public class PModuleCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (!player.hasPermission("vitamin.pmodule")) {
+        if (!player.hasPermission("vitamin.use.pmodule")) {
             TextHandler.get().sendMessage(player, "commands.pmodule.no_pmodule_permission");
             return true;
         }

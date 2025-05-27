@@ -3,11 +3,14 @@ package com.soystargaze.vitamin.modules;
 import com.soystargaze.vitamin.modules.core.*;
 import com.soystargaze.vitamin.modules.paper.*;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import com.soystargaze.vitamin.utils.updater.UpdateOnFullLoad;
+import com.soystargaze.vitamin.utils.updater.UpdateOnJoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,11 +155,13 @@ public class ModuleManager {
     private final JavaPlugin plugin;
     private final boolean isPaper;
     private final Map<String, Listener> modules = new HashMap<>();
+    private final List<Listener> systemListeners = new ArrayList<>();
 
     public ModuleManager(JavaPlugin plugin) {
         this.plugin  = plugin;
         this.isPaper = detectPaper();
         registerModules();
+        registerSystemListeners();
     }
 
     private boolean detectPaper() {
@@ -182,6 +187,27 @@ public class ModuleManager {
         }
     }
 
+    private void registerSystemListeners() {
+        for (Listener listener : systemListeners) {
+            HandlerList.unregisterAll(listener);
+        }
+        systemListeners.clear();
+        addUpdateListeners();
+    }
+
+    public void addUpdateListeners() {
+        UpdateOnFullLoad updateListener = new UpdateOnFullLoad();
+        UpdateOnJoinListener joinListener = new UpdateOnJoinListener();
+
+        addSystemListener(updateListener);
+        addSystemListener(joinListener);
+    }
+
+    public void addSystemListener(Listener listener) {
+        systemListeners.add(listener);
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+    }
+
     private void addModule(String configPath, Listener module) {
         String moduleName = getModuleName(configPath);
         if (plugin.getConfig().getBoolean(configPath, true)) {
@@ -200,6 +226,7 @@ public class ModuleManager {
     public void reloadModules() {
         plugin.reloadConfig();
         registerModules();
+        registerSystemListeners();
     }
 
     public Listener getModule(String moduleName) {

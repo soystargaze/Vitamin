@@ -3,26 +3,37 @@ package com.soystargaze.vitamin.commands;
 import com.soystargaze.vitamin.Vitamin;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 
 public class VitaminCommandManager {
 
     private final Vitamin plugin;
+    private VitaminCommand vitaminCommand;
 
     public VitaminCommandManager(Vitamin plugin) {
         this.plugin = plugin;
     }
 
     public void registerCommands() {
-        register("vitamin", commandExecutor());
-        register("vita",    commandExecutor());
-        register("vi",      commandExecutor());
+        vitaminCommand = new VitaminCommand(plugin);
+        RestoreCommand restoreCommand = vitaminCommand.getRestoreCommand();
+
+        register("vitamin", vitaminCommand);
+        register("vita", vitaminCommand);
+        register("vi", vitaminCommand);
+
+        RestoreInventoryListener listener = new RestoreInventoryListener(plugin, restoreCommand);
+
+        plugin.getModuleManager().addSystemListener(listener);
     }
 
-    private CommandExecutor commandExecutor() {
-        return new VitaminCommand(plugin);
+    public void reregisterListeners() {
+        if (vitaminCommand != null) {
+            RestoreCommand restoreCommand = vitaminCommand.getRestoreCommand();
+            if (restoreCommand != null) {
+                RestoreInventoryListener restoreListener = new RestoreInventoryListener(plugin, restoreCommand);
+                plugin.getModuleManager().addSystemListener(restoreListener);
+            }
+        }
     }
 
     private void register(String name, CommandExecutor executor) {

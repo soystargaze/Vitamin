@@ -168,6 +168,22 @@ public class DatabaseHandler {
             """;
             stmt.executeUpdate(createChestContents);
 
+            String createContainerBackups = """
+            CREATE TABLE IF NOT EXISTS container_backups (
+              chest_id VARCHAR(36) PRIMARY KEY,
+              player_uuid VARCHAR(36) NOT NULL,
+              player_name VARCHAR(32) NOT NULL,
+              container_type VARCHAR(32) NOT NULL,
+              pickup_timestamp BIGINT NOT NULL,
+              restored BOOLEAN DEFAULT FALSE,
+              world_name VARCHAR(64),
+              x_coord INTEGER,
+              y_coord INTEGER,
+              z_coord INTEGER
+            );
+            """;
+            stmt.executeUpdate(createContainerBackups);
+
             String createVaultReactivations = """
             CREATE TABLE IF NOT EXISTS vault_reactivations (
               vault_world VARCHAR(100) NOT NULL,

@@ -22,12 +22,15 @@ permissions:
   vitamin.use:
     description: Allows use of the /vitamin command
     default: op
-  vitamin.reload:
+  vitamin.use.reload:
     description: Allows use of the /vitamin reload command
     default: op
-  vitamin.module:
+  vitamin.use.module:
     description: Allows use of the /vitamin module command
     default: op
-  vitamin.pmodule:
+  vitamin.use.pmodule:
     description: Allows use of the /vitamin pmodule command
     default: true
+  vitamin.use.restore:
+    description: Allows use of the /vitamin restore command
+    default: op

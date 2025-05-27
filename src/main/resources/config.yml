@@ -50,6 +50,42 @@ database:
 settings:
   async_thread_pool_size: 4
 
+# GUI Configuration for Restore Command
+gui:
+  restore:
+    title: "&6Restore: %player% &7(%count% containers)"
+    size: 54
+    date-format: "dd/MM/yyyy HH:mm"
+    item:
+      display-name: "&e%container_name% &7#%short_id%"
+      restored-yes: "&aYes"
+      restored-no: "&cNo"
+      lore:
+        - "&7▸ ID: &f%short_id%..."
+        - "&7▸ Picked up: &f%pickup_date%"
+        - "&7▸ Location: &f%world% (%x%, %y%, %z%)"
+        - "&7▸ Restored: %restored_status%"
+        - ""
+        - "&7Contents preview:"
+        - "%contents%"
+        - ""
+        - "&e▶ Click to give a copy to your inventory"
+      contents:
+        empty: "  &8• Empty"
+        item-format: "  &8• &f%amount%x &7%item_name%"
+        more-format: "  &8• ... and %remaining% more items"
+        max-preview: 5
+    restored-item:
+      display-name: "&6Restored %container_name%"
+      date-format: "dd/MM/yyyy HH:mm"
+      lore:
+        - "&7▸ Original owner: &f%owner%"
+        - "&7▸ Backup ID: &f%short_id%..."
+        - "&7▸ Picked up: &f%pickup_date%"
+        - "&7▸ Original location: &f%world% (%x%, %y%, %z%)"
+        - ""
+        - "&e▶ This is a restored copy from backup"
+
 # Enable or disable modules
 module:
   armor_trim: true # Armor trim gives special effects depending on the material (Active with Shift or Passive)

@@ -63,6 +63,13 @@ commands:
     module_not_active: "Module {0} is not active."
     no_module_permission: "You do not have permission to use {0}."
     changed: "Module {0} {1} successfully."
+  restore:
+    usage: "<red>Usage: /holdmycow restore <player></red>"
+    no_backups: "<red>No container backups found for player {0}.</red>"
+    opened: "<green>Opened restore interface for {0}. Found {1} containers.</green>"
+    success: "<green>Successfully restored {0} with ID {1} to your inventory.</green>"
+    error: "<red>Error creating the restored container. Please try again.</red>"
+    inventory_full: "<red>Your inventory is full. Make some space and try again.</red>"
 
 database:
   already_initialized: "The database has already been initialized."
@@ -92,6 +99,12 @@ database:
     load_error: "An error occurred while loading the chest: {0}"
     delete_error: "An error occurred while deleting the chest: {0}"
     deserialize_error: "An error occurred while deserializing the chest: {0}"
+  restore:
+    preview_error: "Error loading container preview: {0}"
+    load_error: "Error loading player backups: {0}"
+    info_error: "Error getting backup information: {0}"
+    mark_error: "Error marking container as restored: {0}"
+    create_error: "Error creating restored container: {0}"
 
 module:
   enabled: "Module {0}: <green>enabled"

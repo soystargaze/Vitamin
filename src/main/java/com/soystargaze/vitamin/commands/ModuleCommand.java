@@ -31,7 +31,7 @@ public class ModuleCommand implements CommandExecutor, TabCompleter {
             @NotNull String label,
             @NotNull String @NotNull [] args
     ) {
-        if (!sender.hasPermission("vitamin.module")) {
+        if (!sender.hasPermission("vitamin.use.module")) {
             sendToSender(sender, "commands.module.no_permission");
             return true;
         }
