@@ -403,27 +403,32 @@ public class WaystoneModule implements Listener {
             event.setCancelled(true);
             String newName = event.getMessage().trim();
             Waystone waystone = renamingWaystones.remove(playerId);
+
             Bukkit.getScheduler().runTask(plugin, () -> {
-                String processedName = processColorCodes(newName);
-                waystone.getHologram().setText(processedName);
-                waystone.setName(newName);
+                if (waystones.containsKey(waystone.getLocation()) && waystone.getHologram() != null) {
+                    String processedName = processColorCodes(newName);
+                    waystone.getHologram().setText(processedName);
+                    waystone.setName(newName);
 
-                Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                        DatabaseHandler.updateWaystoneName(waystone.getId(), newName)
-                );
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                            DatabaseHandler.updateWaystoneName(waystone.getId(), newName)
+                    );
 
-                player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.8f);
-                Location waystoneLoc = waystone.getLocation();
-                waystoneLoc.getWorld().spawnParticle(
-                        Particle.ENCHANT,
-                        waystoneLoc.clone().add(0.5, 2.5, 0.5),
-                        15,
-                        0.4, 0.4, 0.4,
-                        0.8);
+                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.8f);
+                    Location waystoneLoc = waystone.getLocation();
+                    waystoneLoc.getWorld().spawnParticle(
+                            Particle.ENCHANT,
+                            waystoneLoc.clone().add(0.5, 2.5, 0.5),
+                            15,
+                            0.4, 0.4, 0.4,
+                            0.8);
+
+                    String miniMessageFormattedName = convertToMiniMessageFormat(newName);
+                    TextHandler.get().sendMessage(player, "waystone.renamed", miniMessageFormattedName);
+                } else {
+                    TextHandler.get().sendMessage(player, "waystone.renaming_canceled");
+                }
             });
-
-            String miniMessageFormattedName = convertToMiniMessageFormat(newName);
-            TextHandler.get().sendMessage(player, "waystone.renamed", miniMessageFormattedName);
             return;
         }
 
@@ -438,7 +443,6 @@ public class WaystoneModule implements Listener {
                 return;
             }
 
-            // Verificar límite de waystones ANTES de crear
             if (!canCreateWaystone(player)) {
                 int limit = getPlayerWaystoneLimit(player);
                 TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
@@ -455,7 +459,6 @@ public class WaystoneModule implements Listener {
                     return;
                 }
 
-                // Verificar límite nuevamente en el hilo principal por seguridad
                 if (!canCreateWaystone(player)) {
                     int limit = getPlayerWaystoneLimit(player);
                     TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
@@ -677,7 +680,6 @@ public class WaystoneModule implements Listener {
             Location loc = pending.location();
             if (player.getLocation().distanceSquared(loc) > autoCreateDistanceSquared) {
                 if (isValidWaystoneStructure(loc)) {
-                    // Verificar límite antes de crear automáticamente
                     if (!canCreateWaystone(player)) {
                         TextHandler.get().sendMessage(player, "waystone.auto_creation_canceled_limit");
                         pendingWaystones.remove(playerId);
@@ -750,7 +752,7 @@ public class WaystoneModule implements Listener {
                     }
 
                     playTeleportBeginSound(player);
-                    final Location destination = waystone.getLocation().clone().add(0.5, 1, 0.5);
+                    final Location destination = waystone.getLocation().clone().add(1.0, 0.0, 1.0);
                     playerTeleportLocations.put(playerId, destination);
 
                     BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {

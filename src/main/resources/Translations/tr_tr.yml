@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "Waystone'unuz için isim girin:"
   enter_new_name_for_rename: "Waystone'unuz için yeni isim girin:"
   renamed: "Waystone {0} olarak yeniden adlandırıldı."
+  renaming_canceled: "Waystone yeniden adlandırma iptal edildi. Çünkü yok edildi!"
   keys_missing: "Waystone yapısı eksik!"
   already_exists: "Bu konumda zaten bir waystone var!"
   created: "Waystone {0} başarıyla oluşturuldu!"

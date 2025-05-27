@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "Wprowadź nazwę dla swojego kamienia drogi:"
   enter_new_name_for_rename: "Wprowadź nową nazwę dla swojego kamienia drogi:"
   renamed: "Kamień drogi został przemianowany na: {0}"
+  renaming_canceled: "Zmiana nazwy kamienia drogi została anulowana, ponieważ został zniszczony!"
   keys_missing: "Struktura kamienia drogi jest niekompletna!"
   already_exists: "Kamień drogi już istnieje w tym miejscu!"
   created: "Kamień drogi {0} został pomyślnie utworzony!"

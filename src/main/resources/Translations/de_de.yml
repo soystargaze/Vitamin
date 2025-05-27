@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "Geben Sie den Namen für Ihren Wegstein ein:"
   enter_new_name_for_rename: "Geben Sie den neuen Namen für Ihren Wegstein ein:"
   renamed: "Wegstein umbenannt in: {0}"
+  renaming_canceled: "Die Umbenennung des Wegsteins wurde abgebrochen, da er zerstört wurde!"
   keys_missing: "Die Struktur des Wegsteins ist unvollständig!"
   already_exists: "Es existiert bereits ein Wegstein an diesem Ort!"
   created: "Wegstein {0} erfolgreich erstellt!"

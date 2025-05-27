@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "Digite o nome para sua waystone:"
   enter_new_name_for_rename: "Digite o novo nome para sua waystone:"
   renamed: "Waystone renomeada para: {0}"
+  renaming_canceled: "A renomeação da waystone foi cancelada porque ela foi destruída!"
   keys_missing: "A estrutura da waystone está incompleta!"
   already_exists: "Já existe uma waystone neste local!"
   created: "Waystone {0} criada com sucesso!"

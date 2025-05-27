@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "输入您的道石名称："
   enter_new_name_for_rename: "输入您的道石新名称："
   renamed: "道石已重命名为：{0}"
+  renaming_canceled: "道石重命名已取消，因为它已被破坏！"
   keys_missing: "道石结构不完整！"
   already_exists: "此位置已存在道石！"
   created: "道石{0}创建成功！"

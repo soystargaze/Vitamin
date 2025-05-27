@@ -161,6 +161,7 @@ waystone:
   enter_new_name: "웨이스톤의 이름을 입력하세요:"
   enter_new_name_for_rename: "웨이스톤의 새 이름을 입력하세요:"
   renamed: "웨이스톤이 {0}(으)로 이름이 변경되었습니다."
+  renaming_canceled: "웨이스톤 이름 변경이 취소되었습니다. 파괴되었기 때문입니다!"
   keys_missing: "웨이스톤 구조가 불완전합니다!"
   already_exists: "이 위치에 이미 웨이스톤이 존재합니다!"
   created: "웨이스톤 {0}이(가) 성공적으로 생성되었습니다!"
