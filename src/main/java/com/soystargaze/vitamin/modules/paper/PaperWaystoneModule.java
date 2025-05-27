@@ -752,7 +752,7 @@ public class PaperWaystoneModule implements Listener {
                     }
 
                     playTeleportBeginSound(player);
-                    final Location destination = waystone.getLocation().clone().add(1.0, 0.1, 1.0);
+                    final Location destination = waystone.getLocation().clone().add(1.5, 0.2, 1.5);
                     playerTeleportLocations.put(playerId, destination);
 
                     BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
