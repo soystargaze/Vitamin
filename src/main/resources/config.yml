@@ -251,14 +251,19 @@ replayable_vault:
 
 # Waystone settings
 waystone:
+  enable_particles: true                # Enable particles for waystone interactions
+  particle_view_distance: 32            # Particle view distance
+  enable_sounds: true                   # Enable sounds for waystone interactions
+  restricted_worlds:                    # Worlds where waystones are not allowed
+    - "world_nether"
+    - "world_the_end"
   only_creator_can_break: false         # Only the creator can break the waystone
   auto_create_time: 30000               # Time in milliseconds to auto-create the waystone (30 seconds)
   auto_create_distance_squared: 100.0   # Distance squared to auto-create the waystone (10 blocks)
   default_name: "Waystone"              # Default name of the waystone
+  hologram_refresh_rate: 100            # Refresh rate in milliseconds
   teleport_delay: 3                     # Delay in seconds before teleporting
   cancel_teleport_on_move: true         # Cancel teleport if the player moves
-  particle_view_distance: 32            # Particle view distance
-  hologram_refresh_rate: 100            # Refresh rate in milliseconds
   default_limit: 5                      # Default number of waystones a player can create
                                         # Per player limit permission: vitamin.module.waystone.limit.<limit>
                                         # vitamin.module.waystone.limit.infinite for no limit

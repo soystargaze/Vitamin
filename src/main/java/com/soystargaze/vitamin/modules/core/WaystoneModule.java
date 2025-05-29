@@ -54,6 +54,9 @@ public class WaystoneModule implements Listener {
     private final int particleViewDistance;
     private final int holoRefreshRate;
     private final int defaultWaystoneLimit;
+    private final boolean enableParticles;
+    private final boolean enableSounds;
+    private final List<String> restrictedWorlds;
 
     public WaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -66,6 +69,9 @@ public class WaystoneModule implements Listener {
         this.particleViewDistance = plugin.getConfig().getInt("waystone.particle_view_distance", 32);
         this.holoRefreshRate = plugin.getConfig().getInt("waystone.hologram_refresh_rate", 100);
         this.defaultWaystoneLimit = plugin.getConfig().getInt("waystone.default_limit", 5);
+        this.enableParticles = plugin.getConfig().getBoolean("waystone.enable_particles", true);
+        this.enableSounds = plugin.getConfig().getBoolean("waystone.enable_sounds", true);
+        this.restrictedWorlds = plugin.getConfig().getStringList("waystone.restricted_worlds");
 
         loadWaystones();
         startOptimizedTasks();
@@ -167,7 +173,7 @@ public class WaystoneModule implements Listener {
                             waystone.setHologram(newHologram);
                         }
 
-                        if (Math.random() < 0.05 && hasPlayersNearby(loc)) { // Solo 5% y con jugadores cerca
+                        if (enableParticles && Math.random() < 0.05 && hasPlayersNearby(loc)) { // Solo 5% y con jugadores cerca
                             spawnAmbientParticles(loc);
                         }
                     }
@@ -178,7 +184,9 @@ public class WaystoneModule implements Listener {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> playerTeleportLocations.forEach((playerId, targetLocation) -> {
             Player player = Bukkit.getPlayer(playerId);
             if (player != null && targetLocation != null) {
-                spawnTeleportParticles(player.getLocation(), targetLocation);
+                if (enableParticles) {
+                    spawnTeleportParticles(player.getLocation(), targetLocation);
+                }
             }
         }), 2L, 2L);
     }
@@ -186,15 +194,12 @@ public class WaystoneModule implements Listener {
     private boolean canCreateWaystone(Player player) {
         UUID playerId = player.getUniqueId();
 
-        // Verificar permiso infinito
         if (player.hasPermission("vitamin.module.waystone.limit.infinite")) {
             return true;
         }
 
-        // Buscar permiso específico de límite
         int limit = getPlayerWaystoneLimit(player);
 
-        // Contar waystones creados por el jugador
         long playerWaystones = waystones.values().stream()
                 .filter(waystone -> waystone.getCreator().equals(playerId))
                 .count();
@@ -203,14 +208,12 @@ public class WaystoneModule implements Listener {
     }
 
     private int getPlayerWaystoneLimit(Player player) {
-        // Verificar permisos específicos de límite
-        for (int i = 1; i <= 100; i++) { // Verificar hasta 100 como límite máximo
+        for (int i = 1; i <= 100; i++) {
             if (player.hasPermission("vitamin.module.waystone.limit." + i)) {
                 return i;
             }
         }
 
-        // Si no tiene ningún permiso específico, usar el límite por defecto
         return defaultWaystoneLimit;
     }
 
@@ -259,64 +262,80 @@ public class WaystoneModule implements Listener {
     }
 
     private void playWaystoneActivateSound(Location location) {
-        location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.BLOCKS, 1.0f, 1.2f);
-        location.getWorld().playSound(location, Sound.BLOCK_CONDUIT_ACTIVATE, SoundCategory.BLOCKS, 0.5f, 1.5f);
+        if (enableSounds) {
+            location.getWorld().playSound(location, Sound.BLOCK_BEACON_ACTIVATE, SoundCategory.BLOCKS, 1.0f, 1.2f);
+            location.getWorld().playSound(location, Sound.BLOCK_CONDUIT_ACTIVATE, SoundCategory.BLOCKS, 0.5f, 1.5f);
+        }
     }
 
     private void playWaystoneDeactivateSound(Location location) {
-        location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1.0f, 1.2f);
+        if (enableSounds) {
+            location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1.0f, 1.2f);
+        }
     }
 
     private void playWaystoneBreakSound(Location location) {
-        location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1.0f, 0.8f);
-        location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0f, 0.5f);
+        if (enableSounds) {
+            location.getWorld().playSound(location, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1.0f, 0.8f);
+            location.getWorld().playSound(location, Sound.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1.0f, 0.5f);
+        }
     }
 
     private void playWaystoneCreateSound(Location location) {
-        location.getWorld().playSound(location, Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.BLOCKS, 1.0f, 1.5f);
-        location.getWorld().playSound(location, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
+        if (enableSounds) {
+            location.getWorld().playSound(location, Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.BLOCKS, 1.0f, 1.5f);
+            location.getWorld().playSound(location, Sound.BLOCK_END_PORTAL_FRAME_FILL, SoundCategory.BLOCKS, 1.0f, 1.0f);
+        }
     }
 
     private void spawnCreationParticles(Location location) {
-        Location particleLocation = location.clone().add(0.5, 1.5, 0.5);
-        location.getWorld().spawnParticle(
-                Particle.END_ROD,
-                particleLocation,
-                40,
-                0.5, 0.8, 0.5,
-                0.08);
+        if (enableParticles) {
+            Location particleLocation = location.clone().add(0.5, 1.5, 0.5);
+            location.getWorld().spawnParticle(
+                    Particle.END_ROD,
+                    particleLocation,
+                    40,
+                    0.5, 0.8, 0.5,
+                    0.08);
 
-        location.getWorld().spawnParticle(
-                Particle.TOTEM_OF_UNDYING,
-                particleLocation,
-                25,
-                0.25, 0.4, 0.25,
-                0.25);
+            location.getWorld().spawnParticle(
+                    Particle.TOTEM_OF_UNDYING,
+                    particleLocation,
+                    25,
+                    0.25, 0.4, 0.25,
+                    0.25);
+        }
     }
 
     private void playTeleportBeginSound(Player player) {
-        player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.5f, 1.5f);
+        if (enableSounds) {
+            player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, SoundCategory.PLAYERS, 0.5f, 1.5f);
+        }
     }
 
     private void playTeleportSound(Player player, Location destinationLocation) {
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
-        destinationLocation.getWorld().playSound(destinationLocation, Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+        if (enableSounds) {
+            player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            destinationLocation.getWorld().playSound(destinationLocation, Sound.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+        }
     }
 
     private void spawnTeleportCompleteParticles(Location location) {
-        location.getWorld().spawnParticle(
-                Particle.FLASH,
-                location.clone().add(0, 1, 0),
-                1,
-                0.05, 0.05, 0.05,
-                0);
+        if (enableParticles) {
+            location.getWorld().spawnParticle(
+                    Particle.FLASH,
+                    location.clone().add(0, 1, 0),
+                    1,
+                    0.05, 0.05, 0.05,
+                    0);
 
-        location.getWorld().spawnParticle(
-                Particle.PORTAL,
-                location.clone().add(0, 1, 0),
-                35,
-                0.4, 0.8, 0.4,
-                0.4);
+            location.getWorld().spawnParticle(
+                    Particle.PORTAL,
+                    location.clone().add(0, 1, 0),
+                    35,
+                    0.4, 0.8, 0.4,
+                    0.4);
+        }
     }
 
     private void loadWaystones() {
@@ -379,6 +398,12 @@ public class WaystoneModule implements Listener {
         Block block = event.getBlock();
         if (block.getType() != Material.LODESTONE) return;
 
+        if (restrictedWorlds.contains(block.getWorld().getName())) {
+            event.setCancelled(true);
+            TextHandler.get().sendMessage(player, "waystone.restricted_world");
+            return;
+        }
+
         Location loc = block.getLocation();
         Location below = loc.clone().subtract(0, 1, 0);
         Location above = loc.clone().add(0, 1, 0);
@@ -414,14 +439,18 @@ public class WaystoneModule implements Listener {
                             DatabaseHandler.updateWaystoneName(waystone.getId(), newName)
                     );
 
-                    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.8f);
-                    Location waystoneLoc = waystone.getLocation();
-                    waystoneLoc.getWorld().spawnParticle(
-                            Particle.ENCHANT,
-                            waystoneLoc.clone().add(0.5, 2.5, 0.5),
-                            15,
-                            0.4, 0.4, 0.4,
-                            0.8);
+                    if (enableSounds) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.8f);
+                    }
+                    if (enableParticles) {
+                        Location waystoneLoc = waystone.getLocation();
+                        waystoneLoc.getWorld().spawnParticle(
+                                Particle.ENCHANT,
+                                waystoneLoc.clone().add(0.5, 2.5, 0.5),
+                                15,
+                                0.4, 0.4, 0.4,
+                                0.8);
+                    }
 
                     String miniMessageFormattedName = convertToMiniMessageFormat(newName);
                     TextHandler.get().sendMessage(player, "waystone.renamed", miniMessageFormattedName);
@@ -499,6 +528,12 @@ public class WaystoneModule implements Listener {
         Block block = event.getClickedBlock();
         if (block == null || block.getType() != Material.LODESTONE) return;
 
+        if (restrictedWorlds.contains(block.getWorld().getName())) {
+            event.setCancelled(true);
+            TextHandler.get().sendMessage(player, "waystone.restricted_world");
+            return;
+        }
+
         Location loc = block.getLocation();
         Location below = loc.clone().subtract(0, 1, 0);
         Location above = loc.clone().add(0, 1, 0);
@@ -521,14 +556,18 @@ public class WaystoneModule implements Listener {
         if (player.isSneaking() && waystone.getCreator().equals(playerId)) {
             renamingWaystones.put(playerId, waystone);
             TextHandler.get().sendMessage(player, "waystone.enter_new_name_for_rename");
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
-            Location waystoneLoc = waystone.getLocation();
-            waystoneLoc.getWorld().spawnParticle(
-                    Particle.HAPPY_VILLAGER,
-                    waystoneLoc.clone().add(0.5, 2.0, 0.5),
-                    8,
-                    0.3, 0.3, 0.3,
-                    0.08);
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
+            }
+            if (enableParticles) {
+                Location waystoneLoc = waystone.getLocation();
+                waystoneLoc.getWorld().spawnParticle(
+                        Particle.HAPPY_VILLAGER,
+                        waystoneLoc.clone().add(0.5, 2.0, 0.5),
+                        8,
+                        0.3, 0.3, 0.3,
+                        0.08);
+            }
             return;
         }
 
@@ -542,16 +581,22 @@ public class WaystoneModule implements Listener {
             String miniMessageFormattedName = convertToMiniMessageFormat(waystone.getName());
             TextHandler.get().sendMessage(player, "waystone.registered", miniMessageFormattedName);
 
-            player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 0.7f, 1.2f);
-            Location waystoneLoc = waystone.getLocation();
-            waystoneLoc.getWorld().spawnParticle(
-                    Particle.COMPOSTER,
-                    waystoneLoc.clone().add(0.5, 1.8, 0.5),
-                    12,
-                    0.25, 0.25, 0.25,
-                    0.08);
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 0.7f, 1.2f);
+            }
+            if (enableParticles) {
+                Location waystoneLoc = waystone.getLocation();
+                waystoneLoc.getWorld().spawnParticle(
+                        Particle.COMPOSTER,
+                        waystoneLoc.clone().add(0.5, 1.8, 0.5),
+                        12,
+                        0.25, 0.25, 0.25,
+                        0.08);
+            }
         } else {
-            player.playSound(player.getLocation(), Sound.BLOCK_CONDUIT_AMBIENT, SoundCategory.PLAYERS, 0.8f, 1.5f);
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_CONDUIT_AMBIENT, SoundCategory.PLAYERS, 0.8f, 1.5f);
+            }
         }
 
         openWaystoneInventory(player);
@@ -561,6 +606,12 @@ public class WaystoneModule implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Location loc = event.getBlock().getLocation();
+
+        if (restrictedWorlds.contains(loc.getWorld().getName())) {
+            event.setCancelled(true);
+            TextHandler.get().sendMessage(player, "waystone.restricted_world");
+            return;
+        }
 
         Iterator<Map.Entry<UUID, PendingWaystone>> pendingIterator = pendingWaystones.entrySet().iterator();
         while (pendingIterator.hasNext()) {
@@ -599,7 +650,9 @@ public class WaystoneModule implements Listener {
             if (!(isAdmin && (isOp || waystone.isAdminCreated()))) {
                 TextHandler.get().sendMessage(player, "waystone.only_creator_can_break");
                 event.setCancelled(true);
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
+                }
                 return;
             }
         }
@@ -607,7 +660,9 @@ public class WaystoneModule implements Listener {
         if (waystone.isAdminCreated() && !(isOp || isCreator)) {
             TextHandler.get().sendMessage(player, "waystone.only_operator_or_creator_can_break");
             event.setCancelled(true);
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
+            }
             return;
         }
 
@@ -620,12 +675,14 @@ public class WaystoneModule implements Listener {
         removeWaystone(waystone);
 
         playWaystoneBreakSound(loc);
-        loc.getWorld().spawnParticle(
-                Particle.LAVA,
-                loc.clone().add(0.5, 1.5, 0.5),
-                15,
-                0.4, 0.8, 0.4,
-                0.15);
+        if (enableParticles) {
+            loc.getWorld().spawnParticle(
+                    Particle.LAVA,
+                    loc.clone().add(0.5, 1.5, 0.5),
+                    15,
+                    0.4, 0.8, 0.4,
+                    0.15);
+        }
 
         String miniMessageFormattedName = convertToMiniMessageFormat(waystone.getName());
         TextHandler.get().sendMessage(player, "waystone.destroyed", miniMessageFormattedName);
@@ -659,13 +716,17 @@ public class WaystoneModule implements Listener {
                 }
                 playerTeleportLocations.remove(playerId);
 
-                player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5f, 1.0f);
-                player.getWorld().spawnParticle(
-                        Particle.SMOKE,
-                        player.getLocation().add(0, 1, 0),
-                        15,
-                        0.25, 0.4, 0.25,
-                        0.04);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                }
+                if (enableParticles) {
+                    player.getWorld().spawnParticle(
+                            Particle.SMOKE,
+                            player.getLocation().add(0, 1, 0),
+                            15,
+                            0.25, 0.4, 0.25,
+                            0.04);
+                }
 
                 TextHandler.get().sendMessage(player, "waystone.teleport_canceled");
             }
@@ -760,12 +821,14 @@ public class WaystoneModule implements Listener {
                         playTeleportSound(player, destination);
                         player.teleport(destination);
                         spawnTeleportCompleteParticles(destination);
-                        originalLoc.getWorld().spawnParticle(
-                                Particle.REVERSE_PORTAL,
-                                originalLoc.clone().add(0, 1, 0),
-                                30,
-                                0.3, 0.6, 0.3,
-                                0.08);
+                        if (enableParticles) {
+                            originalLoc.getWorld().spawnParticle(
+                                    Particle.REVERSE_PORTAL,
+                                    originalLoc.clone().add(0, 1, 0),
+                                    30,
+                                    0.3, 0.6, 0.3,
+                                    0.08);
+                        }
 
                         String miniMessageFormattedName = convertToMiniMessageFormat(waystone.getName());
                         TextHandler.get().sendMessage(player, "waystone.teleported", miniMessageFormattedName);
@@ -779,13 +842,15 @@ public class WaystoneModule implements Listener {
                     for (int i = 1; i <= teleportDelay; i++) {
                         final int count = i;
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            player.getWorld().spawnParticle(
-                                    Particle.ELECTRIC_SPARK,
-                                    player.getLocation().add(0, 1.8, 0),
-                                    8,
-                                    0.25, 0.25, 0.25,
-                                    0);
-                            if (count < teleportDelay) {
+                            if (enableParticles) {
+                                player.getWorld().spawnParticle(
+                                        Particle.ELECTRIC_SPARK,
+                                        player.getLocation().add(0, 1.8, 0),
+                                        8,
+                                        0.25, 0.25, 0.25,
+                                        0);
+                            }
+                            if (enableSounds && count < teleportDelay) {
                                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.PLAYERS, 0.5f, 1.0f + (count * 0.1f));
                             }
                         }, i * 20L);
