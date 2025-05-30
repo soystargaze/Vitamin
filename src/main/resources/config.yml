@@ -266,4 +266,4 @@ waystone:
   cancel_teleport_on_move: true         # Cancel teleport if the player moves
   default_limit: 5                      # Default number of waystones a player can create
                                         # Per player limit permission: vitamin.module.waystone.limit.<limit>
-                                        # vitamin.module.waystone.limit.infinite for no limit
+                                        # vitamin.module.waystone.limit.infinite for no limits
