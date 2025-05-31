@@ -372,7 +372,7 @@ public class WaystoneModule implements Listener {
     private void saveWaystone(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             DatabaseHandler.WaystoneData data = new DatabaseHandler.WaystoneData(
-                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator());
+                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(), true);
             int id = DatabaseHandler.saveWaystone(data);
             waystone.setId(id);
             for (UUID playerId : waystone.getRegisteredPlayers()) {

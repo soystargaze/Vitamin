@@ -206,10 +206,22 @@ public class DatabaseHandler {
                     y DOUBLE NOT NULL,
                     z DOUBLE NOT NULL,
                     name VARCHAR(255) NOT NULL,
-                    creator VARCHAR(36) NOT NULL
+                    creator VARCHAR(36) NOT NULL,
+                    is_public BOOLEAN DEFAULT TRUE
                 );
                 """;
             stmt.executeUpdate(createWaystones);
+
+            // Añadir tabla para permisos específicos
+            String createWaystonePermissions = """
+                CREATE TABLE IF NOT EXISTS waystone_permissions (
+                    waystone_id INTEGER NOT NULL,
+                    player_id VARCHAR(36) NOT NULL,
+                    PRIMARY KEY (waystone_id, player_id),
+                    FOREIGN KEY (waystone_id) REFERENCES waystones(id) ON DELETE CASCADE
+                );
+                """;
+            stmt.executeUpdate(createWaystonePermissions);
 
             String createRegistrations = """
                 CREATE TABLE IF NOT EXISTS waystone_registrations (
@@ -227,9 +239,80 @@ public class DatabaseHandler {
         }
     }
 
+    // Nuevos métodos para el sistema de permisos de waystones
+    public static void updateWaystoneVisibility(int waystoneId, boolean isPublic) {
+        String sql = "UPDATE waystones SET is_public = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, isPublic);
+            ps.setInt(2, waystoneId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void addWaystonePermission(int waystoneId, UUID playerId) {
+        String sql = "INSERT OR IGNORE INTO waystone_permissions (waystone_id, player_id) VALUES (?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            ps.setString(2, playerId.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void removeWaystonePermission(int waystoneId, UUID playerId) {
+        String sql = "DELETE FROM waystone_permissions WHERE waystone_id = ? AND player_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            ps.setString(2, playerId.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static Set<UUID> getWaystonePermissions(int waystoneId) {
+        Set<UUID> permissions = new HashSet<>();
+        String sql = "SELECT player_id FROM waystone_permissions WHERE waystone_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    permissions.add(UUID.fromString(rs.getString("player_id")));
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return permissions;
+    }
+
+    public static boolean getWaystoneVisibility(int waystoneId) {
+        String sql = "SELECT is_public FROM waystones WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("is_public");
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return true; // Por defecto público
+    }
+
+
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
-        String sql = "SELECT id, world, x, y, z, name, creator FROM waystones";
+        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public FROM waystones";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -243,8 +326,9 @@ public class DatabaseHandler {
                 double z = rs.getDouble("z");
                 String name = rs.getString("name");
                 UUID creator = UUID.fromString(rs.getString("creator"));
+                boolean isPublic = rs.getBoolean("is_public");
                 Location location = new Location(world, x, y, z);
-                waystones.add(new WaystoneData(id, location, name, creator));
+                waystones.add(new WaystoneData(id, location, name, creator, isPublic));
             }
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
@@ -253,7 +337,7 @@ public class DatabaseHandler {
     }
 
     public static int saveWaystone(WaystoneData waystone) {
-        String sql = "INSERT INTO waystones (world, x, y, z, name, creator) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, waystone.location().getWorld().getName());
@@ -262,6 +346,7 @@ public class DatabaseHandler {
             ps.setDouble(4, waystone.location().getZ());
             ps.setString(5, waystone.name());
             ps.setString(6, waystone.creator().toString());
+            ps.setBoolean(7, waystone.isPublic());
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -326,7 +411,7 @@ public class DatabaseHandler {
         return players;
     }
 
-    public record WaystoneData(int id, Location location, String name, UUID creator) {
+    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {

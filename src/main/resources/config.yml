@@ -268,14 +268,61 @@ waystone:
   default_limit: 5                      # Default number of waystones a player can create
                                         # Per player limit permission: vitamin.module.waystone.limit.<limit>
                                         # vitamin.module.waystone.limit.infinite for no limits
+  cost:                                 # Cost to use waystones
+    enabled: true
+    type: "items"                       # options: "none", "exp_levels", "exp_points", "items"
+    amount: 1                           # for exp_levels/exp_points/items
+    item_type: "ENDER_PEARL"            # only for items type
+  gui:
+    edit:
+      title: "<dark_blue>Edit Waystone"
+      visibility:
+        public:
+          name: "<green>Public Waystone"
+          lore:
+            - "<gray>Click to change"
+            - "<gray>Anyone can use this waystone"
+        private:
+          name: "<red>Private Waystone"
+          lore:
+            - "<gray>Click to change"
+            - "<gray>Only players with access can use this waystone"
+      rename:
+        name: "<yellow>Rename Waystone"
+        lore:
+          - "<gray>Click to rename"
+          - "<gray>Current name: {name}"
+      manage_players:
+        name: "<aqua>Manage Players"
+        lore:
+          - "<gray>Click to manage players"
+          - "<gray>Player with access: {count}"
+      delete:
+        name: "<red>Remove Waystone"
+        lore:
+          - "<red>Warning: This will remove the waystone"
+          - "<gray>Click to remove"
+      close:
+        name: "<gray>Close"
+    player_management:
+      title: "<dark_green>Manage Players"
+      add_player:
+        name: "<green>Add Player"
+        lore:
+          - "<gray>Click to add a player"
+      back:
+        name: "<yellow>Back"
+      remove_player:
+        lore:
+          - "<red>Click to remove this player"
+          - "<dark_gray>UUID: {uuid}"
   core:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkNWQ5ZDQxZDE5MTdmODZkODIyZDEzZDI2YWEwN2VlNmRlZmVjY2RhMWM5ODg1MDVhYjg2NGFmZTk4YTYwNSJ9fX0="
     name: "<gold><bold>Waystone Core"
     lore:
-      - "<gray>Un núcleo mágico que permite crear waystones."
-      - "<blue>Colócalo en el suelo para activar."
-      - "<yellow>¡Usa tu imaginación para viajar!"
-
+      - "<gray>A magical core that allows waystone creation."
+      - "<blue>Place it to create a waystone."
+      - "<yellow>Use your imagination!"
     recipe:
       shape:
         1: "EDE"
