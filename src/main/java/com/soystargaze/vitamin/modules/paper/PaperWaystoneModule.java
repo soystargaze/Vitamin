@@ -66,6 +66,7 @@ public class PaperWaystoneModule implements Listener {
     private final ConcurrentHashMap<UUID, Location> playerTeleportLocations = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Waystone> editingWaystones = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, String> addingPlayerToWaystone = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Integer> playerCurrentPage = new ConcurrentHashMap<>();
 
     private final boolean onlyCreatorCanBreak;
     private final long autoCreateTime;
@@ -93,6 +94,21 @@ public class PaperWaystoneModule implements Listener {
     private final String waystoneRecipeShape2;
     private final String waystoneRecipeShape3;
     private final Map<Character, Material> waystoneRecipeIngredients;
+
+    private final int inventorySize;
+    private final boolean navigationEnabled;
+    private final Material previousPageMaterial;
+    private final String previousPageName;
+    private final List<String> previousPageLore;
+    private final int previousPageSlot;
+    private final Material nextPageMaterial;
+    private final String nextPageName;
+    private final List<String> nextPageLore;
+    private final int nextPageSlot;
+    private final Material closeMaterial;
+    private final String closeName;
+    private final List<String> closeLore;
+    private final int closeSlot;
 
     private static final String WAYSTONE_CORE_IDENTIFIER = "vitamin_waystone";
 
@@ -145,9 +161,131 @@ public class PaperWaystoneModule implements Listener {
         this.waystoneRecipeIngredients = new HashMap<>();
         loadRecipeIngredients();
 
+        this.inventorySize = Math.min(54, Math.max(9, plugin.getConfig().getInt("waystone.inventory.size", 54)));
+        this.navigationEnabled = plugin.getConfig().getBoolean("waystone.inventory.navigation.enabled", true);
+
+        String prevMaterial = plugin.getConfig().getString("waystone.inventory.navigation.previous_page.material", "ARROW");
+        this.previousPageMaterial = getMaterialSafely(prevMaterial, Material.ARROW);
+        this.previousPageName = plugin.getConfig().getString("waystone.inventory.navigation.previous_page.name", "<yellow>Previous Page");
+        this.previousPageLore = plugin.getConfig().getStringList("waystone.inventory.navigation.previous_page.lore");
+        this.previousPageSlot = plugin.getConfig().getInt("waystone.inventory.navigation.previous_page.slot", 45);
+
+        String nextMaterial = plugin.getConfig().getString("waystone.inventory.navigation.next_page.material", "ARROW");
+        this.nextPageMaterial = getMaterialSafely(nextMaterial, Material.ARROW);
+        this.nextPageName = plugin.getConfig().getString("waystone.inventory.navigation.next_page.name", "<yellow>Next Page");
+        this.nextPageLore = plugin.getConfig().getStringList("waystone.inventory.navigation.next_page.lore");
+        this.nextPageSlot = plugin.getConfig().getInt("waystone.inventory.navigation.next_page.slot", 53);
+
+        String closeMaterialStr = plugin.getConfig().getString("waystone.inventory.navigation.close.material", "BARRIER");
+        this.closeMaterial = getMaterialSafely(closeMaterialStr, Material.BARRIER);
+        this.closeName = plugin.getConfig().getString("waystone.inventory.navigation.close.name", "<red>Close");
+        this.closeLore = plugin.getConfig().getStringList("waystone.inventory.navigation.close.lore");
+        this.closeSlot = plugin.getConfig().getInt("waystone.inventory.navigation.close.slot", 49);
+
         registerWaystoneCoreRecipe();
         loadWaystones();
         startOptimizedTasks();
+    }
+
+    private Material getMaterialSafely(String materialName, Material fallback) {
+        try {
+            return Material.valueOf(materialName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().warning("Invalid material: " + materialName + ", using " + fallback.name());
+            return fallback;
+        }
+    }
+
+    private int calculateMaxPages(List<Waystone> availableWaystones) {
+        if (!navigationEnabled) {
+            return 1;
+        }
+
+        int slotsForWaystones = inventorySize - 9;
+        if (slotsForWaystones <= 0) {
+            slotsForWaystones = inventorySize - 3;
+        }
+
+        return Math.max(1, (int) Math.ceil((double) availableWaystones.size() / slotsForWaystones));
+    }
+
+    private List<Waystone> getWaystonesForPage(List<Waystone> allWaystones, int page) {
+        int slotsForWaystones = navigationEnabled ? inventorySize - 9 : inventorySize;
+        if (slotsForWaystones <= 0) {
+            slotsForWaystones = inventorySize - 3;
+        }
+
+        int startIndex = page * slotsForWaystones;
+        int endIndex = Math.min(startIndex + slotsForWaystones, allWaystones.size());
+
+        if (startIndex >= allWaystones.size()) {
+            return new ArrayList<>();
+        }
+
+        return allWaystones.subList(startIndex, endIndex);
+    }
+
+    private ItemStack createNavigationItem(Material material, String name, List<String> lore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            Component nameComponent = processColorCodes(name).decoration(TextDecoration.ITALIC, false);
+            meta.displayName(nameComponent);
+
+            if (lore != null && !lore.isEmpty()) {
+                List<Component> loreComponents = lore.stream()
+                        .map(line -> processColorCodes(line).decoration(TextDecoration.ITALIC, false))
+                        .collect(Collectors.toList());
+                meta.lore(loreComponents);
+            }
+
+            item.setItemMeta(meta);
+        }
+
+        return item;
+    }
+
+    private ItemStack createWaystoneItem(Waystone waystone) {
+        ItemStack item = new ItemStack(Material.LODESTONE);
+        ItemMeta meta = item.getItemMeta();
+
+        Component nameComponent = processColorCodes(waystone.getName())
+                .decoration(TextDecoration.ITALIC, false);
+        meta.displayName(nameComponent);
+
+        List<Component> lore = new ArrayList<>();
+
+        Component locationComponent = ModernTranslationHandler.getComponent(
+                "waystone.inventory.item.location",
+                waystone.getLocation().getBlockX(),
+                waystone.getLocation().getBlockY(),
+                waystone.getLocation().getBlockZ()
+        ).decoration(TextDecoration.ITALIC, false);
+
+        Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport")
+                .decoration(TextDecoration.ITALIC, false);
+
+        lore.add(locationComponent);
+        lore.add(clickComponent);
+
+        if (costEnabled && !costType.equals("none")) {
+            lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.cost", getCostMessage())
+                    .decoration(TextDecoration.ITALIC, false));
+        }
+
+        if (!waystone.isPublic()) {
+            lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.private")
+                    .decoration(TextDecoration.ITALIC, false));
+        }
+
+        lore.add(Component.text("ยง0ยงk" + waystone.getName(), NamedTextColor.BLACK)
+                .decoration(TextDecoration.OBFUSCATED, true));
+
+        meta.lore(lore);
+        item.setItemMeta(meta);
+
+        return item;
     }
 
     private void loadRecipeIngredients() {
@@ -464,26 +602,20 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private void startOptimizedTasks() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             List<Map.Entry<Location, Waystone>> waystoneList = new ArrayList<>(waystones.entrySet());
-
             for (Map.Entry<Location, Waystone> entry : waystoneList) {
                 Location loc = entry.getKey();
                 Waystone waystone = entry.getValue();
-
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     if (!isValidWaystoneStructure(loc, waystone)) {
-                        removeWaystoneEntities(waystone);
-                        removeWaystoneBarrierPillar(loc);
-                        waystones.remove(loc);
-                        removeWaystone(waystone);
-                    } else {
-                        TextDisplay hologram = waystone.getHologram();
-                        if (hologram == null || hologram.isDead()) {
+                        if (!hasValidBarrierPillar(loc)) {
+                            createWaystoneBarrierPillar(loc);
+                        }
+                        if (waystone.getHologram() == null || waystone.getHologram().isDead()) {
                             TextDisplay newHologram = createHologram(loc, waystone.getName());
                             waystone.setHologram(newHologram);
                         }
-
                         if (waystone.getBlockDisplays().isEmpty() ||
                                 waystone.getBlockDisplays().stream().anyMatch(bd -> bd == null || bd.isDead())) {
                             waystone.getBlockDisplays().forEach(bd -> {
@@ -493,13 +625,20 @@ public class PaperWaystoneModule implements Listener {
                             createWaystoneBlockDisplays(loc, waystone);
                         }
 
+                        if (!isValidWaystoneStructure(loc, waystone)) {
+                            removeWaystoneEntities(waystone);
+                            removeWaystoneBarrierPillar(loc);
+                            waystones.remove(loc);
+                            removeWaystone(waystone);
+                        }
+                    } else {
                         if (enableParticles && Math.random() < 0.05 && hasPlayersNearby(loc)) {
                             spawnAmbientParticles(loc);
                         }
                     }
                 });
             }
-        }, holoRefreshRate, holoRefreshRate);
+        }, 0L, holoRefreshRate), 200L);
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> playerTeleportLocations.forEach((playerId, targetLocation) -> {
             Player player = Bukkit.getPlayer(playerId);
@@ -554,6 +693,8 @@ public class PaperWaystoneModule implements Listener {
 
     private boolean isValidWaystoneStructure(Location loc, Waystone waystone) {
         return hasValidBarrierPillar(loc) &&
+                waystone.getHologram() != null && !waystone.getHologram().isDead() &&
+                !waystone.getBlockDisplays().isEmpty() &&
                 waystone.getBlockDisplays().stream().allMatch(bd -> bd != null && !bd.isDead());
     }
 
@@ -711,11 +852,11 @@ public class PaperWaystoneModule implements Listener {
                     createWaystoneBarrierPillar(loc);
                     cleanupExistingWaystoneEntities(loc);
                     createWaystoneBlockDisplays(loc, waystone);
-
                     TextDisplay hologram = createHologram(loc, data.name());
                     waystone.setHologram(hologram);
+
                 }
-                plugin.getLogger().info("Loaded " + waystones.size() + " waystone(s) from the database.");
+                TextHandler.get().logTranslated("waystone.loaded_waystones", waystones.size());
             });
         });
     }
@@ -757,6 +898,7 @@ public class PaperWaystoneModule implements Listener {
         blockDisplay.setBrightness(new Display.Brightness(15, 15));
         blockDisplay.addScoreboardTag("vitaminwaystone");
         blockDisplay.addScoreboardTag("waystone_" + baseLoc.getBlockX() + "_" + baseLoc.getBlockY() + "_" + baseLoc.getBlockZ());
+        blockDisplay.setPersistent(true);
 
         return blockDisplay;
     }
@@ -772,9 +914,9 @@ public class PaperWaystoneModule implements Listener {
         hologram.setSeeThrough(true);
         hologram.setShadowed(false);
         hologram.setBrightness(new Display.Brightness(15, 15));
-
         hologram.addScoreboardTag("vitaminwaystone");
         hologram.addScoreboardTag("waystone_holo_" + loc.getBlockX() + "_" + loc.getBlockY() + "_" + loc.getBlockZ());
+        hologram.setPersistent(true);
 
         return hologram;
     }
@@ -866,6 +1008,17 @@ public class PaperWaystoneModule implements Listener {
         renameMeta.lore(renameLore);
         renameItem.setItemMeta(renameMeta);
         gui.setItem(12, renameItem);
+
+        if (waystone.isPublic()) {
+            ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
+            ItemMeta playersMeta = playersItem.getItemMeta();
+
+            String playersName = plugin.getConfig().getString("waystone.gui.edit.is_public.name", "<aqua>All Players can use");
+            playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
+
+            playersItem.setItemMeta(playersMeta);
+            gui.setItem(14, playersItem);
+        }
 
         if (!waystone.isPublic()) {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
@@ -1454,6 +1607,7 @@ public class PaperWaystoneModule implements Listener {
         editingWaystones.remove(playerId);
         addingPlayerToWaystone.remove(playerId);
         playerTeleportLocations.remove(playerId);
+        playerCurrentPage.remove(playerId);
 
         if (pendingTeleports.containsKey(playerId)) {
             pendingTeleports.get(playerId).cancel();
@@ -1596,6 +1750,44 @@ public class PaperWaystoneModule implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || !clickedItem.hasItemMeta()) return;
 
+        int slot = event.getSlot();
+        UUID playerId = player.getUniqueId();
+        int currentPage = playerCurrentPage.getOrDefault(playerId, 0);
+
+        if (navigationEnabled) {
+            if (slot == previousPageSlot && currentPage > 0) {
+                openWaystoneInventory(player, currentPage - 1);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                }
+                return;
+            }
+
+            if (slot == nextPageSlot) {
+                List<Waystone> availableWaystones = waystones.values().stream()
+                        .filter(waystone -> waystone.isRegistered(playerId) && waystone.isPlayerAllowed(playerId))
+                        .collect(Collectors.toList());
+                int maxPages = calculateMaxPages(availableWaystones);
+
+                if (currentPage < maxPages - 1) {
+                    openWaystoneInventory(player, currentPage + 1);
+                    if (enableSounds) {
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                    }
+                }
+                return;
+            }
+
+            if (slot == closeSlot) {
+                player.closeInventory();
+                playerCurrentPage.remove(playerId);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_CHEST_CLOSE, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                }
+                return;
+            }
+        }
+
         Component displayNameComponent = clickedItem.getItemMeta().displayName();
         if (displayNameComponent == null) return;
 
@@ -1610,7 +1802,7 @@ public class PaperWaystoneModule implements Listener {
 
                 if (cleanWaystoneName.equals(cleanDisplayName)) {
                     player.closeInventory();
-                    UUID playerId = player.getUniqueId();
+                    playerCurrentPage.remove(playerId);
 
                     if (!canPlayerAffordWaystone(player)) {
                         TextHandler.get().sendMessage(player, "waystone.not_enough_resources", getCostMessage());
@@ -1680,48 +1872,51 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private void openWaystoneInventory(Player player) {
+        openWaystoneInventory(player, 0);
+    }
+
+    private void openWaystoneInventory(Player player, int page) {
         Component titleComponent = ModernTranslationHandler.getComponent("waystone.inventory.title");
 
-        Inventory inv = Bukkit.createInventory(null, 27, titleComponent);
+        List<Waystone> availableWaystones = waystones.values().stream()
+                .filter(waystone -> waystone.isRegistered(player.getUniqueId()) &&
+                        waystone.isPlayerAllowed(player.getUniqueId()))
+                .collect(Collectors.toList());
 
-        for (Waystone waystone : waystones.values()) {
-            if (waystone.isRegistered(player.getUniqueId()) && waystone.isPlayerAllowed(player.getUniqueId())) {
-                ItemStack item = new ItemStack(Material.LODESTONE);
-                ItemMeta meta = item.getItemMeta();
+        int maxPages = calculateMaxPages(availableWaystones);
 
-                Component nameComponent = processColorCodes(waystone.getName())
-                        .decoration(TextDecoration.ITALIC, false);
-                meta.displayName(nameComponent);
+        page = Math.max(0, Math.min(page, maxPages - 1));
+        playerCurrentPage.put(player.getUniqueId(), page);
 
-                List<Component> lore = new ArrayList<>();
+        Inventory inv = Bukkit.createInventory(null, inventorySize, titleComponent);
 
-                Component locationComponent = ModernTranslationHandler.getComponent(
-                        "waystone.inventory.item.location",
-                        waystone.getLocation().getBlockX(),
-                        waystone.getLocation().getBlockY(),
-                        waystone.getLocation().getBlockZ()
-                ).decoration(TextDecoration.ITALIC, false);
+        List<Waystone> pageWaystones = getWaystonesForPage(availableWaystones, page);
 
-                Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport")
-                        .decoration(TextDecoration.ITALIC, false);
+        int slot = 0;
+        int maxWaystoneSlots = navigationEnabled ? inventorySize - 9 : inventorySize;
 
-                lore.add(locationComponent);
-                lore.add(clickComponent);
+        for (Waystone waystone : pageWaystones) {
+            if (slot >= maxWaystoneSlots) break;
 
-                if (costEnabled && !costType.equals("none")) {
-                    lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.cost", getCostMessage()).decoration(TextDecoration.ITALIC, false));
-                }
+            ItemStack item = createWaystoneItem(waystone);
+            inv.setItem(slot, item);
+            slot++;
+        }
 
-                if (!waystone.isPublic()) {
-                    lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.private").decoration(TextDecoration.ITALIC, false));
-                }
+        if (navigationEnabled && maxPages > 1) {
+            if (page > 0 && previousPageSlot < inventorySize) {
+                ItemStack prevItem = createNavigationItem(previousPageMaterial, previousPageName, previousPageLore);
+                inv.setItem(previousPageSlot, prevItem);
+            }
 
-                lore.add(Component.text("§0§k" + waystone.getName(), NamedTextColor.BLACK)
-                        .decoration(TextDecoration.OBFUSCATED, true));
+            if (page < maxPages - 1 && nextPageSlot < inventorySize) {
+                ItemStack nextItem = createNavigationItem(nextPageMaterial, nextPageName, nextPageLore);
+                inv.setItem(nextPageSlot, nextItem);
+            }
 
-                meta.lore(lore);
-                item.setItemMeta(meta);
-                inv.addItem(item);
+            if (closeSlot < inventorySize) {
+                ItemStack closeItem = createNavigationItem(closeMaterial, closeName, closeLore);
+                inv.setItem(closeSlot, closeItem);
             }
         }
 

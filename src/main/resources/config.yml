@@ -273,6 +273,33 @@ waystone:
     type: "items"                       # options: "none", "exp_levels", "exp_points", "items"
     amount: 1                           # for exp_levels/exp_points/items
     item_type: "ENDER_PEARL"            # only for items type
+
+  # Avaiable Waystones GUI
+  inventory:
+    title: "<dark_blue>Available Waystones"
+    size: 54
+    navigation:
+      enabled: true
+      previous_page:
+        material: "ARROW"
+        name: "<yellow>Previous Page"
+        lore:
+          - "<gray>Click to go to the previous page"
+        slot: 45
+      next_page:
+        material: "ARROW"
+        name: "<yellow>Next Page"
+        lore:
+          - "<gray>Click to go to the next page"
+        slot: 53
+      close:
+        material: "BARRIER"
+        name: "<red>Close"
+        lore:
+          - "<gray>Click to close the inventory"
+        slot: 49
+
+  # Waystone settings GUI
   gui:
     edit:
       title: "<dark_blue>Edit Waystone"
@@ -297,6 +324,11 @@ waystone:
         lore:
           - "<gray>Click to manage players"
           - "<gray>Player with access: {count}"
+      is_public:
+        name: "<aqua>All Players Can Use"
+        lore:
+          - "<gray>To manage players"
+          - "<gray>Change to private"
       delete:
         name: "<red>Remove Waystone"
         lore:
@@ -316,6 +348,8 @@ waystone:
         lore:
           - "<red>Click to remove this player"
           - "<dark_gray>UUID: {uuid}"
+
+  # Waystone Core item
   core:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkNWQ5ZDQxZDE5MTdmODZkODIyZDEzZDI2YWEwN2VlNmRlZmVjY2RhMWM5ODg1MDVhYjg2NGFmZTk4YTYwNSJ9fX0="
     name: "<gold><bold>Waystone Core"
