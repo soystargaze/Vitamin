@@ -332,7 +332,7 @@ public class PaperWaystoneModule implements Listener {
 
         if (iconItem != null && iconItem.getType() != Material.AIR) {
             if (isGUIItem(iconItem)) {
-                player.sendMessage(processColorCodes("<red>Cannot use GUI items as waystone icons!"));
+                TextHandler.get().sendMessage(player, "waystone.gui.icon_invalid");
                 return;
             }
 
@@ -352,9 +352,7 @@ public class PaperWaystoneModule implements Listener {
                     DatabaseHandler.updateWaystoneIcon(waystone.getId(), iconData)
             );
 
-            String successMessage = plugin.getConfig().getString("waystone.gui.change_icon.success",
-                    "<green>Waystone icon changed successfully!");
-            player.sendMessage(processColorCodes(successMessage));
+            TextHandler.get().sendMessage(player, "waystone.gui.icon_changed");
 
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
@@ -365,9 +363,7 @@ public class PaperWaystoneModule implements Listener {
                     DatabaseHandler.updateWaystoneIcon(waystone.getId(), null)
             );
 
-            String resetMessage = plugin.getConfig().getString("waystone.gui.change_icon.reset",
-                    "<yellow>Waystone icon reset to default");
-            player.sendMessage(processColorCodes(resetMessage));
+            TextHandler.get().sendMessage(player, "waystone.gui.icon_reset");
 
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.0f);
@@ -790,9 +786,7 @@ public class PaperWaystoneModule implements Listener {
 
         player.openInventory(gui);
 
-        String instructions = plugin.getConfig().getString("waystone.gui.change_icon.instructions",
-                "<yellow>Place an item in the center slot and confirm to change the waystone icon");
-        player.sendMessage(processColorCodes(instructions));
+        TextHandler.get().sendMessage(player, "waystone.gui.change_icon.instructions");
     }
 
     private ItemStack createWaystoneItem(Waystone waystone) {
@@ -831,7 +825,6 @@ public class PaperWaystoneModule implements Listener {
 
         List<Component> lore = new ArrayList<>();
 
-        // Ubicación
         String locationFormat = plugin.getConfig().getString("waystone.inventory.item.location", "X: %d, Y: %d, Z: %d");
         String locationString = String.format(locationFormat,
                 waystone.getLocation().getBlockX(),
@@ -840,12 +833,10 @@ public class PaperWaystoneModule implements Listener {
         Component locationComponent = processColorCodes(locationString).decoration(TextDecoration.ITALIC, false);
         lore.add(locationComponent);
 
-        // Clic para teletransportar
         String clickString = plugin.getConfig().getString("waystone.inventory.item.click_to_teleport", "Click to teleport");
         Component clickComponent = processColorCodes(clickString).decoration(TextDecoration.ITALIC, false);
         lore.add(clickComponent);
 
-        // Costo
         if (costEnabled && !costType.equals("none")) {
             String costFormat = plugin.getConfig().getString("waystone.inventory.item.cost", "Cost: %s");
             String costMessage = getCostMessage();
@@ -853,19 +844,16 @@ public class PaperWaystoneModule implements Listener {
             lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
         }
 
-        // Privado
         if (!waystone.isPublic()) {
             String privateString = plugin.getConfig().getString("waystone.inventory.item.private", "Private Waystone");
             lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
         }
 
-        // Clic derecho para establecer ícono
         if (waystone.getCreator().equals(getPlayerUUIDFromContext())) {
             String rightClickString = plugin.getConfig().getString("waystone.inventory.item.right_click_icon", "Right-click to set icon");
             lore.add(processColorCodes(rightClickString).decoration(TextDecoration.ITALIC, false));
         }
 
-        // Nombre ofuscado
         lore.add(Component.text("§0§k" + waystone.getName(), NamedTextColor.BLACK)
                 .decoration(TextDecoration.OBFUSCATED, true));
 
