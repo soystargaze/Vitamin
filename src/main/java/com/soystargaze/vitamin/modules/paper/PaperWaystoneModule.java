@@ -831,34 +831,41 @@ public class PaperWaystoneModule implements Listener {
 
         List<Component> lore = new ArrayList<>();
 
-        Component locationComponent = ModernTranslationHandler.getComponent(
-                "waystone.inventory.item.location",
+        // Ubicación
+        String locationFormat = plugin.getConfig().getString("waystone.inventory.item.location", "X: %d, Y: %d, Z: %d");
+        String locationString = String.format(locationFormat,
                 waystone.getLocation().getBlockX(),
                 waystone.getLocation().getBlockY(),
-                waystone.getLocation().getBlockZ()
-        ).decoration(TextDecoration.ITALIC, false);
-
-        Component clickComponent = ModernTranslationHandler.getComponent("waystone.inventory.item.click_to_teleport")
-                .decoration(TextDecoration.ITALIC, false);
-
+                waystone.getLocation().getBlockZ());
+        Component locationComponent = processColorCodes(locationString).decoration(TextDecoration.ITALIC, false);
         lore.add(locationComponent);
+
+        // Clic para teletransportar
+        String clickString = plugin.getConfig().getString("waystone.inventory.item.click_to_teleport", "Click to teleport");
+        Component clickComponent = processColorCodes(clickString).decoration(TextDecoration.ITALIC, false);
         lore.add(clickComponent);
 
+        // Costo
         if (costEnabled && !costType.equals("none")) {
-            lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.cost", getCostMessage())
-                    .decoration(TextDecoration.ITALIC, false));
+            String costFormat = plugin.getConfig().getString("waystone.inventory.item.cost", "Cost: %s");
+            String costMessage = getCostMessage();
+            String costString = String.format(costFormat, costMessage);
+            lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
         }
 
+        // Privado
         if (!waystone.isPublic()) {
-            lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.private")
-                    .decoration(TextDecoration.ITALIC, false));
+            String privateString = plugin.getConfig().getString("waystone.inventory.item.private", "Private Waystone");
+            lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
         }
 
+        // Clic derecho para establecer ícono
         if (waystone.getCreator().equals(getPlayerUUIDFromContext())) {
-            lore.add(ModernTranslationHandler.getComponent("waystone.inventory.item.right_click_icon")
-                    .decoration(TextDecoration.ITALIC, false));
+            String rightClickString = plugin.getConfig().getString("waystone.inventory.item.right_click_icon", "Right-click to set icon");
+            lore.add(processColorCodes(rightClickString).decoration(TextDecoration.ITALIC, false));
         }
 
+        // Nombre ofuscado
         lore.add(Component.text("§0§k" + waystone.getName(), NamedTextColor.BLACK)
                 .decoration(TextDecoration.OBFUSCATED, true));
 
@@ -941,14 +948,23 @@ public class PaperWaystoneModule implements Listener {
 
     private String getCostMessage() {
         if (!costEnabled || costType.equals("none")) {
-            return ModernTranslationHandler.get("waystone.cost.free");
+            return plugin.getConfig().getString("waystone.cost.messages.free", "Free");
         }
 
         return switch (costType.toLowerCase()) {
-            case "exp_levels" -> String.valueOf(ModernTranslationHandler.getComponent("waystone.cost.exp_levels", costAmount));
-            case "exp_points" -> String.valueOf(ModernTranslationHandler.getComponent("waystone.cost.exp_points", costAmount));
-            case "items" -> String.valueOf(ModernTranslationHandler.getComponent("waystone.cost.exp_items", costAmount, costItemType.name()));
-            default -> "Gratis";
+            case "exp_levels" -> {
+                String format = plugin.getConfig().getString("waystone.cost.messages.exp_levels", "%d EXP Levels");
+                yield String.format(format, costAmount);
+            }
+            case "exp_points" -> {
+                String format = plugin.getConfig().getString("waystone.cost.messages.exp_points", "%d EXP Points");
+                yield String.format(format, costAmount);
+            }
+            case "items" -> {
+                String format = plugin.getConfig().getString("waystone.cost.messages.items", "%d %s");
+                yield String.format(format, costAmount, costItemType.name());
+            }
+            default -> "Free";
         };
     }
 

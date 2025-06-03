@@ -273,9 +273,21 @@ waystone:
     type: "items"                       # options: "none", "exp_levels", "exp_points", "items"
     amount: 1                           # for exp_levels/exp_points/items
     item_type: "ENDER_PEARL"            # only for items type
+  messages:
+    free: "Free"
+    exp_levels: "%d EXP Levels"
+    exp_points: "%d EXP Points"
+    items: "%d %s"
 
   # Avaiable Waystones GUI
   inventory:
+    item:
+      location: "X: %d, Y: %d, Z: %d"
+      click_to_teleport: "<green>Click</green> <gray>to teleport</gray>"
+      cost: "Cost: <yellow>%s</yellow>"
+      private: "<red>Private Waystone</red>"
+      right_click_icon: "<aqua>Right-click</aqua> <gray>to set icon</gray>"
+
     title: "<dark_blue>Available Waystones"
     size: 54
     navigation:
