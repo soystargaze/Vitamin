@@ -202,7 +202,6 @@ public class PaperWaystoneModule implements Listener {
         startOptimizedTasks();
     }
 
-    // Método para marcar items de GUI y prevenir dupeos
     private ItemStack markAsGUIItem(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return item;
 
@@ -216,7 +215,6 @@ public class PaperWaystoneModule implements Listener {
         return marked;
     }
 
-    // Método para verificar si un item es de GUI
     private boolean isGUIItem(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return false;
 
@@ -227,11 +225,8 @@ public class PaperWaystoneModule implements Listener {
         return container.has(guiItemKey, PersistentDataType.STRING);
     }
 
-    // Método para verificar si es un GUI de waystone por título
     private boolean isWaystoneGUITitle(Component title) {
-        String plainTitle = PlainTextComponentSerializer.plainText().serialize(title);
 
-        // Verificar todos los títulos posibles de GUI de waystone
         Component waystoneInventoryTitle = ModernTranslationHandler.getComponent("waystone.inventory.title");
         Component editTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
         Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Gestionar Jugadores"));
@@ -256,11 +251,9 @@ public class PaperWaystoneModule implements Listener {
             int slot = event.getSlot();
             if (slot == 11) {
                 ItemStack cursor = event.getCursor();
-                if (cursor != null && isGUIItem(cursor)) {
+                if (isGUIItem(cursor)) {
                     event.setCancelled(true);
-                    return;
                 }
-                return; // Allow normal clicks on slot 11
             } else if (slot == 13) {
                 event.setCancelled(true);
                 handleIconConfirm(event, player, changingIconWaystones.get(player.getUniqueId()));
@@ -268,7 +261,6 @@ public class PaperWaystoneModule implements Listener {
                 event.setCancelled(true);
                 player.closeInventory();
                 changingIconWaystones.remove(player.getUniqueId());
-                // Add message and sound if needed
             } else {
                 if (event.getClickedInventory() == event.getView().getTopInventory()) {
                     event.setCancelled(true);
@@ -302,7 +294,7 @@ public class PaperWaystoneModule implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
         Component viewTitle = event.getView().title();
         String viewTitleStr = PlainTextComponentSerializer.plainText().serialize(viewTitle);
@@ -312,7 +304,7 @@ public class PaperWaystoneModule implements Listener {
         if (viewTitleStr.equals(iconChangeTitleStr)) {
             boolean draggingOverAllowedSlot = false;
             for (int slot : event.getRawSlots()) {
-                if (slot < event.getInventory().getSize()) { // GUI slots
+                if (slot < event.getInventory().getSize()) {
                     if (slot == 11) {
                         draggingOverAllowedSlot = true;
                     } else {
@@ -334,76 +326,28 @@ public class PaperWaystoneModule implements Listener {
         }
     }
 
-
-    // Método para manejar clicks en el GUI de cambio de icono
-    private void handleIconChangeGUIClick(InventoryClickEvent event, Player player) {
-        int slot = event.getSlot();
-        UUID playerId = player.getUniqueId();
-        Waystone waystone = changingIconWaystones.get(playerId);
-
-        if (waystone == null) {
-            player.closeInventory();
-            return;
-        }
-
-        if (slot == 11) {
-            // Permitir interacción normal en el slot 11, pero evitar colocar ítems de GUI
-            ItemStack cursor = event.getCursor();
-            if (cursor != null && isGUIItem(cursor)) {
-                event.setCancelled(true);
-                return;
-            }
-            // No cancelar el evento para permitir clics normales en el slot 11
-            return;
-        } else if (slot == 13) {
-            // Botón de confirmar
-            event.setCancelled(true);
-            handleIconConfirm(event, player, waystone);
-        } else if (slot == 15) {
-            // Botón de cancelar
-            event.setCancelled(true);
-            player.closeInventory();
-            changingIconWaystones.remove(playerId);
-            String cancelMessage = plugin.getConfig().getString("waystone.gui.change_icon.cancelled", "<red>Icon change cancelled");
-            player.sendMessage(processColorCodes(cancelMessage));
-            if (enableSounds) {
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.8f);
-            }
-        } else {
-            // Cancelar clics en otros slots
-            event.setCancelled(true);
-        }
-    }
-
-    // Método para manejar confirmación de icono
     private void handleIconConfirm(InventoryClickEvent event, Player player, Waystone waystone) {
         ItemStack iconItem = event.getInventory().getItem(11);
         UUID playerId = player.getUniqueId();
 
         if (iconItem != null && iconItem.getType() != Material.AIR) {
-            // Verificar que no sea un item de GUI
             if (isGUIItem(iconItem)) {
                 player.sendMessage(processColorCodes("<red>Cannot use GUI items as waystone icons!"));
                 return;
             }
 
-            // Crear una copia del item original para serializar (siempre cantidad 1)
             ItemStack iconItemCopy = iconItem.clone();
             iconItemCopy.setAmount(1);
 
-            // Consumir SOLO 1 item, independientemente de la cantidad
             if (iconItem.getAmount() > 1) {
                 iconItem.setAmount(iconItem.getAmount() - 1);
             } else {
-                // Si solo hay 1, quitarlo completamente
                 event.getInventory().setItem(11, new ItemStack(Material.AIR));
             }
 
-            // Guardar el icono personalizado
             String iconData = serializeItemStack(iconItemCopy);
             waystone.setIconData(iconData);
 
-            // Guardar en base de datos
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
                     DatabaseHandler.updateWaystoneIcon(waystone.getId(), iconData)
             );
@@ -416,7 +360,6 @@ public class PaperWaystoneModule implements Listener {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
             }
         } else {
-            // Remover icono personalizado si no tiene item
             waystone.setIconData(null);
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
                     DatabaseHandler.updateWaystoneIcon(waystone.getId(), null)
@@ -435,7 +378,6 @@ public class PaperWaystoneModule implements Listener {
         changingIconWaystones.remove(playerId);
     }
 
-    // Método para manejar clicks en otros GUIs
     private void handleEditGUIClick(InventoryClickEvent event, Player player) {
         Waystone waystone = editingWaystones.get(player.getUniqueId());
         if (waystone == null) {
@@ -690,17 +632,14 @@ public class PaperWaystoneModule implements Listener {
         UUID playerId = player.getUniqueId();
         Component viewTitle = event.getView().title();
 
-        // Verificar si es un GUI de waystone antes de limpiar
         if (!isWaystoneGUITitle(viewTitle)) return;
 
         String iconChangeTitlePath = "waystone.gui.change_icon.title";
         Component iconChangeTitle = processColorCodes(plugin.getConfig().getString(iconChangeTitlePath, "<blue>Change Waystone Icon"));
 
         if (iconChangeTitle.equals(viewTitle)) {
-            // Devolver cualquier item que esté en el slot 11 al inventario del jugador
             ItemStack itemInSlot = event.getInventory().getItem(11);
             if (itemInSlot != null && itemInSlot.getType() != Material.AIR && !isGUIItem(itemInSlot)) {
-                // Intentar añadir al inventario, si no cabe lo dropea
                 HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(itemInSlot);
                 for (ItemStack item : leftover.values()) {
                     player.getWorld().dropItemNaturally(player.getLocation(), item);
@@ -763,7 +702,6 @@ public class PaperWaystoneModule implements Listener {
                 meta.lore(loreComponents);
             }
 
-            // Marcar como item de GUI
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(guiItemKey, PersistentDataType.STRING, "gui_item");
 
@@ -811,16 +749,13 @@ public class PaperWaystoneModule implements Listener {
         Component title = processColorCodes(plugin.getConfig().getString(titlePath, "<blue>Change Icon"));
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
-        // Llenar todo con paneles de vidrio blanco marcados como GUI items
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
         for (int i = 0; i < 27; i++) {
             gui.setItem(i, glassPane);
         }
 
-        // Dejar el slot 11 vacío para que el jugador pueda colocar items
         gui.setItem(11, null);
 
-        // Botón de confirmar (slot 13)
         ItemStack confirmButton = new ItemStack(Material.LIME_DYE);
         ItemMeta confirmMeta = confirmButton.getItemMeta();
         confirmMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.confirm.name", "<green>Confirm"))
@@ -837,7 +772,6 @@ public class PaperWaystoneModule implements Listener {
         confirmButton.setItemMeta(confirmMeta);
         gui.setItem(13, markAsGUIItem(confirmButton));
 
-        // Botón de cancelar (slot 15)
         ItemStack cancelButton = new ItemStack(Material.RED_DYE);
         ItemMeta cancelMeta = cancelButton.getItemMeta();
         cancelMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.cancel.name", "<red>Cancel"))
@@ -932,7 +866,6 @@ public class PaperWaystoneModule implements Listener {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(waystoneIdentifierKey, PersistentDataType.STRING, waystone.getId() + "");
-        // Marcar como item de GUI
         container.set(guiItemKey, PersistentDataType.STRING, "gui_item");
 
         item.setItemMeta(meta);
@@ -1794,7 +1727,6 @@ public class PaperWaystoneModule implements Listener {
         player.openInventory(gui);
     }
 
-    // Eventos del resto del plugin...
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
@@ -2011,7 +1943,6 @@ public class PaperWaystoneModule implements Listener {
 
         if (addingPlayerToWaystone.containsKey(playerId)) {
             event.setCancelled(true);
-            String waystoneKey = addingPlayerToWaystone.remove(playerId);
             Component messageComponent = event.message();
             String playerName = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
 
@@ -2145,7 +2076,6 @@ public class PaperWaystoneModule implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
         Location loc = event.getBlock().getLocation();
 
         if (isPendingWaystoneCore(loc)) {
@@ -2163,7 +2093,6 @@ public class PaperWaystoneModule implements Listener {
                         TextHandler.get().sendMessage(targetPlayer, "waystone.creation_canceled");
                     }
 
-                    ItemStack drop = event.getBlock().getDrops().iterator().next();
                     event.getBlock().getDrops().clear();
 
                     ItemStack waystoneCoreItem = createWaystoneCore();
@@ -2189,7 +2118,7 @@ public class PaperWaystoneModule implements Listener {
         if (cancelTeleportOnMove && pendingTeleports.containsKey(playerId)) {
             Location from = event.getFrom();
             Location to = event.getTo();
-            if (to != null && (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ())) {
+            if (from.getBlockX() != to.getBlockX() || from.getBlockY() != to.getBlockY() || from.getBlockZ() != to.getBlockZ()) {
                 BukkitTask task = pendingTeleports.remove(playerId);
                 if (task != null) {
                     task.cancel();
