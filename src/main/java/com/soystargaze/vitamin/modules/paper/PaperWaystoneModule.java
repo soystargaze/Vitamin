@@ -174,7 +174,7 @@ public class PaperWaystoneModule implements Listener {
 
         if (waystoneCoreLore.isEmpty()) {
             waystoneCoreLore.add("<gray>>A magical core that allows waystone creation.");
-            waystoneCoreLore.add("<blue>Place it to create a waystone.");
+            waystoneCoreLore.add("Place it to create a waystone.");
         }
 
         this.waystoneRecipeShape1 = plugin.getConfig().getString("waystone.core.recipe.shape.1", "EDE");
@@ -184,28 +184,28 @@ public class PaperWaystoneModule implements Listener {
         this.waystoneRecipeIngredients = new HashMap<>();
         loadRecipeIngredients();
 
-        this.inventorySize = Math.min(54, Math.max(9, plugin.getConfig().getInt("waystone.inventory.size", 54)));
-        this.navigationEnabled = plugin.getConfig().getBoolean("waystone.inventory.navigation.enabled", true);
+        this.inventorySize = Math.min(54, Math.max(9, plugin.getConfig().getInt("waystone.gui.discovered.size", 54)));
+        this.navigationEnabled = plugin.getConfig().getBoolean("waystone.gui.discovered.navigation.enabled", true);
 
-        String prevMaterial = plugin.getConfig().getString("waystone.inventory.navigation.previous_page.material", "ARROW");
+        String prevMaterial = plugin.getConfig().getString("waystone.gui.discovered.navigation.previous_page.material", "ARROW");
         this.previousPageMaterial = getMaterialSafely(prevMaterial, Material.ARROW);
-        this.previousPageName = plugin.getConfig().getString("waystone.inventory.navigation.previous_page.name", "<yellow>Previous Page");
-        this.previousPageLore = plugin.getConfig().getStringList("waystone.inventory.navigation.previous_page.lore");
-        this.previousPageSlot = plugin.getConfig().getInt("waystone.inventory.navigation.previous_page.slot", 45);
+        this.previousPageName = plugin.getConfig().getString("waystone.gui.discovered.navigation.previous_page.name", "Previous Page");
+        this.previousPageLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.previous_page.lore");
+        this.previousPageSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.previous_page.slot", 45);
 
-        String nextMaterial = plugin.getConfig().getString("waystone.inventory.navigation.next_page.material", "ARROW");
+        String nextMaterial = plugin.getConfig().getString("waystone.gui.discovered.navigation.next_page.material", "ARROW");
         this.nextPageMaterial = getMaterialSafely(nextMaterial, Material.ARROW);
-        this.nextPageName = plugin.getConfig().getString("waystone.inventory.navigation.next_page.name", "<yellow>Next Page");
-        this.nextPageLore = plugin.getConfig().getStringList("waystone.inventory.navigation.next_page.lore");
-        this.nextPageSlot = plugin.getConfig().getInt("waystone.inventory.navigation.next_page.slot", 53);
+        this.nextPageName = plugin.getConfig().getString("waystone.gui.discovered.navigation.next_page.name", "Next Page");
+        this.nextPageLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.next_page.lore");
+        this.nextPageSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.next_page.slot", 53);
 
-        String closeMaterialStr = plugin.getConfig().getString("waystone.inventory.navigation.close.material", "BARRIER");
+        String closeMaterialStr = plugin.getConfig().getString("waystone.gui.discovered.navigation.close.material", "BARRIER");
         this.closeMaterial = getMaterialSafely(closeMaterialStr, Material.BARRIER);
-        this.closeName = plugin.getConfig().getString("waystone.inventory.navigation.close.name", "<red>Close");
-        this.closeLore = plugin.getConfig().getStringList("waystone.inventory.navigation.close.lore");
-        this.closeSlot = plugin.getConfig().getInt("waystone.inventory.navigation.close.slot", 49);
+        this.closeName = plugin.getConfig().getString("waystone.gui.discovered.navigation.close.name", "Close");
+        this.closeLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.close.lore");
+        this.closeSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.close.slot", 49);
 
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
+        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
         this.iconChangeTitleStr = PlainTextComponentSerializer.plainText().serialize(iconChangeTitle);
 
         registerWaystoneCoreRecipe();
@@ -239,8 +239,8 @@ public class PaperWaystoneModule implements Listener {
     private boolean isWaystoneGUITitle(Component title) {
         Component waystoneInventoryTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
         Component editTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
-        Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Gestionar Jugadores"));
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
+        Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Manage Players"));
+        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
 
         return title.equals(waystoneInventoryTitle) ||
                 title.equals(editTitle) ||
@@ -290,7 +290,7 @@ public class PaperWaystoneModule implements Listener {
                 processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"))
         );
         String playerManagementTitle = PlainTextComponentSerializer.plainText().serialize(
-                processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Gestionar Jugadores"))
+                processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Manage Players"))
         );
 
         if (plainTitle.equals(waystoneInventoryTitle)) {
@@ -645,7 +645,7 @@ public class PaperWaystoneModule implements Listener {
 
         if (!isWaystoneGUITitle(viewTitle)) return;
 
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Waystone Icon"));
+        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
 
         if (iconChangeTitle.equals(viewTitle)) {
             ItemStack itemInSlot = event.getInventory().getItem(11);
@@ -755,7 +755,7 @@ public class PaperWaystoneModule implements Listener {
     private void openIconChangeGUI(Player player, Waystone waystone) {
         changingIconWaystones.put(player.getUniqueId(), waystone);
 
-        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
+        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Icon"));
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
@@ -767,7 +767,7 @@ public class PaperWaystoneModule implements Listener {
 
         ItemStack confirmButton = new ItemStack(Material.LIME_DYE);
         ItemMeta confirmMeta = confirmButton.getItemMeta();
-        confirmMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.confirm.name", "<green>Confirm"))
+        confirmMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.confirm.name", "Confirm"))
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> confirmLore = new ArrayList<>();
         List<String> confirmLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.confirm.lore");
@@ -783,7 +783,7 @@ public class PaperWaystoneModule implements Listener {
 
         ItemStack cancelButton = new ItemStack(Material.RED_DYE);
         ItemMeta cancelMeta = cancelButton.getItemMeta();
-        cancelMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.cancel.name", "<red>Cancel"))
+        cancelMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.cancel.name", "Cancel"))
                 .decoration(TextDecoration.ITALIC, false));
         List<Component> cancelLore = new ArrayList<>();
         List<String> cancelLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.cancel.lore");
@@ -838,7 +838,7 @@ public class PaperWaystoneModule implements Listener {
 
         List<Component> lore = new ArrayList<>();
 
-        String locationFormat = plugin.getConfig().getString("waystone.inventory.item.location", "X: %d, Y: %d, Z: %d");
+        String locationFormat = plugin.getConfig().getString("waystone.gui.discovered.item.location", "X: %d, Y: %d, Z: %d");
         String locationString = String.format(locationFormat,
                 waystone.getLocation().getBlockX(),
                 waystone.getLocation().getBlockY(),
@@ -846,24 +846,24 @@ public class PaperWaystoneModule implements Listener {
         Component locationComponent = processColorCodes(locationString).decoration(TextDecoration.ITALIC, false);
         lore.add(locationComponent);
 
-        String clickString = plugin.getConfig().getString("waystone.inventory.item.click_to_teleport", "Click to teleport");
+        String clickString = plugin.getConfig().getString("waystone.gui.discovered.item.click_to_teleport", "Click to teleport");
         Component clickComponent = processColorCodes(clickString).decoration(TextDecoration.ITALIC, false);
         lore.add(clickComponent);
 
         if (costEnabled && !costType.equals("none")) {
-            String costFormat = plugin.getConfig().getString("waystone.inventory.item.cost", "Cost: %s");
+            String costFormat = plugin.getConfig().getString("waystone.gui.discovered.item.cost", "Cost: %s");
             String costMessage = getCostMessage();
             String costString = String.format(costFormat, costMessage);
             lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
         }
 
         if (!waystone.isPublic()) {
-            String privateString = plugin.getConfig().getString("waystone.inventory.item.private", "Private Waystone");
+            String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
             lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
         }
 
         if (waystone.getCreator().equals(getPlayerUUIDFromContext())) {
-            String rightClickString = plugin.getConfig().getString("waystone.inventory.item.right_click_icon", "Right-click to set icon");
+            String rightClickString = plugin.getConfig().getString("waystone.gui.discovered.item.right_click_icon", "Right-click to set icon");
             lore.add(processColorCodes(rightClickString).decoration(TextDecoration.ITALIC, false));
         }
 
@@ -1598,7 +1598,7 @@ public class PaperWaystoneModule implements Listener {
     private void openWaystoneEditGUI(Player player, Waystone waystone) {
         editingWaystones.put(player.getUniqueId(), waystone);
 
-        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "<dark_blue>Edit Waystone"));
+        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
@@ -1615,7 +1615,7 @@ public class PaperWaystoneModule implements Listener {
         String visibilityLorePath = waystone.isPublic() ? "waystone.gui.edit.visibility.public.lore" : "waystone.gui.edit.visibility.private.lore";
 
         visibilityMeta.displayName(processColorCodes(plugin.getConfig().getString(visibilityNamePath,
-                waystone.isPublic() ? "<green>Public Waystone" : "<red>Private Waystone"))
+                waystone.isPublic() ? "Public Waystone" : "Private Waystone"))
                 .decoration(TextDecoration.ITALIC, false));
 
         List<String> visibilityLoreConfig = plugin.getConfig().getStringList(visibilityLorePath);
@@ -1630,7 +1630,7 @@ public class PaperWaystoneModule implements Listener {
         ItemStack renameItem = new ItemStack(Material.NAME_TAG);
         ItemMeta renameMeta = renameItem.getItemMeta();
 
-        String renameName = plugin.getConfig().getString("waystone.gui.edit.rename.name", "<yellow>Rename Waystone");
+        String renameName = plugin.getConfig().getString("waystone.gui.edit.rename.name", "Rename Waystone");
         renameMeta.displayName(processColorCodes(renameName).decoration(TextDecoration.ITALIC, false));
 
         List<String> renameLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.rename.lore");
@@ -1647,7 +1647,7 @@ public class PaperWaystoneModule implements Listener {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
-            String playersName = plugin.getConfig().getString("waystone.gui.edit.is_public.name", "<aqua>All Players can use");
+            String playersName = plugin.getConfig().getString("waystone.gui.edit.is_public.name", "All Players can use");
             playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
 
             playersItem.setItemMeta(playersMeta);
@@ -1658,7 +1658,7 @@ public class PaperWaystoneModule implements Listener {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
-            String playersName = plugin.getConfig().getString("waystone.gui.edit.manage_players.name", "<aqua>Manage Players");
+            String playersName = plugin.getConfig().getString("waystone.gui.edit.manage_players.name", "Manage Players");
             playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
 
             List<String> playersLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.manage_players.lore");
@@ -1675,7 +1675,7 @@ public class PaperWaystoneModule implements Listener {
         ItemStack deleteItem = new ItemStack(Material.TNT);
         ItemMeta deleteMeta = deleteItem.getItemMeta();
 
-        String deleteName = plugin.getConfig().getString("waystone.gui.edit.delete.name", "<red>Remove Waystone");
+        String deleteName = plugin.getConfig().getString("waystone.gui.edit.delete.name", "Remove Waystone");
         deleteMeta.displayName(processColorCodes(deleteName).decoration(TextDecoration.ITALIC, false));
 
         List<String> deleteLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.delete.lore");
@@ -1741,7 +1741,7 @@ public class PaperWaystoneModule implements Listener {
         ItemStack addItem = new ItemStack(Material.EMERALD);
         ItemMeta addMeta = addItem.getItemMeta();
 
-        String addName = plugin.getConfig().getString("waystone.gui.player_management.add_player.name", "<green>Add Player");
+        String addName = plugin.getConfig().getString("waystone.gui.player_management.add_player.name", "Add Player");
         addMeta.displayName(processColorCodes(addName).decoration(TextDecoration.ITALIC, false));
 
         List<String> addLoreConfig = plugin.getConfig().getStringList("waystone.gui.player_management.add_player.lore");
@@ -1756,7 +1756,7 @@ public class PaperWaystoneModule implements Listener {
         ItemStack backItem = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backItem.getItemMeta();
 
-        String backName = plugin.getConfig().getString("waystone.gui.player_management.back.name", "<yellow>Back");
+        String backName = plugin.getConfig().getString("waystone.gui.player_management.back.name", "Back");
         backMeta.displayName(processColorCodes(backName).decoration(TextDecoration.ITALIC, false));
         backItem.setItemMeta(backMeta);
         gui.setItem(53, markAsGUIItem(backItem));

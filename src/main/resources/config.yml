@@ -118,7 +118,7 @@ module:
   vein_miner: true # Just works when the tool is enchanted with Efficiency V
   villager_follow_emeralds: true # Villagers follow you when you hold an emerald
   wall_jump: true # Shift to wall jump. You can climb up or slide down walls
-  waystone: true # Waystone teleportation system with Magnetite pillars
+  waystone: true # Waystone teleportation system
   weather_effects: true # In the daytime, mobs have more babies and with the rain, crops grow faster.
 
 # Bone Meal Expansion settings
@@ -251,144 +251,138 @@ replayable_vault:
 
 # Waystone settings
 waystone:
-  enable_particles: true                # Enable particles for waystone interactions
-  particle_view_distance: 32            # Particle view distance
-  enable_sounds: true                   # Enable sounds for waystone interactions
-  enable_creation_effects: true         # Enable creation effects for waystones
-  restricted_worlds:                    # Worlds where waystones are not allowed
-    - "world_nether"
-    - "world_the_end"
-  only_creator_can_break: false         # Only the creator can break the waystone
-  auto_create_time: 30000               # Time in milliseconds to auto-create the waystone (30 seconds)
-  auto_create_distance_squared: 100.0   # Distance squared to auto-create the waystone (10 blocks)
-  default_name: "Waystone"              # Default name of the waystone
-  hologram_refresh_rate: 100            # Refresh rate in milliseconds
-  teleport_delay: 3                     # Delay in seconds before teleporting
-  cancel_teleport_on_move: true         # Cancel teleport if the player moves
-  default_limit: 5                      # Default number of waystones a player can create
-                                        # Per player limit permission: vitamin.module.waystone.limit.<limit>
-                                        # vitamin.module.waystone.limit.infinite for no limits
-  cost:                                 # Cost to use waystones
-    enabled: false
-    type: "none"                        # options: "none", "exp_levels", "exp_points", "items"
-    amount: 1                           # for exp_levels/exp_points/items
-    item_type: "ENDER_PEARL"            # only for items type
-  messages:
-    free: "Free"
-    exp_levels: "%d EXP Levels"
-    exp_points: "%d EXP Points"
-    items: "%d %s"
+  only_creator_can_break: false           # If true, only the creator of the waystone can break it (unless overridden by admin permissions).
+  auto_create_time: 30000                 # Time in milliseconds before a pending waystone is auto-created if the player doesn't name it.
+  auto_create_distance_squared: 100.0     # Squared distance threshold; if the player moves beyond this distance from a pending waystone, it auto-creates.
+  default_name: "Waystone"                # Default name for waystones when auto-created or if no name is provided.
+  teleport_delay: 3                       # Delay in seconds before a player teleports to a waystone.
+  cancel_teleport_on_move: true           # If true, teleportation is canceled if the player moves during the delay.
+  particle_view_distance: 32              # Distance in blocks at which particle effects are visible to players.
+  hologram_refresh_rate: 100              # Refresh rate in ticks for updating holograms and waystone entities.
+  default_limit: 5                        # Default maximum number of waystones a player can create (overridden by permissions like vitamin.module.waystone.limit.X).
 
-  # Avaiable Waystones GUI
-  inventory:
-    item:
-      location: "X: %d, Y: %d, Z: %d"
-      click_to_teleport: "<green>Click</green> <gray>to teleport</gray>"
-      cost: "Cost: <yellow>%s</yellow>"
-      private: "<red>Private Waystone</red>"
-      right_click_icon: "<aqua>Right-click</aqua> <gray>to set icon</gray>"
+  enable_particles: true                  # Enable or disable particle effects for waystones.
+  enable_sounds: true                     # Enable or disable sound effects for waystone interactions.
+  enable_creation_effects: true           # Enable or disable creation effects (particles and sounds) when placing a waystone.
 
-    title: "<dark_blue>Available Waystones"
-    size: 54
-    navigation:
-      enabled: true
-      previous_page:
-        material: "ARROW"
-        name: "<yellow>Previous Page"
-        lore:
-          - "<gray>Click to go to the previous page"
-        slot: 45
-      next_page:
-        material: "ARROW"
-        name: "<yellow>Next Page"
-        lore:
-          - "<gray>Click to go to the next page"
-        slot: 53
-      close:
-        material: "BARRIER"
-        name: "<red>Close"
-        lore:
-          - "<gray>Click to close the inventory"
-        slot: 49
+  restricted_worlds:                      # List of world names where waystones cannot be placed or used.
+    - "restricted_world1"
+    - "restricted_world2"
 
-  # Waystone settings GUI
-  gui:
-    edit:
-      title: "<dark_blue>Edit Waystone"
-      visibility:
-        public:
-          name: "<green>Public Waystone"
-          lore:
-            - "<gray>Click to change"
-            - "<gray>Anyone can use this waystone"
-        private:
-          name: "<red>Private Waystone"
-          lore:
-            - "<gray>Click to change"
-            - "<gray>Only players with access can use this waystone"
-      rename:
-        name: "<yellow>Rename Waystone"
-        lore:
-          - "<gray>Click to rename"
-          - "<gray>Current name: {name}"
-      manage_players:
-        name: "<aqua>Manage Players"
-        lore:
-          - "<gray>Click to manage players"
-          - "<gray>Player with access: {count}"
-      is_public:
-        name: "<aqua>All Players Can Use"
-        lore:
-          - "<gray>To manage players"
-          - "<gray>Change to private"
-      delete:
-        name: "<red>Remove Waystone"
-        lore:
-          - "<red>Warning: This will remove the waystone"
-          - "<gray>Click to remove"
-      close:
-        name: "<gray>Close"
-    player_management:
-      title: "<dark_green>Manage Players"
-      add_player:
-        name: "<green>Add Player"
-        lore:
-          - "<gray>Click to add a player"
-      back:
-        name: "<yellow>Back"
-      remove_player:
-        lore:
-          - "<red>Click to remove this player"
-          - "<dark_gray>UUID: {uuid}"
+  # Waystone teleportation cost configuration
+  cost:
+    enabled: false                        # Enable or disable costs for teleporting to waystones.
+    type: "none"                          # Type of cost required for teleportation. Options: "none", "exp_levels", "exp_points", "items".
+    amount: 1                             # Amount of the cost (e.g., levels, points, or items).
+    item_type: "ENDER_PEARL"              # Material type for the cost if type is "items" (must be a valid Bukkit Material name).
+    messages:
+      free: "Free"                        # Message displayed when teleportation is free.
+      exp_levels: "%d EXP Levels"         # Format for experience level cost (e.g., "5 EXP Levels").
+      exp_points: "%d EXP Points"         # Format for experience point cost (e.g., "10 EXP Points").
+      items: "%d %s"                      # Format for item cost (e.g., "2 ENDER_PEARL").
 
-    # Waystone Icon Change GUI
-    change_icon:
-      title: "<blue>Change Waystone Icon"
-      confirm:
-        name: "<green>Confirm"
-        lore:
-          - "<gray>Click to use this item as icon"
-          - "<gray>Will consume 1 item"
-      cancel:
-        name: "<red>Cancel"
-        lore:
-          - "<gray>Click to cancel without changes"
-      cancelled: "<red>Icon change cancelled"
-
-  # Waystone Core item
+  # Waystone core item configuration
   core:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkNWQ5ZDQxZDE5MTdmODZkODIyZDEzZDI2YWEwN2VlNmRlZmVjY2RhMWM5ODg1MDVhYjg2NGFmZTk4YTYwNSJ9fX0="
     name: "<gold><bold>Waystone Core"
     lore:
-      - "<gray>A magical core that allows waystone creation."
+      - "<gray>>A magical core that allows waystone creation."
       - "<blue>Place it to create a waystone."
-      - "<yellow>Use your imagination!"
+
+    # Crafting recipe shape (3 rows of 3 characters each) for the waystone core.
     recipe:
       shape:
         1: "EDE"
         2: "DND"
         3: "EDE"
+      # Mapping of characters in the shape to Bukkit Material names.
       ingredients:
         E: "ENDER_PEARL"
         D: "DIAMOND"
         N: "NETHER_STAR"
+
+  # Waystone GUIs configuration
+  gui:
+    # Main Wasytone GUI settings
+    discovered:
+      title: "Discovered Waystones"
+      size: 54                            # Size of the waystone inventory GUI (must be a multiple of 9 between 9 and 54).
+      navigation:
+        enabled: true                     # Enable or disable navigation buttons (previous page, next page, close) in the inventory GUI.
+        previous_page:
+          material: "ARROW"
+          name: "<yellow>Previous Page"
+          lore:
+            - "<gray>Go to the previous page"
+          slot: 45
+        next_page:
+          material: "ARROW"
+          name: "<yellow>Next Page"
+          lore:
+            - "<gray>Go to the next page"
+          slot: 53
+        close:
+          material: "BARRIER"
+          name: "<red>Close"
+          lore:
+            - "<gray>Close the inventory"
+          slot: 49
+      item:
+        location: "<gold>X: <white>%d<gold>, <gold>Y: <white>%d<gold>, <gold>Z: <white>%d"
+        click_to_teleport: "<gold>Click <gray>to teleport"
+        cost: "<gray>Cost: <gold>%s"
+        private: "<red>Private Waystone"
+        right_click_icon: "<gold>Right-click <gray>to set icon"
+
+    # Edit Waystone GUI settings:
+    edit:
+      title: "Edit Waystone"
+      visibility:
+        public:
+          name: "<green>Public Waystone"
+          lore:
+            - "<gray>Visible to all players"
+        private:
+          name: "<red>Private Waystone"
+          lore:
+            - "<gray>Only visible to allowed players"
+      rename:
+        name: "<yellow>Rename Waystone"
+        lore:
+          - "<gray>Current name: <white>{name}"
+      manage_players:
+        name: "Manage Players"
+        lore:
+          - "<gray>Allowed players: <white>{count}"
+      delete:
+        name: "<red>Remove Waystone"
+        lore:
+          - "<gray>Click to remove this waystone"
+      close:
+        name: "<gray>Close"
+
+    # Manage Players GUI settings:
+    player_management:
+      title: "Manage Players"
+      add_player:
+        name: "<green>Add Player"
+        lore:
+          - "<gray>Click to add a player"
+      remove_player:
+        lore:
+          - "<red>Click to remove this player"
+          - "<gray>UUID: {uuid}"
+      back:
+        name: "<yellow>Back"
+
+    # Change Waystone Icon GUI settings
+    change_icon:
+      title: "Change Icon"
+      confirm:
+        name: "<green>Confirm"
+        lore:
+          - "<gray>Click to use this item as icon"
+      cancel:
+        name: "<red>Cancel"
+        lore:
+          - "<gray>Click to cancel"
