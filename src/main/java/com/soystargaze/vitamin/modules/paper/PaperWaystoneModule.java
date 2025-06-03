@@ -73,6 +73,7 @@ public class PaperWaystoneModule implements Listener {
     private final ConcurrentHashMap<UUID, String> addingPlayerToWaystone = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Integer> playerCurrentPage = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Waystone> changingIconWaystones = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Cost> pendingCosts = new ConcurrentHashMap<>(); // New map to track costs
 
     private final boolean onlyCreatorCanBreak;
     private final long autoCreateTime;
@@ -122,6 +123,19 @@ public class PaperWaystoneModule implements Listener {
     private final NamespacedKey waystoneCoreKey;
     private final NamespacedKey waystoneIdentifierKey;
     private final NamespacedKey guiItemKey;
+
+    // Cost class to store type, amount, and item type
+    private static class Cost {
+        String type;
+        int amount;
+        Material itemType;
+
+        public Cost(String type, int amount, Material itemType) {
+            this.type = type;
+            this.amount = amount;
+            this.itemType = itemType;
+        }
+    }
 
     public PaperWaystoneModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -226,7 +240,6 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private boolean isWaystoneGUITitle(Component title) {
-
         Component waystoneInventoryTitle = ModernTranslationHandler.getComponent("waystone.inventory.title");
         Component editTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
         Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Gestionar Jugadores"));
@@ -427,7 +440,7 @@ public class PaperWaystoneModule implements Listener {
                 playWaystoneBreakSound(waystoneLoc);
 
                 String miniMessageFormattedName = convertToMiniMessageFormat(waystone.getName());
-                TextHandler.get().sendMessage(player,"waystone.destroyed", miniMessageFormattedName);
+                TextHandler.get().sendMessage(player, "waystone.destroyed", miniMessageFormattedName);
                 break;
 
             case 22:
@@ -566,11 +579,15 @@ public class PaperWaystoneModule implements Listener {
             }
 
             chargePlayerForWaystone(player);
+            if (costEnabled && !costType.equals("none")) {
+                pendingCosts.put(playerId, new Cost(costType, costAmount, costItemType));
+            }
 
             if (pendingTeleports.containsKey(playerId)) {
                 pendingTeleports.get(playerId).cancel();
                 pendingTeleports.remove(playerId);
                 playerTeleportLocations.remove(playerId);
+                pendingCosts.remove(playerId);
             }
 
             playTeleportBeginSound(player);
@@ -592,10 +609,11 @@ public class PaperWaystoneModule implements Listener {
                 }
 
                 String miniMessageFormattedName = convertToMiniMessageFormat(targetWaystone.getName());
-                TextHandler.get().sendMessage(player,"waystone.teleported", miniMessageFormattedName);
+                TextHandler.get().sendMessage(player, "waystone.teleported", miniMessageFormattedName);
 
                 pendingTeleports.remove(playerId);
                 playerTeleportLocations.remove(playerId);
+                pendingCosts.remove(playerId); // Clear cost after successful teleport
             }, teleportDelay * 20L);
 
             pendingTeleports.put(playerId, task);
@@ -617,7 +635,7 @@ public class PaperWaystoneModule implements Listener {
                 }, i * 20L);
             }
 
-            TextHandler.get().sendMessage(player,"waystone.teleporting_in", String.valueOf(teleportDelay));
+            TextHandler.get().sendMessage(player, "waystone.teleporting_in", String.valueOf(teleportDelay));
         }
     }
 
@@ -932,6 +950,28 @@ public class PaperWaystoneModule implements Listener {
                 player.getInventory().removeItem(costItem);
                 break;
         }
+    }
+
+    private void refundCost(Player player) {
+        if (player == null) return;
+        UUID playerId = player.getUniqueId();
+        Cost cost = pendingCosts.remove(playerId);
+        if (cost == null) return;
+
+        switch (cost.type.toLowerCase()) {
+            case "exp_levels":
+                player.setLevel(player.getLevel() + cost.amount);
+                break;
+            case "exp_points":
+                player.setTotalExperience(player.getTotalExperience() + cost.amount);
+                break;
+            case "items":
+                ItemStack refundItem = new ItemStack(cost.itemType, cost.amount);
+                player.getInventory().addItem(refundItem);
+                break;
+        }
+
+        TextHandler.get().sendMessage(player, "waystone.refunded_resources", getCostMessage());
     }
 
     private String getCostMessage() {
@@ -1746,20 +1786,20 @@ public class PaperWaystoneModule implements Listener {
             Location blockLocation = event.getBlock().getLocation();
 
             if (restrictedWorlds.contains(blockLocation.getWorld().getName())) {
-                TextHandler.get().sendMessage(player,"waystone.restricted_world");
+                TextHandler.get().sendMessage(player, "waystone.restricted_world");
                 event.setCancelled(true);
                 return;
             }
 
             if (waystones.containsKey(blockLocation)) {
-                TextHandler.get().sendMessage(player,"waystone.already_exists");
+                TextHandler.get().sendMessage(player, "waystone.already_exists");
                 event.setCancelled(true);
                 return;
             }
 
             if (!canCreateWaystone(player)) {
                 int limit = getPlayerWaystoneLimit(player);
-                TextHandler.get().sendMessage(player,"waystone.limit_reached", String.valueOf(limit));
+                TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
                 event.setCancelled(true);
                 return;
             }
@@ -1782,7 +1822,7 @@ public class PaperWaystoneModule implements Listener {
                 }
             }
 
-            TextHandler.get().sendMessage(player,"waystone.enter_new_name");
+            TextHandler.get().sendMessage(player, "waystone.enter_new_name");
         }
     }
 
@@ -1827,7 +1867,7 @@ public class PaperWaystoneModule implements Listener {
         }
 
         if (!targetWaystone.isPlayerAllowed(playerId)) {
-            TextHandler.get().sendMessage(player,"waystone.no_permission");
+            TextHandler.get().sendMessage(player, "waystone.no_permission");
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
             }
@@ -1842,7 +1882,7 @@ public class PaperWaystoneModule implements Listener {
             );
 
             String miniMessageFormattedName = convertToMiniMessageFormat(targetWaystone.getName());
-            TextHandler.get().sendMessage(player,"waystone.registered", miniMessageFormattedName);
+            TextHandler.get().sendMessage(player, "waystone.registered", miniMessageFormattedName);
 
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_BEACON_POWER_SELECT, SoundCategory.PLAYERS, 0.7f, 1.2f);
@@ -1897,7 +1937,7 @@ public class PaperWaystoneModule implements Listener {
 
             if (onlyCreatorCanBreak && !isCreator) {
                 if (!(isAdmin && (isOp || targetWaystone.isAdminCreated()))) {
-                    TextHandler.get().sendMessage(player,"waystone.only_creator_can_break");
+                    TextHandler.get().sendMessage(player, "waystone.only_creator_can_break");
                     if (enableSounds) {
                         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
                     }
@@ -1906,7 +1946,7 @@ public class PaperWaystoneModule implements Listener {
             }
 
             if (targetWaystone.isAdminCreated() && !(isOp || isCreator)) {
-                TextHandler.get().sendMessage(player,"waystone.only_operator_or_creator_can_break");
+                TextHandler.get().sendMessage(player, "waystone.only_operator_or_creator_can_break");
                 if (enableSounds) {
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
                 }
@@ -2001,9 +2041,9 @@ public class PaperWaystoneModule implements Listener {
                     }
 
                     String miniMessageFormattedName = convertToMiniMessageFormat(newName);
-                    TextHandler.get().sendMessage(player,"waystone.renamed", miniMessageFormattedName);
+                    TextHandler.get().sendMessage(player, "waystone.renamed", miniMessageFormattedName);
                 } else {
-                    TextHandler.get().sendMessage(player,"waystone.renaming_canceled");
+                    TextHandler.get().sendMessage(player, "waystone.renaming_canceled");
                 }
             });
             return;
@@ -2016,7 +2056,7 @@ public class PaperWaystoneModule implements Listener {
 
             if (!canCreateWaystone(player)) {
                 int limit = getPlayerWaystoneLimit(player);
-                TextHandler.get().sendMessage(player,"waystone.limit_reached", String.valueOf(limit));
+                TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
                 pendingWaystones.remove(playerId);
 
                 dropWaystoneCoreFromPending(loc);
@@ -2128,6 +2168,7 @@ public class PaperWaystoneModule implements Listener {
                     task.cancel();
                 }
                 playerTeleportLocations.remove(playerId);
+                refundCost(player);
 
                 if (enableSounds) {
                     player.playSound(player.getLocation(), Sound.BLOCK_FIRE_EXTINGUISH, SoundCategory.PLAYERS, 0.5f, 1.0f);
@@ -2210,6 +2251,7 @@ public class PaperWaystoneModule implements Listener {
         if (pendingTeleports.containsKey(playerId)) {
             pendingTeleports.get(playerId).cancel();
             pendingTeleports.remove(playerId);
+            refundCost(Bukkit.getPlayer(playerId));
         }
     }
 

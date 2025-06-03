@@ -269,8 +269,8 @@ waystone:
                                         # Per player limit permission: vitamin.module.waystone.limit.<limit>
                                         # vitamin.module.waystone.limit.infinite for no limits
   cost:                                 # Cost to use waystones
-    enabled: true
-    type: "items"                       # options: "none", "exp_levels", "exp_points", "items"
+    enabled: false
+    type: "none"                        # options: "none", "exp_levels", "exp_points", "items"
     amount: 1                           # for exp_levels/exp_points/items
     item_type: "ENDER_PEARL"            # only for items type
   messages:

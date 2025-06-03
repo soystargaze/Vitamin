@@ -180,6 +180,7 @@ waystone:
   teleported: "You have been teleported to {0}."
   teleporting_in: "Teleporting in {0} seconds..."
   not_enough_resources: "You do not have enough resources to teleport. Required: {0}"
+  refunded_resources: "You have been refunded {0} resources for not teleporting."
   destroyed: "The waystone {0} has been destroyed."
   renamed: "The waystone has been renamed to {0}."
   renaming_canceled: "Renaming canceled."
