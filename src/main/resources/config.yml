@@ -286,7 +286,7 @@ waystone:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkNWQ5ZDQxZDE5MTdmODZkODIyZDEzZDI2YWEwN2VlNmRlZmVjY2RhMWM5ODg1MDVhYjg2NGFmZTk4YTYwNSJ9fX0="
     name: "<gold><bold>Waystone Core"
     lore:
-      - "<gray>>A magical core that allows waystone creation."
+      - "<gray>A magical core that allows waystone creation."
       - "<blue>Place it to create a waystone."
 
     # Crafting recipe shape (3 rows of 3 characters each) for the waystone core.
