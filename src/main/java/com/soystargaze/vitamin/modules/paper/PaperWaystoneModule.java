@@ -2,7 +2,6 @@ package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -73,7 +72,7 @@ public class PaperWaystoneModule implements Listener {
     private final ConcurrentHashMap<UUID, String> addingPlayerToWaystone = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Integer> playerCurrentPage = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Waystone> changingIconWaystones = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, Cost> pendingCosts = new ConcurrentHashMap<>(); // New map to track costs
+    private final ConcurrentHashMap<UUID, Cost> pendingCosts = new ConcurrentHashMap<>();
 
     private final boolean onlyCreatorCanBreak;
     private final long autoCreateTime;
@@ -124,7 +123,6 @@ public class PaperWaystoneModule implements Listener {
     private final NamespacedKey waystoneIdentifierKey;
     private final NamespacedKey guiItemKey;
 
-    // Cost class to store type, amount, and item type
     private static class Cost {
         String type;
         int amount;
@@ -207,8 +205,7 @@ public class PaperWaystoneModule implements Listener {
         this.closeLore = plugin.getConfig().getStringList("waystone.inventory.navigation.close.lore");
         this.closeSlot = plugin.getConfig().getInt("waystone.inventory.navigation.close.slot", 49);
 
-        String iconChangeTitlePath = "waystone.gui.change_icon.title";
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString(iconChangeTitlePath, "<blue>Change Icon"));
+        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
         this.iconChangeTitleStr = PlainTextComponentSerializer.plainText().serialize(iconChangeTitle);
 
         registerWaystoneCoreRecipe();
@@ -240,7 +237,7 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private boolean isWaystoneGUITitle(Component title) {
-        Component waystoneInventoryTitle = ModernTranslationHandler.getComponent("waystone.inventory.title");
+        Component waystoneInventoryTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
         Component editTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
         Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Gestionar Jugadores"));
         Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
@@ -287,7 +284,7 @@ public class PaperWaystoneModule implements Listener {
 
     private void handleSpecificGUIClick(InventoryClickEvent event, Player player, String plainTitle) {
         String waystoneInventoryTitle = PlainTextComponentSerializer.plainText().serialize(
-                ModernTranslationHandler.getComponent("waystone.inventory.title")
+                processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"))
         );
         String editTitle = PlainTextComponentSerializer.plainText().serialize(
                 processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"))
@@ -648,8 +645,7 @@ public class PaperWaystoneModule implements Listener {
 
         if (!isWaystoneGUITitle(viewTitle)) return;
 
-        String iconChangeTitlePath = "waystone.gui.change_icon.title";
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString(iconChangeTitlePath, "<blue>Change Waystone Icon"));
+        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Waystone Icon"));
 
         if (iconChangeTitle.equals(viewTitle)) {
             ItemStack itemInSlot = event.getInventory().getItem(11);
@@ -759,8 +755,7 @@ public class PaperWaystoneModule implements Listener {
     private void openIconChangeGUI(Player player, Waystone waystone) {
         changingIconWaystones.put(player.getUniqueId(), waystone);
 
-        String titlePath = "waystone.gui.change_icon.title";
-        Component title = processColorCodes(plugin.getConfig().getString(titlePath, "<blue>Change Icon"));
+        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "<blue>Change Icon"));
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
@@ -1603,8 +1598,7 @@ public class PaperWaystoneModule implements Listener {
     private void openWaystoneEditGUI(Player player, Waystone waystone) {
         editingWaystones.put(player.getUniqueId(), waystone);
 
-        String titlePath = "waystone.gui.edit.title";
-        Component title = processColorCodes(plugin.getConfig().getString(titlePath, "<dark_blue>Edit Waystone"));
+        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "<dark_blue>Edit Waystone"));
         Inventory gui = Bukkit.createInventory(null, 27, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
@@ -1705,8 +1699,7 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private void openPlayerManagementGUI(Player player, Waystone waystone) {
-        String titlePath = "waystone.gui.player_management.title";
-        Component title = processColorCodes(plugin.getConfig().getString(titlePath, "<dark_green>Manage Players"));
+        Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "<dark_green>Manage Players"));
         Inventory gui = Bukkit.createInventory(null, 54, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.BLACK_STAINED_GLASS_PANE));
@@ -2262,7 +2255,7 @@ public class PaperWaystoneModule implements Listener {
     private void openWaystoneInventory(Player player, int page) {
         setPlayerContext(player.getUniqueId());
 
-        Component titleComponent = ModernTranslationHandler.getComponent("waystone.inventory.title");
+        Component titleComponent = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
 
         List<Waystone> availableWaystones = waystones.values().stream()
                 .filter(waystone -> waystone.isRegistered(player.getUniqueId()) &&
