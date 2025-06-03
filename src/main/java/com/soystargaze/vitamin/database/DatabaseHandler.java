@@ -207,12 +207,12 @@ public class DatabaseHandler {
                     z DOUBLE NOT NULL,
                     name VARCHAR(255) NOT NULL,
                     creator VARCHAR(36) NOT NULL,
-                    is_public BOOLEAN DEFAULT TRUE
+                    is_public BOOLEAN DEFAULT TRUE,
+                    icon_data TEXT DEFAULT NULL
                 );
                 """;
             stmt.executeUpdate(createWaystones);
 
-            // Añadir tabla para permisos específicos
             String createWaystonePermissions = """
                 CREATE TABLE IF NOT EXISTS waystone_permissions (
                     waystone_id INTEGER NOT NULL,
@@ -239,7 +239,6 @@ public class DatabaseHandler {
         }
     }
 
-    // Nuevos métodos para el sistema de permisos de waystones
     public static void updateWaystoneVisibility(int waystoneId, boolean isPublic) {
         String sql = "UPDATE waystones SET is_public = ? WHERE id = ?";
         try (Connection conn = getConnection();
@@ -306,13 +305,12 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
         }
-        return true; // Por defecto público
+        return true;
     }
-
 
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
-        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public FROM waystones";
+        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, icon_data FROM waystones";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -327,8 +325,9 @@ public class DatabaseHandler {
                 String name = rs.getString("name");
                 UUID creator = UUID.fromString(rs.getString("creator"));
                 boolean isPublic = rs.getBoolean("is_public");
+                String iconData = rs.getString("icon_data");
                 Location location = new Location(world, x, y, z);
-                waystones.add(new WaystoneData(id, location, name, creator, isPublic));
+                waystones.add(new WaystoneData(id, location, name, creator, isPublic, iconData));
             }
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
@@ -337,7 +336,7 @@ public class DatabaseHandler {
     }
 
     public static int saveWaystone(WaystoneData waystone) {
-        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, icon_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, waystone.location().getWorld().getName());
@@ -347,6 +346,7 @@ public class DatabaseHandler {
             ps.setString(5, waystone.name());
             ps.setString(6, waystone.creator().toString());
             ps.setBoolean(7, waystone.isPublic());
+            ps.setString(8, waystone.iconData());
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -382,6 +382,34 @@ public class DatabaseHandler {
         }
     }
 
+    public static void updateWaystoneIcon(int waystoneId, String iconData) {
+        String sql = "UPDATE waystones SET icon_data = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, iconData);
+            ps.setInt(2, waystoneId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static String getWaystoneIcon(int waystoneId) {
+        String sql = "SELECT icon_data FROM waystones WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, waystoneId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("icon_data");
+                }
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+        }
+        return null;
+    }
+
     public static void registerPlayerToWaystone(int waystoneId, UUID playerId) {
         String sql = "INSERT INTO waystone_registrations (waystone_id, player_id) VALUES (?, ?)";
         try (Connection conn = getConnection();
@@ -411,7 +439,7 @@ public class DatabaseHandler {
         return players;
     }
 
-    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic) {
+    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic, String iconData) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {

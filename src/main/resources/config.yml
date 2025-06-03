@@ -349,6 +349,23 @@ waystone:
           - "<red>Click to remove this player"
           - "<dark_gray>UUID: {uuid}"
 
+    # Waystone Icon Change GUI
+    change_icon:
+      title: "<blue>Change Waystone Icon"
+      instructions: "<yellow>Place an item in the center slot and confirm to change the waystone icon"
+      confirm:
+        name: "<green>Confirm"
+        lore:
+          - "<gray>Click to use this item as icon"
+          - "<gray>Will consume 1 item"
+      cancel:
+        name: "<red>Cancel"
+        lore:
+          - "<gray>Click to cancel without changes"
+      success: "<green>Waystone icon changed successfully!"
+      reset: "<yellow>Waystone icon reset to default"
+      cancelled: "<red>Icon change cancelled"
+
   # Waystone Core item
   core:
     texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJkNWQ5ZDQxZDE5MTdmODZkODIyZDEzZDI2YWEwN2VlNmRlZmVjY2RhMWM5ODg1MDVhYjg2NGFmZTk4YTYwNSJ9fX0="
