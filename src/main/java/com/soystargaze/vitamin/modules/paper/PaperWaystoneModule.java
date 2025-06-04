@@ -611,7 +611,7 @@ public class PaperWaystoneModule implements Listener {
             }
 
             playTeleportBeginSound(player);
-            final Location destination = targetWaystone.getLocation().clone().add(0.5, 0.2, 0.5);
+            final Location destination = targetWaystone.getLocation().clone().add(1.5, 0.2, 1.5);
             playerTeleportLocations.put(playerId, destination);
 
             BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -1578,7 +1578,7 @@ public class PaperWaystoneModule implements Listener {
 
     private TextDisplay createHologram(Location loc, String name) {
         TextDisplay hologram = (TextDisplay) loc.getWorld().spawnEntity(
-                loc.clone().add(0.5, 2.5, 0.5), EntityType.TEXT_DISPLAY);
+                loc.clone().add(0.5, 2.2, 0.5), EntityType.TEXT_DISPLAY);
 
         Component nameComponent = processColorCodes(name);
         hologram.text(nameComponent);
