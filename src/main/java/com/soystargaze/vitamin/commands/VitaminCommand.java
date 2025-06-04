@@ -20,12 +20,14 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
     private final PModuleCommand pModuleCommand;
     private final ReloadCommand reloadCommand;
     private final RestoreCommand restoreCommand;
+    private final ClearCommand clearCommand;
 
     public VitaminCommand(Vitamin plugin) {
         this.moduleCommand = new ModuleCommand(plugin);
         this.pModuleCommand = new PModuleCommand(plugin);
         this.reloadCommand = new ReloadCommand(plugin);
         this.restoreCommand = new RestoreCommand(plugin);
+        this.clearCommand = new ClearCommand(plugin);
     }
 
     @Override
@@ -53,6 +55,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             case "module"  -> moduleCommand.onCommand(sender, command, label, subArgs);
             case "pmodule" -> pModuleCommand.onCommand(sender, command, label, subArgs);
             case "restore" -> restoreCommand.onCommand(sender, command, label, subArgs);
+            case "clear"   -> clearCommand.onCommand(sender, command, label, subArgs);
             default -> {
                 sendToSender(sender, "commands.usage");
                 yield true;
@@ -73,6 +76,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
             if (sender.hasPermission("vitamin.use.module"))  subs.add("module");
             if (sender.hasPermission("vitamin.use.pmodule")) subs.add("pmodule");
             if (sender.hasPermission("vitamin.use.restore")) subs.add("restore");
+            if (sender.hasPermission("vitamin.use.clear"))   subs.add("clear");
             return subs;
         }
         if (args.length > 1) {
@@ -83,6 +87,7 @@ public class VitaminCommand implements CommandExecutor, TabCompleter {
                 case "module"  -> moduleCommand.onTabComplete(sender, command, alias, subArgs);
                 case "pmodule" -> pModuleCommand.onTabComplete(sender, command, alias, subArgs);
                 case "restore" -> restoreCommand.onTabComplete(sender, command, alias, subArgs);
+                case "clear"   -> clearCommand.onTabComplete(sender, command, alias, subArgs);
                 default        -> Collections.emptyList();
             };
         }

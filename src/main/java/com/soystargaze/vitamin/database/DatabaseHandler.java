@@ -308,6 +308,16 @@ public class DatabaseHandler {
         return true;
     }
 
+    public static void clearWaystones() {
+        String sql = "DELETE FROM waystones";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
         String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, icon_data FROM waystones";

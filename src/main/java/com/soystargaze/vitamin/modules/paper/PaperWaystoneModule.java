@@ -213,6 +213,15 @@ public class PaperWaystoneModule implements Listener {
         startOptimizedTasks();
     }
 
+    public void clearWaystones() {
+        for (Waystone waystone : waystones.values()) {
+            removeWaystoneEntities(waystone);
+            removeWaystoneBarrierPillar(waystone.getLocation());
+        }
+        waystones.clear();
+        DatabaseHandler.clearWaystones();
+    }
+
     private ItemStack markAsGUIItem(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return item;
 

@@ -211,6 +211,15 @@ public class WaystoneModule implements Listener {
         startOptimizedTasks();
     }
 
+    public void clearWaystones() {
+        for (Waystone waystone : waystones.values()) {
+            removeWaystoneEntities(waystone);
+            removeWaystoneBarrierPillar(waystone.getLocation());
+        }
+        waystones.clear();
+        DatabaseHandler.clearWaystones();
+    }
+
     private String convertToLegacyText(String text) {
         try {
             Component component = processColorCodes(text);

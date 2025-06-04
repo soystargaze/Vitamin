@@ -70,6 +70,12 @@ commands:
     success: "<green>Successfully restored {0} with ID {1} to your inventory.</green>"
     error: "<red>Error creating the restored container. Please try again.</red>"
     inventory_full: "<red>Your inventory is full. Make some space and try again.</red>"
+  clear:
+    usage: "<red>Usage: /vitamin clear waystones [confirm]</red>"
+    confirm: "Please confirm with <yellow>/vitamin clear waystones confirm</yellow> within 30 seconds."
+    success: "<green>All waystones have been cleared.</green>"
+    timeout: "<red>Confirmation timed out. Please try again.</red>"
+    error: "<red>An error occurred while clearing waystones.</red>"
 
 database:
   already_initialized: "The database has already been initialized."
