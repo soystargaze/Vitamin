@@ -10,6 +10,7 @@ softdepend:
   - Lands
   - Lootin
   - GriefPrevention
+  - Vault
 commands:
   vitamin:
     description: Main command for Vitamin

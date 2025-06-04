@@ -3,6 +3,7 @@ package com.soystargaze.vitamin.modules.core;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -115,6 +116,8 @@ public class WaystoneModule implements Listener {
     private final int closeSlot;
     private final String iconChangeTitleStr;
 
+    private final Economy economy;
+
     private static final String WAYSTONE_CORE_IDENTIFIER = "vitamin_waystone";
 
     private final NamespacedKey waystoneCoreKey;
@@ -205,6 +208,17 @@ public class WaystoneModule implements Listener {
 
         String iconChangeTitleConfig = plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon");
         this.iconChangeTitleStr = convertToLegacyText(iconChangeTitleConfig);
+
+        if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
+            this.economy = Bukkit.getServer().getServicesManager().getRegistration(Economy.class) != null ?
+                    Objects.requireNonNull(Bukkit.getServer().getServicesManager().getRegistration(Economy.class)).getProvider() : null;
+            if (this.economy == null) {
+                TextHandler.get().logTranslated("waystone.vault_not_found");
+            }
+        } else {
+            this.economy = null;
+            TextHandler.get().logTranslated("waystone.vault_not_installed");
+        }
 
         registerWaystoneCoreRecipe();
         loadWaystones();
@@ -932,6 +946,7 @@ public class WaystoneModule implements Listener {
             case "exp_levels" -> player.getLevel() >= costAmount;
             case "exp_points" -> player.getTotalExperience() >= costAmount;
             case "items" -> player.getInventory().containsAtLeast(new ItemStack(costItemType), costAmount);
+            case "vault" -> economy != null && economy.has(player, costAmount);
             default -> true;
         };
     }
@@ -952,6 +967,11 @@ public class WaystoneModule implements Listener {
                 ItemStack costItem = new ItemStack(costItemType, costAmount);
                 player.getInventory().removeItem(costItem);
                 break;
+            case "vault":
+                if (economy != null) {
+                    economy.withdrawPlayer(player, costAmount);
+                }
+                break;
         }
     }
 
@@ -971,6 +991,11 @@ public class WaystoneModule implements Listener {
             case "items":
                 ItemStack refundItem = new ItemStack(cost.itemType, cost.amount);
                 player.getInventory().addItem(refundItem);
+                break;
+            case "vault":
+                if (economy != null) {
+                    economy.depositPlayer(player, cost.amount);
+                }
                 break;
         }
 
@@ -994,6 +1019,10 @@ public class WaystoneModule implements Listener {
             case "items" -> {
                 String format = plugin.getConfig().getString("waystone.cost.messages.items", "%d %s");
                 yield String.format(format, costAmount, costItemType.name());
+            }
+            case "vault" -> {
+                String format = plugin.getConfig().getString("waystone.cost.messages.vault", "%d Money");
+                yield String.format(format, costAmount);
             }
             default -> "Free";
         };

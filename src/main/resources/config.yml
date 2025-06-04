@@ -247,7 +247,7 @@ armor_trims:
 # Replayable Vault settings
 replayable_vault:
   cooldown: 3600000      # Cooldown in milliseconds (1 hour default)
-  max_reactivations: 2   # Max additional openings beyond the first (total 3 openings)
+  max_reactivations: 2   # Max additional openings beyond the first (total 3 openings, 1 initial + 2 reactivations)
 
 # Waystone settings
 waystone:
@@ -272,7 +272,7 @@ waystone:
   # Waystone teleportation cost configuration
   cost:
     enabled: false                        # Enable or disable costs for teleporting to waystones.
-    type: "none"                          # Type of cost required for teleportation. Options: "none", "exp_levels", "exp_points", "items".
+    type: "none"                          # Type of cost required for teleportation. Options: "none", "exp_levels", "exp_points", "items", "vault".
     amount: 1                             # Amount of the cost (e.g., levels, points, or items).
     item_type: "ENDER_PEARL"              # Material type for the cost if type is "items" (must be a valid Bukkit Material name).
     messages:
@@ -280,6 +280,7 @@ waystone:
       exp_levels: "%d EXP Levels"         # Format for experience level cost (e.g., "5 EXP Levels").
       exp_points: "%d EXP Points"         # Format for experience point cost (e.g., "10 EXP Points").
       items: "%d %s"                      # Format for item cost (e.g., "2 ENDER_PEARL").
+      vault: "%d Money"                   # Format for vault cost (e.g., "100 Money").
 
   # Waystone core item configuration
   core:

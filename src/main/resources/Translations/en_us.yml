@@ -64,7 +64,7 @@ commands:
     no_module_permission: "You do not have permission to use {0}."
     changed: "Module {0} {1} successfully."
   restore:
-    usage: "<red>Usage: /holdmycow restore <player></red>"
+    usage: "<red>Usage: /vitamin restore <player></red>"
     no_backups: "<red>No container backups found for player {0}.</red>"
     opened: "<green>Opened restore interface for {0}. Found {1} containers.</green>"
     success: "<green>Successfully restored {0} with ID {1} to your inventory.</green>"
@@ -187,6 +187,8 @@ waystone:
   teleporting_in: "Teleporting in {0} seconds..."
   not_enough_resources: "You do not have enough resources to teleport. Required: {0}"
   refunded_resources: "You have been refunded {0} resources for not teleporting."
+  vault_not_found: "Vault economy provider not found. Vault cost type will be disabled."
+  vault_not_installed: "Vault is not installed. Vault cost type will be disabled."
   destroyed: "The waystone {0} has been destroyed."
   renamed: "The waystone has been renamed to {0}."
   renaming_canceled: "Renaming canceled."
