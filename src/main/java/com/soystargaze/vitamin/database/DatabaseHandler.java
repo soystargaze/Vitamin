@@ -17,6 +17,7 @@ import java.util.*;
 public class DatabaseHandler {
 
     private static HikariDataSource dataSource;
+    private static String databaseType;
 
     public static void initialize(JavaPlugin plugin) {
         if (dataSource != null) {
@@ -25,10 +26,10 @@ public class DatabaseHandler {
         }
 
         FileConfiguration config = ConfigHandler.getConfig();
-        String type = config.getString("database.type", "sqlite").toLowerCase();
+        databaseType = config.getString("database.type", "sqlite").toLowerCase();
 
         try {
-            switch (type) {
+            switch (databaseType) {
                 case "mysql":
                     initializeMySQL(config);
                     break;
@@ -42,9 +43,10 @@ public class DatabaseHandler {
                     initializeSQLite(plugin);
                     break;
                 default:
-                    throw new IllegalArgumentException("Database type not supported: " + type);
+                    throw new IllegalArgumentException("Database type not supported: " + databaseType);
             }
             createTables();
+            migrateTables();
         } catch (Exception e) {
             TextHandler.get().logTranslated("database.init_error", e);
             throw new IllegalStateException("Database initialization failed.", e);
@@ -239,6 +241,136 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
         }
+    }
+
+    private static void migrateTables() {
+        try (Connection connection = getConnection()) {
+            Map<String, Map<String, String>> expectedStructures = new HashMap<>();
+
+            expectedStructures.put("player_modules", new HashMap<>(Map.of(
+                    "player_id", "VARCHAR(36)",
+                    "module_key", "VARCHAR(100)",
+                    "enabled", "BOOLEAN"
+            )));
+
+            expectedStructures.put("player_deaths", new HashMap<>(Map.of(
+                    "player_id", "VARCHAR(36)",
+                    "world", "VARCHAR(100)",
+                    "x", "DOUBLE",
+                    "y", "DOUBLE",
+                    "z", "DOUBLE",
+                    "yaw", "FLOAT",
+                    "pitch", "FLOAT"
+            )));
+
+            expectedStructures.put("player_death_maps", new HashMap<>(Map.of(
+                    "player_id", "VARCHAR(36)",
+                    "map_id", "SMALLINT"
+            )));
+
+            expectedStructures.put("chest_contents", new HashMap<>(Map.of(
+                    "chest_id", "VARCHAR(36)",
+                    "slot", "INTEGER",
+                    "item_data", "TEXT"
+            )));
+
+            expectedStructures.put("container_backups", new HashMap<>(Map.of(
+                    "chest_id", "VARCHAR(36)",
+                    "player_uuid", "VARCHAR(36)",
+                    "player_name", "VARCHAR(32)",
+                    "container_type", "VARCHAR(32)",
+                    "pickup_timestamp", "BIGINT",
+                    "restored", "BOOLEAN",
+                    "world_name", "VARCHAR(64)",
+                    "x_coord", "INTEGER",
+                    "y_coord", "INTEGER",
+                    "z_coord", "INTEGER"
+            )));
+
+            expectedStructures.put("vault_reactivations", new HashMap<>(Map.of(
+                    "vault_world", "VARCHAR(100)",
+                    "vault_x", "INT",
+                    "vault_y", "INT",
+                    "vault_z", "INT",
+                    "player_id", "VARCHAR(36)",
+                    "opening_count", "INT",
+                    "last_opening_time", "BIGINT"
+            )));
+
+            expectedStructures.put("waystones", new HashMap<>(Map.ofEntries(
+                    Map.entry("id", "INTEGER"),
+                    Map.entry("world", "VARCHAR(100)"),
+                    Map.entry("x", "DOUBLE"),
+                    Map.entry("y", "DOUBLE"),
+                    Map.entry("z", "DOUBLE"),
+                    Map.entry("name", "VARCHAR(255)"),
+                    Map.entry("creator", "VARCHAR(36)"),
+                    Map.entry("is_public", "BOOLEAN"),
+                    Map.entry("is_global", "BOOLEAN"),
+                    Map.entry("icon_data", "TEXT"),
+                    Map.entry("name_visible", "BOOLEAN")
+            )));
+
+            expectedStructures.put("waystone_permissions", new HashMap<>(Map.of(
+                    "waystone_id", "INTEGER",
+                    "player_id", "VARCHAR(36)"
+            )));
+
+            expectedStructures.put("waystone_registrations", new HashMap<>(Map.of(
+                    "waystone_id", "INTEGER",
+                    "player_id", "VARCHAR(36)"
+            )));
+
+            for (String tableName : expectedStructures.keySet()) {
+                migrateTable(connection, tableName, expectedStructures.get(tableName));
+            }
+
+            TextHandler.get().logTranslated("database.migration.success");
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.migration.error", e);
+        }
+    }
+
+    private static void migrateTable(Connection connection, String tableName, Map<String, String> expectedColumns) throws SQLException {
+        Set<String> currentColumns = getCurrentColumns(connection, tableName);
+        try (Statement stmt = connection.createStatement()) {
+            for (Map.Entry<String, String> entry : expectedColumns.entrySet()) {
+                String columnName = entry.getKey();
+                String columnType = entry.getValue();
+                if (!currentColumns.contains(columnName)) {
+                    String alterSql = String.format("ALTER TABLE %s ADD COLUMN %s %s", tableName, columnName, columnType);
+                    stmt.executeUpdate(alterSql);
+                    TextHandler.get().logTranslated("database.migration.added_column", columnName, tableName);
+                }
+            }
+        }
+    }
+
+    private static Set<String> getCurrentColumns(Connection connection, String tableName) throws SQLException {
+        Set<String> columns = new HashSet<>();
+        if ("sqlite".equals(databaseType)) {
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + tableName + ");")) {
+                while (rs.next()) {
+                    columns.add(rs.getString("name"));
+                }
+            }
+        } else {
+            String sql = databaseType.equals("postgresql") ?
+                    "SELECT column_name FROM information_schema.columns WHERE table_name = ?" :
+                    "SHOW COLUMNS FROM " + tableName;
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                if (databaseType.equals("postgresql")) {
+                    ps.setString(1, tableName.toLowerCase());
+                }
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        columns.add(databaseType.equals("postgresql") ? rs.getString("column_name") : rs.getString("Field"));
+                    }
+                }
+            }
+        }
+        return columns;
     }
 
     public static void addWaystonePermission(int waystoneId, UUID playerId) {
