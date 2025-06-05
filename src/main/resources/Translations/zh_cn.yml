@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "已加载 {0} 个路标石。"
   rename_prompt: "为路标石输入一个新名字："
   add_player_prompt: "输入要添加的玩家的名字："
+  name_shown: "路标石的名字已显示。"
+  name_hidden: "路标石的名字已隐藏。"
   gui:
     icon_invalid: "图标的物品无效。"
     icon_changed: "路标石图标已更改。"

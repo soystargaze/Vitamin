@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "{0} Wegsteine geladen."
   rename_prompt: "Geben Sie einen neuen Namen für den Wegstein ein:"
   add_player_prompt: "Geben Sie den Namen des hinzuzufügenden Spielers ein:"
+  name_shown: "Der Wegstein-Hologrammname wird angezeigt."
+  name_hidden: "Der Wegstein-Hologrammname wird versteckt."
   gui:
     icon_invalid: "Ungültiger Gegenstand für das Symbol."
     icon_changed: "Wegstein-Symbol wurde geändert."

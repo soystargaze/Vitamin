@@ -482,6 +482,10 @@ public class WaystoneModule implements Listener {
                 if (enableSounds) {
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
                 }
+
+                String visibilityMessage = waystone.isNameVisible() ? "waystone.name_shown" : "waystone.name_hidden";
+                TextHandler.get().sendMessage(player, visibilityMessage);
+
                 break;
 
             case 22:

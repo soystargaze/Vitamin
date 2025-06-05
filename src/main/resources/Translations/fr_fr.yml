@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "{0} waystones chargés."
   rename_prompt: "Entrez un nouveau nom pour le waystone :"
   add_player_prompt: "Entrez le nom du joueur à ajouter :"
+  name_shown: "Le nom holographique du waystone est affiché."
+  name_hidden: "Le nom holographique du waystone est masqué."
   gui:
     icon_invalid: "Objet invalide pour l'icône."
     icon_changed: "L'icône du waystone a été changée."

@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "{0} waystone yüklendi."
   rename_prompt: "Waystone için yeni bir isim girin:"
   add_player_prompt: "Eklenecek oyuncunun ismini girin:"
+  name_shown: "Waystone'un ismi gösteriliyor."
+  name_hidden: "Waystone'un ismi gizlendi."
   gui:
     icon_invalid: "İkon için geçersiz öğe."
     icon_changed: "Waystone ikonu değiştirildi."

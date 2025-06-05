@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "{0}개의 웨이스톤을 로드했습니다."
   rename_prompt: "웨이스톤의 새 이름을 입력하세요:"
   add_player_prompt: "추가할 플레이어의 이름을 입력하세요:"
+  name_shown: "웨이스톤의 이름이 표시됩니다."
+  name_hidden: "웨이스톤의 이름이 숨겨졌습니다."
   gui:
     icon_invalid: "아이콘에 유효하지 않은 아이템입니다."
     icon_changed: "웨이스톤 아이콘이 변경되었습니다."

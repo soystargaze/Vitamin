@@ -206,6 +206,8 @@ waystone:
   loaded_waystones: "{0} 個のウェイストーンを読み込みました。"
   rename_prompt: "ウェイストーンの新しい名前を入力してください："
   add_player_prompt: "追加するプレイヤーの名前を入力してください："
+  name_shown: "ウェイストーンの名前は表示されています。"
+  name_hidden: "ウェイストーンの名前は非表示です。"
   gui:
     icon_invalid: "アイコンに無効なアイテムです。"
     icon_changed: "ウェイストーンのアイコンが変更されました。"
