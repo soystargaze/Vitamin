@@ -88,38 +88,38 @@ gui:
 
 # Enable or disable modules
 module:
-  armor_trim: true # Armor trim gives special effects depending on the material (Active with Shift or Passive)
-  auto_tool: true # Automatically switch to the correct tool when breaking blocks
-  bone_meal_expansion: true # Bone meal can be used to grow special crops
-  carry_on: true # Shift + Right Click to pick up entities and containers
-  crop_protection: true # Prevents crops from being trampled
-  custom_recipes: true # Add custom recipes to the game
-  death_chest: true # Create a chest with your items when you die
-  death_map: true # Create a map with your death location
-  elevator: true # Craft an elevator block to teleport up and down
-  elytra_armor: true # Elytra gives armor like a chest plate
-  enchants_back: true # Enchants are returned when disenchanting with a grindstone and has empty books
-  fire_aspect_tools: true # Drop's smelting when the tool has Fire Aspect I (40%) and Fire Aspect II (100%)
-  invisible_item_frames: true # Right-click an item frame with an empty hand to make it invisible/visible
-  leaf_decay: true # Leaves decay when the log is removed
-  oxygen_bottle: true # Using an empty bottle in the water gives you some oxygen
-  pet_protection: true # Prevents pets from taking damage from the owner
-  player_xp_to_books: true # Shift + Right Click with an empty book to store all your XP
-  repair: true # Repair items with nuggets, ingots, diamonds and netherite
-  seed_replanter: true # Right-Click a fully grown crop to harvest and replant it
-  replayable_vault: true # Make Vaults and Ominous Vaults replayable
-  silk_spawners: true # Mine spawners with a silk touch pickaxe to get the spawner
-  sponge_with_lava: true # Sponges can absorb lava
-  totem_from_inventory: true # The totem of undying works from the inventory too
-  void_totem: true # The totem of undying works in the void
-  tp_to_bed_with_compass: true # Right-click with a compass to teleport to your respawn point
-  unlock_all_recipes: true # Unlocks all recipes when you join the server
-  tree_vein_miner: true # Just works when the tool is enchanted with Efficiency V
-  vein_miner: true # Just works when the tool is enchanted with Efficiency V
-  villager_follow_emeralds: true # Villagers follow you when you hold an emerald
-  wall_jump: true # Shift to wall jump. You can climb up or slide down walls
-  waystone: true # Waystone teleportation system
-  weather_effects: true # In the daytime, mobs have more babies and with the rain, crops grow faster.
+  armor_trim: false # Armor trim gives special effects depending on the material (Active with Shift or Passive)
+  auto_tool: false # Automatically switch to the correct tool when breaking blocks
+  bone_meal_expansion: false # Bone meal can be used to grow special crops
+  carry_on: false # Shift + Right Click to pick up entities and containers
+  crop_protection: false # Prevents crops from being trampled
+  custom_recipes: false # Add custom recipes to the game
+  death_chest: false # Create a chest with your items when you die
+  death_map: false # Create a map with your death location
+  elevator: false # Craft an elevator block to teleport up and down
+  elytra_armor: false # Elytra gives armor like a chest plate
+  enchants_back: false # Enchants are returned when disenchanting with a grindstone and has empty books
+  fire_aspect_tools: false # Drop's smelting when the tool has Fire Aspect I (40%) and Fire Aspect II (100%)
+  invisible_item_frames: false # Right-click an item frame with an empty hand to make it invisible/visible
+  leaf_decay: false # Leaves decay when the log is removed
+  oxygen_bottle: false # Using an empty bottle in the water gives you some oxygen
+  pet_protection: false # Prevents pets from taking damage from the owner
+  player_xp_to_books: false # Shift + Right Click with an empty book to store all your XP
+  repair: false # Repair items with nuggets, ingots, diamonds and netherite
+  seed_replanter: false # Right-Click a fully grown crop to harvest and replant it
+  replayable_vault: false # Make Vaults and Ominous Vaults replayable
+  silk_spawners: false # Mine spawners with a silk touch pickaxe to get the spawner
+  sponge_with_lava: false # Sponges can absorb lava
+  totem_from_inventory: false # The totem of undying works from the inventory too
+  void_totem: false # The totem of undying works in the void
+  tp_to_bed_with_compass: false # Right-click with a compass to teleport to your respawn point
+  unlock_all_recipes: false # Unlocks all recipes when you join the server
+  tree_vein_miner: false # Just works when the tool is enchanted with Efficiency V
+  vein_miner: false # Just works when the tool is enchanted with Efficiency V
+  villager_follow_emeralds: false # Villagers follow you when you hold an emerald
+  wall_jump: false # Shift to wall jump. You can climb up or slide down walls
+  waystone: false # Waystone teleportation system
+  weather_effects: false # In the daytime, mobs have more babies and with the rain, crops grow faster.
 
 # Bone Meal Expansion settings
 bone_meal_expansion:
