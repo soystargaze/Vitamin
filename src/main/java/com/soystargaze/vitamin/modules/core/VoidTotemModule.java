@@ -38,7 +38,7 @@ public class VoidTotemModule implements Listener {
             return;
         }
 
-        if (player.getLocation().getY() > -59) return;
+        if (player.getLocation().getY() >= player.getWorld().getMinHeight()) return;
 
         if (isOnCooldown(player)) {
             TextHandler.get().sendMessage(player, "void_totem.cooldown");
