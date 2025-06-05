@@ -443,7 +443,7 @@ public class PaperWaystoneModule implements Listener {
                 break;
 
             case 14:
-                if (!waystone.isPublic()) {
+                if (!waystone.isPublic() && !waystone.isGlobal()) {
                     openPlayerManagementGUI(player, waystone);
                 }
                 break;
@@ -469,6 +469,23 @@ public class PaperWaystoneModule implements Listener {
 
                 String miniMessageFormattedName = convertToMiniMessageFormat(waystone.getName());
                 TextHandler.get().sendMessage(player, "waystone.destroyed", miniMessageFormattedName);
+                break;
+
+            case 5:
+                waystone.setNameVisible(!waystone.isNameVisible());
+                saveWaystoneSettings(waystone);
+
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                        DatabaseHandler.updateWaystoneNameVisibility(waystone.getId(), waystone.isNameVisible())
+                );
+
+                openWaystoneEditGUI(player, waystone);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
+                }
+
+                String visibilityMessage = waystone.isNameVisible() ? "waystone.name_shown" : "waystone.name_hidden";
+                TextHandler.get().sendMessage(player, visibilityMessage);
                 break;
 
             case 22:
@@ -641,7 +658,7 @@ public class PaperWaystoneModule implements Listener {
 
                 pendingTeleports.remove(playerId);
                 playerTeleportLocations.remove(playerId);
-                pendingCosts.remove(playerId); // Clear cost after successful teleport
+                pendingCosts.remove(playerId);
             }, teleportDelay * 20L);
 
             pendingTeleports.put(playerId, task);
@@ -1295,6 +1312,7 @@ public class PaperWaystoneModule implements Listener {
                         if (waystone.getHologram() == null || waystone.getHologram().isDead()) {
                             TextDisplay newHologram = createHologram(loc, waystone.getName());
                             waystone.setHologram(newHologram);
+                            waystone.setNameVisible(waystone.isNameVisible());
                         }
                         if (waystone.getBlockDisplays().isEmpty() ||
                                 waystone.getBlockDisplays().stream().anyMatch(bd -> bd == null || bd.isDead())) {
@@ -1525,6 +1543,7 @@ public class PaperWaystoneModule implements Listener {
                     Location loc = data.location();
                     Waystone waystone = new Waystone(data.id(), loc, data.name(), data.creator());
                     waystone.setPublic(data.isPublic());
+                    waystone.setGlobal(data.isGlobal());
                     waystone.setIconData(data.iconData());
                     waystone.setRegisteredPlayers(DatabaseHandler.getRegisteredPlayers(data.id()));
                     waystone.setAllowedPlayers(DatabaseHandler.getWaystonePermissions(data.id()));
@@ -1536,6 +1555,7 @@ public class PaperWaystoneModule implements Listener {
                     TextDisplay hologram = createHologram(loc, data.name());
                     waystone.setHologram(hologram);
 
+                    waystone.setNameVisible(data.nameVisible());
                 }
                 TextHandler.get().logTranslated("waystone.loaded_waystones", waystones.size());
             });
@@ -1605,7 +1625,8 @@ public class PaperWaystoneModule implements Listener {
     private void saveWaystone(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             DatabaseHandler.WaystoneData data = new DatabaseHandler.WaystoneData(
-                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(), waystone.isPublic(), waystone.isGlobal(), waystone.getIconData());
+                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(),
+                    waystone.isPublic(), waystone.isGlobal(), waystone.getIconData(), waystone.isNameVisible());
             int id = DatabaseHandler.saveWaystone(data);
             waystone.setId(id);
             for (UUID playerId : waystone.getRegisteredPlayers()) {
@@ -1625,13 +1646,14 @@ public class PaperWaystoneModule implements Listener {
 
     private void saveWaystoneSettings(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            DatabaseHandler.updateWaystoneVisibility(waystone.getId(), waystone.isPublic());
+            DatabaseHandler.updateWaystoneSettings(waystone.getId(), waystone.isPublic(), waystone.isGlobal(), waystone.isNameVisible());
 
             for (UUID playerId : waystone.getAllowedPlayers()) {
                 DatabaseHandler.addWaystonePermission(waystone.getId(), playerId);
             }
         });
     }
+
 
     private ItemStack createGlassPane(Material glassType) {
         ItemStack glass = new ItemStack(glassType);
@@ -1649,7 +1671,7 @@ public class PaperWaystoneModule implements Listener {
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
         for (int i = 0; i < 27; i++) {
-            if (i != 10 && i != 12 && i != 14 && i != 16 && i != 22) {
+            if (i != 10 && i != 12 && i != 14 && i != 16 && i != 5 && i != 22) {
                 gui.setItem(i, glassPane);
             }
         }
@@ -1743,6 +1765,29 @@ public class PaperWaystoneModule implements Listener {
         deleteMeta.lore(deleteLore);
         deleteItem.setItemMeta(deleteMeta);
         gui.setItem(16, markAsGUIItem(deleteItem));
+
+        ItemStack nameVisibilityItem = new ItemStack(waystone.isNameVisible() ? Material.NAME_TAG : Material.BARRIER);
+        ItemMeta nameVisibilityMeta = nameVisibilityItem.getItemMeta();
+
+        String nameVisibilityName = waystone.isNameVisible() ?
+                plugin.getConfig().getString("waystone.gui.edit.name_visible.visible.name", "Name Visible") :
+                plugin.getConfig().getString("waystone.gui.edit.name_visible.hidden.name", "Name Hidden");
+        nameVisibilityMeta.displayName(processColorCodes(nameVisibilityName).decoration(TextDecoration.ITALIC, false));
+
+        List<String> nameVisibilityLoreConfig = plugin.getConfig().getStringList(waystone.isNameVisible() ?
+                "waystone.gui.edit.name_visible.visible.lore" : "waystone.gui.edit.name_visible.hidden.lore");
+        List<Component> nameVisibilityLore = new ArrayList<>();
+        for (String loreLine : nameVisibilityLoreConfig) {
+            nameVisibilityLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+        }
+        if (nameVisibilityLore.isEmpty()) {
+            nameVisibilityLore.add(processColorCodes(waystone.isNameVisible() ?
+                    "<gray>Click to hide waystone name" : "<gray>Click to show waystone name")
+                    .decoration(TextDecoration.ITALIC, false));
+        }
+        nameVisibilityMeta.lore(nameVisibilityLore);
+        nameVisibilityItem.setItemMeta(nameVisibilityMeta);
+        gui.setItem(5, markAsGUIItem(nameVisibilityItem));
 
         ItemStack closeItem = new ItemStack(Material.BARRIER);
         ItemMeta closeMeta = closeItem.getItemMeta();
@@ -2058,6 +2103,7 @@ public class PaperWaystoneModule implements Listener {
                     });
                 }
             }
+            addingPlayerToWaystone.remove(playerId);
             return;
         }
 
@@ -2372,6 +2418,7 @@ public class PaperWaystoneModule implements Listener {
         private volatile boolean isGlobal = false;
         private final Set<UUID> allowedPlayers = ConcurrentHashMap.newKeySet();
         private volatile String iconData;
+        private volatile boolean nameVisible = true;
 
         public Waystone(int id, Location location, String name, UUID creator) {
             this.id = id;
@@ -2381,6 +2428,7 @@ public class PaperWaystoneModule implements Listener {
             this.isAdminCreated = Bukkit.getPlayer(creator) != null &&
                     Objects.requireNonNull(Bukkit.getPlayer(creator)).hasPermission("vitamin.module.waystone.admin");
             this.iconData = null;
+            this.nameVisible = true;
         }
 
         public void setId(int id) { this.id = id; }
@@ -2422,6 +2470,19 @@ public class PaperWaystoneModule implements Listener {
 
         public String getIconData() { return iconData; }
         public void setIconData(String iconData) { this.iconData = iconData; }
+
+        public boolean isNameVisible() { return nameVisible; }
+        public void setNameVisible(boolean nameVisible) {
+            this.nameVisible = nameVisible;
+            if (hologram != null && !hologram.isDead()) {
+                if (nameVisible) {
+                    Component nameComponent = Component.text(name);
+                    hologram.text(nameComponent);
+                } else {
+                    hologram.text(Component.empty());
+                }
+            }
+        }
     }
 
     private record PendingWaystone(Location location, long creationTime) {}

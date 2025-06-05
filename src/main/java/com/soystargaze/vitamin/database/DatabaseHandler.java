@@ -209,7 +209,8 @@ public class DatabaseHandler {
                     creator VARCHAR(36) NOT NULL,
                     is_public BOOLEAN DEFAULT TRUE,
                     is_global BOOLEAN DEFAULT FALSE,
-                    icon_data TEXT DEFAULT NULL
+                    icon_data TEXT DEFAULT NULL,
+                    name_visible BOOLEAN DEFAULT TRUE
                 );
                 """;
             stmt.executeUpdate(createWaystones);
@@ -237,18 +238,6 @@ public class DatabaseHandler {
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
-        }
-    }
-
-    public static void updateWaystoneVisibility(int waystoneId, boolean isPublic) {
-        String sql = "UPDATE waystones SET is_public = ? WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setBoolean(1, isPublic);
-            ps.setInt(2, waystoneId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            TextHandler.get().logTranslated("database.update_error", e);
         }
     }
 
@@ -321,7 +310,7 @@ public class DatabaseHandler {
 
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
-        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, COALESCE(is_global, 0) as is_global, icon_data FROM waystones";
+        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, COALESCE(is_global, 0) as is_global, icon_data, COALESCE(name_visible, 1) as name_visible FROM waystones";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -338,8 +327,9 @@ public class DatabaseHandler {
                 boolean isPublic = rs.getBoolean("is_public");
                 boolean isGlobal = rs.getBoolean("is_global");
                 String iconData = rs.getString("icon_data");
+                boolean nameVisible = rs.getBoolean("name_visible");
                 Location location = new Location(world, x, y, z);
-                waystones.add(new WaystoneData(id, location, name, creator, isPublic, isGlobal, iconData));
+                waystones.add(new WaystoneData(id, location, name, creator, isPublic, isGlobal, iconData, nameVisible));
             }
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
@@ -348,7 +338,7 @@ public class DatabaseHandler {
     }
 
     public static int saveWaystone(WaystoneData waystone) {
-        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, is_global, icon_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, is_global, icon_data, name_visible) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, waystone.location().getWorld().getName());
@@ -360,6 +350,7 @@ public class DatabaseHandler {
             ps.setBoolean(7, waystone.isPublic());
             ps.setBoolean(8, waystone.isGlobal());
             ps.setString(9, waystone.iconData());
+            ps.setBoolean(10, waystone.nameVisible());
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -372,13 +363,26 @@ public class DatabaseHandler {
         return -1;
     }
 
-    public static void updateWaystoneSettings(int waystoneId, boolean isPublic, boolean isGlobal) {
-        String sql = "UPDATE waystones SET is_public = ?, is_global = ? WHERE id = ?";
+    public static void updateWaystoneSettings(int waystoneId, boolean isPublic, boolean isGlobal, boolean nameVisible) {
+        String sql = "UPDATE waystones SET is_public = ?, is_global = ?, name_visible = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBoolean(1, isPublic);
             ps.setBoolean(2, isGlobal);
-            ps.setInt(3, waystoneId);
+            ps.setBoolean(3, nameVisible);
+            ps.setInt(4, waystoneId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void updateWaystoneNameVisibility(int waystoneId, boolean nameVisible) {
+        String sql = "UPDATE waystones SET name_visible = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, nameVisible);
+            ps.setInt(2, waystoneId);
             ps.executeUpdate();
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.update_error", e);
@@ -465,7 +469,8 @@ public class DatabaseHandler {
         return players;
     }
 
-    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic, boolean isGlobal, String iconData) {
+    public record WaystoneData(int id, Location location, String name, UUID creator,
+                               boolean isPublic, boolean isGlobal, String iconData, boolean nameVisible) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {

@@ -355,6 +355,15 @@ waystone:
         name: "<yellow>Rename Waystone"
         lore:
           - "<gray>Current name: <white>{name}"
+      name_visible:
+        visible:
+          name: "<green>Visible Name"
+          lore:
+            - "<gray>Waystone name is visible"
+        hidden:
+          name: "<red>Hidden Name"
+          lore:
+            - "<gray>Waystone name is hidden"
       manage_players:
         name: "Manage Players"
         lore:
