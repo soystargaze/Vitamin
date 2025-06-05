@@ -208,6 +208,7 @@ public class DatabaseHandler {
                     name VARCHAR(255) NOT NULL,
                     creator VARCHAR(36) NOT NULL,
                     is_public BOOLEAN DEFAULT TRUE,
+                    is_global BOOLEAN DEFAULT FALSE,
                     icon_data TEXT DEFAULT NULL
                 );
                 """;
@@ -320,7 +321,7 @@ public class DatabaseHandler {
 
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
-        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, icon_data FROM waystones";
+        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, COALESCE(is_global, 0) as is_global, icon_data FROM waystones";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -335,9 +336,10 @@ public class DatabaseHandler {
                 String name = rs.getString("name");
                 UUID creator = UUID.fromString(rs.getString("creator"));
                 boolean isPublic = rs.getBoolean("is_public");
+                boolean isGlobal = rs.getBoolean("is_global");
                 String iconData = rs.getString("icon_data");
                 Location location = new Location(world, x, y, z);
-                waystones.add(new WaystoneData(id, location, name, creator, isPublic, iconData));
+                waystones.add(new WaystoneData(id, location, name, creator, isPublic, isGlobal, iconData));
             }
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
@@ -346,7 +348,7 @@ public class DatabaseHandler {
     }
 
     public static int saveWaystone(WaystoneData waystone) {
-        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, icon_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, is_global, icon_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, waystone.location().getWorld().getName());
@@ -356,7 +358,8 @@ public class DatabaseHandler {
             ps.setString(5, waystone.name());
             ps.setString(6, waystone.creator().toString());
             ps.setBoolean(7, waystone.isPublic());
-            ps.setString(8, waystone.iconData());
+            ps.setBoolean(8, waystone.isGlobal());
+            ps.setString(9, waystone.iconData());
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -367,6 +370,19 @@ public class DatabaseHandler {
             TextHandler.get().logTranslated("database.update_error", e);
         }
         return -1;
+    }
+
+    public static void updateWaystoneSettings(int waystoneId, boolean isPublic, boolean isGlobal) {
+        String sql = "UPDATE waystones SET is_public = ?, is_global = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setBoolean(1, isPublic);
+            ps.setBoolean(2, isGlobal);
+            ps.setInt(3, waystoneId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
     }
 
     public static void removeWaystone(int waystoneId) {
@@ -449,7 +465,7 @@ public class DatabaseHandler {
         return players;
     }
 
-    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic, String iconData) {
+    public record WaystoneData(int id, Location location, String name, UUID creator, boolean isPublic, boolean isGlobal, String iconData) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {

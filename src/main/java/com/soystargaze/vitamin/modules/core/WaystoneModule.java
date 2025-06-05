@@ -418,7 +418,15 @@ public class WaystoneModule implements Listener {
 
         switch (event.getSlot()) {
             case 10:
-                waystone.setPublic(!waystone.isPublic());
+                if (waystone.isGlobal()) {
+                    waystone.setGlobal(false);
+                    waystone.setPublic(false);
+                } else if (waystone.isPublic()) {
+                    waystone.setGlobal(true);
+                    waystone.setPublic(false);
+                } else {
+                    waystone.setPublic(true);
+                }
                 saveWaystoneSettings(waystone);
                 openWaystoneEditGUI(player, waystone);
                 if (enableSounds) {
@@ -434,7 +442,7 @@ public class WaystoneModule implements Listener {
                 break;
 
             case 14:
-                if (!waystone.isPublic()) {
+                if (!waystone.isPublic() && !waystone.isGlobal()) {
                     openPlayerManagementGUI(player, waystone);
                 }
                 break;
@@ -1589,7 +1597,7 @@ public class WaystoneModule implements Listener {
     private void saveWaystone(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             DatabaseHandler.WaystoneData data = new DatabaseHandler.WaystoneData(
-                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(), waystone.isPublic(), waystone.getIconData());
+                    waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(), waystone.isPublic(), waystone.isGlobal(), waystone.getIconData());
             int id = DatabaseHandler.saveWaystone(data);
             waystone.setId(id);
             for (UUID playerId : waystone.getRegisteredPlayers()) {
@@ -1609,7 +1617,7 @@ public class WaystoneModule implements Listener {
 
     private void saveWaystoneSettings(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            DatabaseHandler.updateWaystoneVisibility(waystone.getId(), waystone.isPublic());
+            DatabaseHandler.updateWaystoneSettings(waystone.getId(), waystone.isPublic(), waystone.isGlobal());
 
             for (UUID playerId : waystone.getAllowedPlayers()) {
                 DatabaseHandler.addWaystonePermission(waystone.getId(), playerId);
@@ -1639,14 +1647,25 @@ public class WaystoneModule implements Listener {
             }
         }
 
-        ItemStack visibilityItem = new ItemStack(waystone.isPublic() ? Material.LIME_DYE : Material.RED_DYE);
+        ItemStack visibilityItem;
+        if (waystone.isGlobal()) {
+            visibilityItem = new ItemStack(Material.ENDER_EYE);
+        } else if (waystone.isPublic()) {
+            visibilityItem = new ItemStack(Material.LIME_DYE);
+        } else {
+            visibilityItem = new ItemStack(Material.RED_DYE);
+        }
         ItemMeta visibilityMeta = visibilityItem.getItemMeta();
 
-        String visibilityNamePath = waystone.isPublic() ? "waystone.gui.edit.visibility.public.name" : "waystone.gui.edit.visibility.private.name";
-        String visibilityLorePath = waystone.isPublic() ? "waystone.gui.edit.visibility.public.lore" : "waystone.gui.edit.visibility.private.lore";
+        String visibilityNamePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.name" :
+                waystone.isPublic() ? "waystone.gui.edit.visibility.public.name" :
+                        "waystone.gui.edit.visibility.private.name";
+        String visibilityLorePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.lore" :
+                waystone.isPublic() ? "waystone.gui.edit.visibility.public.lore" :
+                        "waystone.gui.edit.visibility.private.lore";
 
         String visibilityName = convertToLegacyText(plugin.getConfig().getString(visibilityNamePath,
-                waystone.isPublic() ? "Public Waystone" : "Private Waystone"));
+                waystone.isGlobal() ? "Global Waystone" : waystone.isPublic() ? "Public Waystone" : "Private Waystone"));
         assert visibilityMeta != null;
         visibilityMeta.setDisplayName(visibilityName);
 
@@ -1676,7 +1695,7 @@ public class WaystoneModule implements Listener {
         renameItem.setItemMeta(renameMeta);
         gui.setItem(12, markAsGUIItem(renameItem));
 
-        if (waystone.isPublic()) {
+        if (waystone.isPublic() || waystone.isGlobal()) {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
@@ -1688,7 +1707,7 @@ public class WaystoneModule implements Listener {
             gui.setItem(14, markAsGUIItem(playersItem));
         }
 
-        if (!waystone.isPublic()) {
+        if (!waystone.isPublic() && !waystone.isGlobal()) {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
@@ -2296,7 +2315,7 @@ public class WaystoneModule implements Listener {
         String titleComponent = convertToLegacyText(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
 
         List<Waystone> availableWaystones = waystones.values().stream()
-                .filter(waystone -> waystone.isRegistered(player.getUniqueId()) &&
+                .filter(waystone -> (waystone.isGlobal() || waystone.isRegistered(player.getUniqueId())) &&
                         waystone.isPlayerAllowed(player.getUniqueId()))
                 .collect(Collectors.toList());
 
@@ -2350,6 +2369,7 @@ public class WaystoneModule implements Listener {
         private volatile List<BlockDisplay> blockDisplays = new ArrayList<>();
         private final boolean isAdminCreated;
         private volatile boolean isPublic = true;
+        private volatile boolean isGlobal = false;
         private final Set<UUID> allowedPlayers = ConcurrentHashMap.newKeySet();
         private volatile String iconData;
 
@@ -2384,6 +2404,9 @@ public class WaystoneModule implements Listener {
 
         public boolean isPublic() { return isPublic; }
         public void setPublic(boolean isPublic) { this.isPublic = isPublic; }
+
+        public boolean isGlobal() { return isGlobal; }
+        public void setGlobal(boolean isGlobal) { this.isGlobal = isGlobal; }
 
         public Set<UUID> getAllowedPlayers() { return new HashSet<>(allowedPlayers); }
         public void setAllowedPlayers(Set<UUID> players) {

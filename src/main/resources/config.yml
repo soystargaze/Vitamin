@@ -339,10 +339,14 @@ waystone:
     edit:
       title: "Edit Waystone"
       visibility:
+        global:
+          name: "<blue>Global Waystone"
+          lore:
+            - "<gray>Visible to all players in the world"
         public:
           name: "<green>Public Waystone"
           lore:
-            - "<gray>Visible to all players"
+            - "<gray>Visible to all players if discovered"
         private:
           name: "<red>Private Waystone"
           lore:
