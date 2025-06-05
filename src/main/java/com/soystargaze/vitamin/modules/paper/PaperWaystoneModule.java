@@ -471,7 +471,7 @@ public class PaperWaystoneModule implements Listener {
                 TextHandler.get().sendMessage(player, "waystone.destroyed", miniMessageFormattedName);
                 break;
 
-            case 5:
+            case 4:
                 waystone.setNameVisible(!waystone.isNameVisible());
                 saveWaystoneSettings(waystone);
 
@@ -1671,7 +1671,7 @@ public class PaperWaystoneModule implements Listener {
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
         for (int i = 0; i < 27; i++) {
-            if (i != 10 && i != 12 && i != 14 && i != 16 && i != 5 && i != 22) {
+            if (i != 10 && i != 12 && i != 14 && i != 16 && i != 4 && i != 22) {
                 gui.setItem(i, glassPane);
             }
         }
@@ -1766,7 +1766,7 @@ public class PaperWaystoneModule implements Listener {
         deleteItem.setItemMeta(deleteMeta);
         gui.setItem(16, markAsGUIItem(deleteItem));
 
-        ItemStack nameVisibilityItem = new ItemStack(waystone.isNameVisible() ? Material.NAME_TAG : Material.BARRIER);
+        ItemStack nameVisibilityItem = new ItemStack(waystone.isNameVisible() ? Material.ENDER_EYE : Material.BARRIER);
         ItemMeta nameVisibilityMeta = nameVisibilityItem.getItemMeta();
 
         String nameVisibilityName = waystone.isNameVisible() ?
@@ -1787,7 +1787,7 @@ public class PaperWaystoneModule implements Listener {
         }
         nameVisibilityMeta.lore(nameVisibilityLore);
         nameVisibilityItem.setItemMeta(nameVisibilityMeta);
-        gui.setItem(5, markAsGUIItem(nameVisibilityItem));
+        gui.setItem(4, markAsGUIItem(nameVisibilityItem));
 
         ItemStack closeItem = new ItemStack(Material.BARRIER);
         ItemMeta closeMeta = closeItem.getItemMeta();
