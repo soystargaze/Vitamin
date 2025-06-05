@@ -332,6 +332,8 @@ waystone:
         location: "<gold>X: <white>%d<gold>, <gold>Y: <white>%d<gold>, <gold>Z: <white>%d"
         click_to_teleport: "<gold>Click <gray>to teleport"
         cost: "<gray>Cost: <gold>%s"
+        global: "<blue>Global Waystone"
+        public: "<green>Public Waystone"
         private: "<red>Private Waystone"
         right_click_icon: "<gold>Right-click <gray>to set icon"
 

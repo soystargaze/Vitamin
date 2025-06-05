@@ -902,7 +902,13 @@ public class WaystoneModule implements Listener {
             lore.add(convertToLegacyText(costString));
         }
 
-        if (!waystone.isPublic()) {
+        if (waystone.isGlobal()) {
+            String globalString = plugin.getConfig().getString("waystone.gui.discovered.item.global", "Global Waystone");
+            lore.add(convertToLegacyText(globalString));
+        } else if (waystone.isPublic()) {
+            String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.public", "Public Waystone");
+            lore.add(convertToLegacyText(publicString));
+        } else {
             String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
             lore.add(convertToLegacyText(privateString));
         }
@@ -1667,7 +1673,7 @@ public class WaystoneModule implements Listener {
 
         ItemStack visibilityItem;
         if (waystone.isGlobal()) {
-            visibilityItem = new ItemStack(Material.ENDER_EYE);
+            visibilityItem = new ItemStack(Material.BLUE_DYE);
         } else if (waystone.isPublic()) {
             visibilityItem = new ItemStack(Material.LIME_DYE);
         } else {

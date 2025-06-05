@@ -905,7 +905,13 @@ public class PaperWaystoneModule implements Listener {
             lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
         }
 
-        if (!waystone.isPublic()) {
+        if (waystone.isGlobal()) {
+            String globalString = plugin.getConfig().getString("waystone.gui.discovered.item.global", "Global Waystone");
+            lore.add(processColorCodes(globalString).decoration(TextDecoration.ITALIC, false));
+        } else if (waystone.isPublic()) {
+            String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.public", "Public Waystone");
+            lore.add(processColorCodes(publicString).decoration(TextDecoration.ITALIC, false));
+        } else {
             String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
             lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
         }
@@ -1678,7 +1684,7 @@ public class PaperWaystoneModule implements Listener {
 
         ItemStack visibilityItem;
         if (waystone.isGlobal()) {
-            visibilityItem = new ItemStack(Material.ENDER_EYE);
+            visibilityItem = new ItemStack(Material.BLUE_DYE);
         } else if (waystone.isPublic()) {
             visibilityItem = new ItemStack(Material.LIME_DYE);
         } else {
