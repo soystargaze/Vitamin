@@ -17,29 +17,16 @@ public class BlockDisplayUtils {
 
     static {
         MATERIAL_THEMES.put(Material.STONE, Arrays.asList(
-                Material.CHISELED_STONE_BRICKS,
-                Material.STONE_BRICKS,
-                Material.STONE,
-                Material.SMOOTH_QUARTZ,
-                Material.SMOOTH_QUARTZ,
-                Material.STONE_BRICKS,
-                Material.CHISELED_STONE_BRICKS,
-                Material.SMOOTH_QUARTZ,
-                Material.STONE
-        ));
-
-        MATERIAL_THEMES.put(Material.SANDSTONE, Arrays.asList(
-                Material.CHISELED_SANDSTONE,
-                Material.SANDSTONE,
-                Material.SANDSTONE,
-                Material.SMOOTH_SANDSTONE,
-                Material.SMOOTH_SANDSTONE,
-                Material.SANDSTONE,
-                Material.CHISELED_SANDSTONE,
-                Material.SMOOTH_SANDSTONE,
-                Material.SANDSTONE
+                Material.STONE_BRICKS,      // 0 - project_0
+                Material.SMOOTH_STONE,      // 1 - project_1
+                Material.STONE_BRICKS,      // 2 - project_2
+                Material.STONE_BRICKS,      // 3 - project_3
+                Material.STONE_BRICKS,      // 4 - project_4
+                Material.SMOOTH_STONE,      // 5 - project_5
+                Material.LODESTONE          // 6 - project_6
         ));
     }
+
 
     public static boolean hasTheme(Material material) {
         return MATERIAL_THEMES.containsKey(material);
@@ -50,20 +37,30 @@ public class BlockDisplayUtils {
 
         List<BlockDisplay> displays = new ArrayList<>();
 
+        // project_0: Base inferior
         displays.add(createBlockDisplay(baseLoc, themeMaterials.get(0), 1f, 0.25f, 1f, 0f, 0f, 0f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(1), 0.875f, 0.125f, 0.875f, 0.0625f, 0.25f, 0.0625f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(2), 0.625f, 1f, 0.625f, 0.1875f, 0.4375f, 0.1875f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(3), 0.75f, 0.125f, 0.75f, 0.125f, 0.3125f, 0.125f));
 
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(4), 0.75f, 0.125f, 0.75f, 0.125f, 1.4375f, 0.125f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(5), 0.875f, 0.125f, 0.875f, 0.0625f, 1.5f, 0.0625f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(6), 1f, 0.1875f, 1f, 0f, 1.625f, 0f));
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(7), 0.75f, 0.125f, 0.75f, 0.125f, 1.75f, 0.125f));
+        // project_1: Pilar superior
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(1), 0.625f, 0.9375f, 0.625f, 0.1875f, 1f, 0.1875f));
 
-        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(8), 0.625f, 0.125f, 0.625f, 0.1875f, 1.8125f, 0.1875f));
+        // project_2: Marco inferior
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(2), 0.875f, 0.1875f, 0.875f, 0.0625f, 0.25f, 0.0625f));
+
+        // project_3: Base superior
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(3), 1f, 0.25f, 1f, 0f, 1.75f, 0f));
+
+        // project_4: Marco superior
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(4), 0.875f, 0.1875f, 0.875f, 0.0625f, 1.5625f, 0.0625f));
+
+        // project_5: Pilar inferior
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(5), 0.625f, 0.9375f, 0.625f, 0.1875f, 0.0625f, 0.1875f));
+
+        // project_6: Centro/núcleo (lodestone)
+        displays.add(createBlockDisplay(baseLoc, themeMaterials.get(6), 0.75f, 0.75f, 0.75f, 0.125f, 0.625f, 0.125f));
 
         return displays;
     }
+
 
     private static BlockDisplay createBlockDisplay(Location baseLoc, Material material,
                                                    float scaleX, float scaleY, float scaleZ,
