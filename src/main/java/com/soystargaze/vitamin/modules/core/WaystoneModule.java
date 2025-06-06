@@ -1,6 +1,7 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.utils.BlockDisplayUtils;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.milkbowl.vault.economy.Economy;
@@ -42,14 +43,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Transformation;
 import org.bukkit.Particle.DustOptions;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
 
 import java.io.*;
 import java.net.URI;
@@ -124,6 +122,8 @@ public class WaystoneModule implements Listener {
     private final NamespacedKey waystoneIdentifierKey;
     private final NamespacedKey guiItemKey;
 
+    private static WaystoneModule instance;
+
     static class Cost {
         String type;
         int amount;
@@ -137,6 +137,7 @@ public class WaystoneModule implements Listener {
     }
 
     public WaystoneModule(JavaPlugin plugin) {
+        instance = this;
         this.plugin = plugin;
         this.waystoneCoreKey = new NamespacedKey(plugin, "vitamin_id");
         this.waystoneIdentifierKey = new NamespacedKey(plugin, "waystone_id");
@@ -223,6 +224,10 @@ public class WaystoneModule implements Listener {
         registerWaystoneCoreRecipe();
         loadWaystones();
         startOptimizedTasks();
+    }
+
+    public static String convertToLegacyTextStatic(String input) {
+        return instance != null ? instance.convertToLegacyText(input) : input.replace("&", "§");
     }
 
     public void clearWaystones() {
@@ -1539,7 +1544,7 @@ public class WaystoneModule implements Listener {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 for (DatabaseHandler.WaystoneData data : dataList) {
                     Location loc = data.location();
-                    Waystone waystone = new Waystone(data.id(), loc, data.name(), data.creator());
+                    Waystone waystone = new Waystone(data.id(), loc, data.name(), data.creator(), data.baseMaterial());
                     waystone.setPublic(data.isPublic());
                     waystone.setGlobal(data.isGlobal());
                     waystone.setIconData(data.iconData());
@@ -1561,45 +1566,8 @@ public class WaystoneModule implements Listener {
     }
 
     private void createWaystoneBlockDisplays(Location loc, Waystone waystone) {
-        List<BlockDisplay> displays = new ArrayList<>();
-
-        displays.add(createBlockDisplay(loc, Material.CHISELED_STONE_BRICKS, 1f, 0.25f, 1f, 0f, 0f, 0f));
-        displays.add(createBlockDisplay(loc, Material.STONE_BRICKS, 0.875f, 0.125f, 0.875f, 0.0625f, 0.25f, 0.0625f));
-        displays.add(createBlockDisplay(loc, Material.STONE, 0.625f, 1f, 0.625f, 0.1875f, 0.4375f, 0.1875f));
-        displays.add(createBlockDisplay(loc, Material.SMOOTH_QUARTZ, 0.75f, 0.125f, 0.75f, 0.125f, 0.3125f, 0.125f));
-
-        displays.add(createBlockDisplay(loc, Material.SMOOTH_QUARTZ, 0.75f, 0.125f, 0.75f, 0.125f, 1.4375f, 0.125f));
-        displays.add(createBlockDisplay(loc, Material.STONE_BRICKS, 0.875f, 0.125f, 0.875f, 0.0625f, 1.5f, 0.0625f));
-        displays.add(createBlockDisplay(loc, Material.CHISELED_STONE_BRICKS, 1f, 0.1875f, 1f, 0f, 1.625f, 0f));
-        displays.add(createBlockDisplay(loc, Material.SMOOTH_QUARTZ, 0.75f, 0.125f, 0.75f, 0.125f, 1.75f, 0.125f));
-
-        displays.add(createBlockDisplay(loc, Material.STONE, 0.625f, 0.125f, 0.625f, 0.1875f, 1.8125f, 0.1875f));
-
+        List<BlockDisplay> displays = BlockDisplayUtils.createWaystoneBlockDisplays(loc, waystone.getBaseMaterial());
         waystone.setBlockDisplays(displays);
-    }
-
-    private BlockDisplay createBlockDisplay(Location baseLoc, Material material,
-                                            float scaleX, float scaleY, float scaleZ,
-                                            float offsetX, float offsetY, float offsetZ) {
-        BlockDisplay blockDisplay = (BlockDisplay) Objects.requireNonNull(baseLoc.getWorld()).spawnEntity(
-                baseLoc.clone().add(offsetX, offsetY, offsetZ), EntityType.BLOCK_DISPLAY);
-
-        blockDisplay.setBlock(material.createBlockData());
-
-        Transformation transformation = new Transformation(
-                new Vector3f(0, 0, 0),
-                new AxisAngle4f(0, 0, 0, 1),
-                new Vector3f(scaleX, scaleY, scaleZ),
-                new AxisAngle4f(0, 0, 0, 1)
-        );
-
-        blockDisplay.setTransformation(transformation);
-        blockDisplay.setBrightness(new Display.Brightness(15, 15));
-        blockDisplay.addScoreboardTag("vitaminwaystone");
-        blockDisplay.addScoreboardTag("waystone_" + baseLoc.getBlockX() + "_" + baseLoc.getBlockY() + "_" + baseLoc.getBlockZ());
-        blockDisplay.setPersistent(true);
-
-        return blockDisplay;
     }
 
     private TextDisplay createHologram(Location loc, String name) {
@@ -1625,7 +1593,8 @@ public class WaystoneModule implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             DatabaseHandler.WaystoneData data = new DatabaseHandler.WaystoneData(
                     waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(),
-                    waystone.isPublic(), waystone.isGlobal(), waystone.getIconData(), waystone.isNameVisible());
+                    waystone.isPublic(), waystone.isGlobal(), waystone.getIconData(), waystone.isNameVisible(),
+                    waystone.getBaseMaterial());
             int id = DatabaseHandler.saveWaystone(data);
             waystone.setId(id);
             for (UUID playerId : waystone.getRegisteredPlayers()) {
@@ -1666,7 +1635,7 @@ public class WaystoneModule implements Listener {
         editingWaystones.put(player.getUniqueId(), waystone);
 
         String title = convertToLegacyText(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
-        Inventory gui = Bukkit.createInventory(null, 36, title);
+        Inventory gui = Bukkit.createInventory(null, 27, title);
 
         ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
         for (int i = 0; i < 27; i++) {
@@ -1903,9 +1872,16 @@ public class WaystoneModule implements Listener {
 
             UUID playerId = player.getUniqueId();
 
+            ItemStack offHandItem = player.getInventory().getItemInOffHand();
+            Material baseMaterial = Material.STONE;
+            if (offHandItem != null && offHandItem.getType().isBlock() &&
+                    BlockDisplayUtils.hasTheme(offHandItem.getType())) {
+                baseMaterial = offHandItem.getType();
+            }
+
             Bukkit.getScheduler().runTask(plugin, () -> placePendingWaystoneCore(blockLocation));
 
-            pendingWaystones.put(playerId, new PendingWaystone(blockLocation, System.currentTimeMillis()));
+            pendingWaystones.put(playerId, new PendingWaystone(blockLocation, System.currentTimeMillis(), baseMaterial));
 
             if (enableCreationEffects) {
                 playWaystoneActivateSound(blockLocation);
@@ -2119,6 +2095,8 @@ public class WaystoneModule implements Listener {
                     waystone.getHologram().setCustomName(nameText);
                     waystone.setName(newName);
 
+                    waystone.setNameVisible(waystone.isNameVisible());
+
                     Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
                             DatabaseHandler.updateWaystoneName(waystone.getId(), newName)
                     );
@@ -2189,7 +2167,8 @@ public class WaystoneModule implements Listener {
 
                 removePendingWaystoneCore(loc);
 
-                Waystone waystone = new Waystone(-1, loc, name, playerId);
+                Material baseMaterial = pending.baseMaterial();
+                Waystone waystone = new Waystone(-1, loc, name, playerId, baseMaterial);
                 waystone.registerPlayer(playerId);
 
                 createWaystoneBarrierPillar(loc);
@@ -2304,7 +2283,8 @@ public class WaystoneModule implements Listener {
 
                 removePendingWaystoneCore(loc);
 
-                Waystone waystone = new Waystone(-1, loc, defaultWaystoneName, playerId);
+                Material baseMaterial = pending.baseMaterial();
+                Waystone waystone = new Waystone(-1, loc, defaultWaystoneName, playerId, baseMaterial);
                 waystone.registerPlayer(playerId);
 
                 createWaystoneBarrierPillar(loc);
@@ -2419,8 +2399,9 @@ public class WaystoneModule implements Listener {
         private final Set<UUID> allowedPlayers = ConcurrentHashMap.newKeySet();
         private volatile String iconData;
         private volatile boolean nameVisible = true;
+        private final Material baseMaterial;
 
-        public Waystone(int id, Location location, String name, UUID creator) {
+        public Waystone(int id, Location location, String name, UUID creator, Material baseMaterial) {
             this.id = id;
             this.location = location;
             this.name = name;
@@ -2429,6 +2410,7 @@ public class WaystoneModule implements Listener {
                     Objects.requireNonNull(Bukkit.getPlayer(creator)).hasPermission("vitamin.module.waystone.admin");
             this.iconData = null;
             this.nameVisible = true;
+            this.baseMaterial = baseMaterial != null ? baseMaterial : Material.STONE;
         }
 
         public void setId(int id) { this.id = id; }
@@ -2475,10 +2457,14 @@ public class WaystoneModule implements Listener {
         public void setNameVisible(boolean nameVisible) {
             this.nameVisible = nameVisible;
             if (hologram != null && !hologram.isDead()) {
+                String nameText = WaystoneModule.convertToLegacyTextStatic(name);
+                hologram.setCustomName(nameText);
                 hologram.setCustomNameVisible(nameVisible);
             }
         }
+
+        public Material getBaseMaterial() { return baseMaterial; }
     }
 
-    private record PendingWaystone(Location location, long creationTime) {}
+    private record PendingWaystone(Location location, long creationTime, Material baseMaterial) {}
 }

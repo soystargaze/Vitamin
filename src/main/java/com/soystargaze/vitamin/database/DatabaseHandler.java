@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -212,7 +213,8 @@ public class DatabaseHandler {
                     is_public BOOLEAN DEFAULT TRUE,
                     is_global BOOLEAN DEFAULT FALSE,
                     icon_data TEXT DEFAULT NULL,
-                    name_visible BOOLEAN DEFAULT TRUE
+                    name_visible BOOLEAN DEFAULT TRUE,
+                    base_material VARCHAR(50) DEFAULT 'STONE'
                 );
                 """;
             stmt.executeUpdate(createWaystones);
@@ -308,7 +310,8 @@ public class DatabaseHandler {
                     Map.entry("is_public", "BOOLEAN"),
                     Map.entry("is_global", "BOOLEAN"),
                     Map.entry("icon_data", "TEXT"),
-                    Map.entry("name_visible", "BOOLEAN")
+                    Map.entry("name_visible", "BOOLEAN"),
+                    Map.entry("base_material", "VARCHAR(50)")
             )));
 
             expectedStructures.put("waystone_permissions", new HashMap<>(Map.of(
@@ -442,7 +445,7 @@ public class DatabaseHandler {
 
     public static List<WaystoneData> loadWaystones() {
         List<WaystoneData> waystones = new ArrayList<>();
-        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, COALESCE(is_global, 0) as is_global, icon_data, COALESCE(name_visible, 1) as name_visible FROM waystones";
+        String sql = "SELECT id, world, x, y, z, name, creator, COALESCE(is_public, 1) as is_public, COALESCE(is_global, 0) as is_global, icon_data, COALESCE(name_visible, 1) as name_visible, base_material FROM waystones";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -460,8 +463,10 @@ public class DatabaseHandler {
                 boolean isGlobal = rs.getBoolean("is_global");
                 String iconData = rs.getString("icon_data");
                 boolean nameVisible = rs.getBoolean("name_visible");
+                String baseMaterialStr = rs.getString("base_material");
+                Material baseMaterial = baseMaterialStr != null ? Material.valueOf(baseMaterialStr) : Material.STONE;
                 Location location = new Location(world, x, y, z);
-                waystones.add(new WaystoneData(id, location, name, creator, isPublic, isGlobal, iconData, nameVisible));
+                waystones.add(new WaystoneData(id, location, name, creator, isPublic, isGlobal, iconData, nameVisible, baseMaterial));
             }
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.query_error", e);
@@ -470,7 +475,7 @@ public class DatabaseHandler {
     }
 
     public static int saveWaystone(WaystoneData waystone) {
-        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, is_global, icon_data, name_visible) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO waystones (world, x, y, z, name, creator, is_public, is_global, icon_data, name_visible, base_material) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, waystone.location().getWorld().getName());
@@ -483,6 +488,7 @@ public class DatabaseHandler {
             ps.setBoolean(8, waystone.isGlobal());
             ps.setString(9, waystone.iconData());
             ps.setBoolean(10, waystone.nameVisible());
+            ps.setString(11, waystone.baseMaterial().name());
             ps.executeUpdate();
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -602,7 +608,8 @@ public class DatabaseHandler {
     }
 
     public record WaystoneData(int id, Location location, String name, UUID creator,
-                               boolean isPublic, boolean isGlobal, String iconData, boolean nameVisible) {
+                               boolean isPublic, boolean isGlobal, String iconData,
+                               boolean nameVisible, Material baseMaterial) {
     }
 
     public static ReactivationData getReactivationData(Location vaultLoc, UUID playerId) {
