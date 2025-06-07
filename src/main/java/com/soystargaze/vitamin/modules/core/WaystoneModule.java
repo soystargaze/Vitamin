@@ -425,12 +425,12 @@ public class WaystoneModule implements Listener {
             case 10:
                 if (waystone.isGlobal()) {
                     waystone.setGlobal(false);
-                    waystone.setPublic(false);
-                } else if (waystone.isPublic()) {
+                    waystone.setDiscoverable(false);
+                } else if (waystone.isDiscoverable()) {
                     waystone.setGlobal(true);
-                    waystone.setPublic(false);
+                    waystone.setDiscoverable(false);
                 } else {
-                    waystone.setPublic(true);
+                    waystone.setDiscoverable(true);
                 }
                 saveWaystoneSettings(waystone);
                 openWaystoneEditGUI(player, waystone);
@@ -447,7 +447,7 @@ public class WaystoneModule implements Listener {
                 break;
 
             case 14:
-                if (!waystone.isPublic() && !waystone.isGlobal()) {
+                if (!waystone.isDiscoverable() && !waystone.isGlobal()) {
                     openPlayerManagementGUI(player, waystone);
                 }
                 break;
@@ -914,8 +914,8 @@ public class WaystoneModule implements Listener {
         if (waystone.isGlobal()) {
             String globalString = plugin.getConfig().getString("waystone.gui.discovered.item.global", "Global Waystone");
             lore.add(convertToLegacyText(globalString));
-        } else if (waystone.isPublic()) {
-            String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.public", "Public Waystone");
+        } else if (waystone.isDiscoverable()) {
+            String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.discoverable", "Discoverable Waystone");
             lore.add(convertToLegacyText(publicString));
         } else {
             String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
@@ -1545,7 +1545,7 @@ public class WaystoneModule implements Listener {
                 for (DatabaseHandler.WaystoneData data : dataList) {
                     Location loc = data.location();
                     Waystone waystone = new Waystone(data.id(), loc, data.name(), data.creator(), data.baseMaterial());
-                    waystone.setPublic(data.isPublic());
+                    waystone.setDiscoverable(data.isPublic());
                     waystone.setGlobal(data.isGlobal());
                     waystone.setIconData(data.iconData());
                     waystone.setRegisteredPlayers(DatabaseHandler.getRegisteredPlayers(data.id()));
@@ -1593,7 +1593,7 @@ public class WaystoneModule implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             DatabaseHandler.WaystoneData data = new DatabaseHandler.WaystoneData(
                     waystone.getId(), waystone.getLocation(), waystone.getName(), waystone.getCreator(),
-                    waystone.isPublic(), waystone.isGlobal(), waystone.getIconData(), waystone.isNameVisible(),
+                    waystone.isDiscoverable(), waystone.isGlobal(), waystone.getIconData(), waystone.isNameVisible(),
                     waystone.getBaseMaterial());
             int id = DatabaseHandler.saveWaystone(data);
             waystone.setId(id);
@@ -1614,7 +1614,7 @@ public class WaystoneModule implements Listener {
 
     private void saveWaystoneSettings(Waystone waystone) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            DatabaseHandler.updateWaystoneSettings(waystone.getId(), waystone.isPublic(), waystone.isGlobal(), waystone.isNameVisible());
+            DatabaseHandler.updateWaystoneSettings(waystone.getId(), waystone.isDiscoverable(), waystone.isGlobal(), waystone.isNameVisible());
 
             for (UUID playerId : waystone.getAllowedPlayers()) {
                 DatabaseHandler.addWaystonePermission(waystone.getId(), playerId);
@@ -1647,7 +1647,7 @@ public class WaystoneModule implements Listener {
         ItemStack visibilityItem;
         if (waystone.isGlobal()) {
             visibilityItem = new ItemStack(Material.BLUE_DYE);
-        } else if (waystone.isPublic()) {
+        } else if (waystone.isDiscoverable()) {
             visibilityItem = new ItemStack(Material.LIME_DYE);
         } else {
             visibilityItem = new ItemStack(Material.RED_DYE);
@@ -1655,14 +1655,14 @@ public class WaystoneModule implements Listener {
         ItemMeta visibilityMeta = visibilityItem.getItemMeta();
 
         String visibilityNamePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.name" :
-                waystone.isPublic() ? "waystone.gui.edit.visibility.public.name" :
+                waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.name" :
                         "waystone.gui.edit.visibility.private.name";
         String visibilityLorePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.lore" :
-                waystone.isPublic() ? "waystone.gui.edit.visibility.public.lore" :
+                waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.lore" :
                         "waystone.gui.edit.visibility.private.lore";
 
         String visibilityName = convertToLegacyText(plugin.getConfig().getString(visibilityNamePath,
-                waystone.isGlobal() ? "Global Waystone" : waystone.isPublic() ? "Public Waystone" : "Private Waystone"));
+                waystone.isGlobal() ? "Global Waystone" : waystone.isDiscoverable() ? "Discoverable Waystone" : "Private Waystone"));
         assert visibilityMeta != null;
         visibilityMeta.setDisplayName(visibilityName);
 
@@ -1692,11 +1692,11 @@ public class WaystoneModule implements Listener {
         renameItem.setItemMeta(renameMeta);
         gui.setItem(12, markAsGUIItem(renameItem));
 
-        if (waystone.isPublic() || waystone.isGlobal()) {
+        if (waystone.isDiscoverable() || waystone.isGlobal()) {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
-            String playersName = convertToLegacyText(plugin.getConfig().getString("waystone.gui.edit.is_public.name", "All Players can use"));
+            String playersName = convertToLegacyText(plugin.getConfig().getString("waystone.gui.edit.visibility.discoverable.name", "All Players can use"));
             assert playersMeta != null;
             playersMeta.setDisplayName(playersName);
 
@@ -1704,7 +1704,7 @@ public class WaystoneModule implements Listener {
             gui.setItem(14, markAsGUIItem(playersItem));
         }
 
-        if (!waystone.isPublic() && !waystone.isGlobal()) {
+        if (!waystone.isDiscoverable() && !waystone.isGlobal()) {
             ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playersMeta = playersItem.getItemMeta();
 
@@ -2432,8 +2432,8 @@ public class WaystoneModule implements Listener {
         }
         public boolean isAdminCreated() { return isAdminCreated; }
 
-        public boolean isPublic() { return isPublic; }
-        public void setPublic(boolean isPublic) { this.isPublic = isPublic; }
+        public boolean isDiscoverable() { return isPublic; }
+        public void setDiscoverable(boolean isPublic) { this.isPublic = isPublic; }
 
         public boolean isGlobal() { return isGlobal; }
         public void setGlobal(boolean isGlobal) { this.isGlobal = isGlobal; }

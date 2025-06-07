@@ -333,7 +333,7 @@ waystone:
         click_to_teleport: "<gold>Click <gray>to teleport"
         cost: "<gray>Cost: <gold>%s"
         global: "<blue>Global Waystone"
-        public: "<green>Public Waystone"
+        discoverable: "<green>Discoverable Waystone"
         private: "<red>Private Waystone"
         right_click_icon: "<gold>Right-click <gray>to set icon"
 
@@ -345,8 +345,8 @@ waystone:
           name: "<blue>Global Waystone"
           lore:
             - "<gray>Visible to all players in the world"
-        public:
-          name: "<green>Public Waystone"
+        discoverable:
+          name: "<green>Discoverable Waystone"
           lore:
             - "<gray>Visible to all players if discovered"
         private:
