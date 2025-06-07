@@ -1,14 +1,20 @@
 package com.soystargaze.vitamin.utils;
 
+import com.soystargaze.vitamin.utils.text.TextHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
+import java.io.File;
 import java.util.*;
 
 public class BlockDisplayUtils {
@@ -17,61 +23,55 @@ public class BlockDisplayUtils {
 
     static {
         MATERIAL_THEMES.put(Material.STONE, Arrays.asList(
-                Material.STONE_BRICKS,                      // 0 - project_0
-                Material.SMOOTH_STONE,                      // 1 - project_1
-                Material.STONE_BRICKS,                      // 2 - project_2
-                Material.STONE_BRICKS,                      // 3 - project_3
-                Material.STONE_BRICKS,                      // 4 - project_4
-                Material.SMOOTH_STONE,                      // 5 - project_5
-                Material.CHISELED_STONE_BRICKS              // 6 - project_6
-        ));
-        MATERIAL_THEMES.put(Material.SANDSTONE, Arrays.asList(
-                Material.CUT_RED_SANDSTONE,                  // 0 - Base inferior
-                Material.SMOOTH_RED_SANDSTONE,               // 1 - Pilar superior
-                Material.SMOOTH_SANDSTONE,                   // 2 - Marco inferior
-                Material.CUT_RED_SANDSTONE,                  // 3 - Base superior
-                Material.SMOOTH_SANDSTONE,                   // 4 - Marco superior
-                Material.SMOOTH_RED_SANDSTONE,               // 5 - Pilar inferior
-                Material.CHISELED_SANDSTONE                  // 6 - Centro/núcleo
-        ));
-        MATERIAL_THEMES.put(Material.RED_SANDSTONE, Arrays.asList(
-                Material.CUT_SANDSTONE,
-                Material.SMOOTH_SANDSTONE,
-                Material.SMOOTH_RED_SANDSTONE,
-                Material.CUT_SANDSTONE,
-                Material.SMOOTH_RED_SANDSTONE,
-                Material.SMOOTH_SANDSTONE,
-                Material.CHISELED_RED_SANDSTONE
-        ));
-        MATERIAL_THEMES.put(Material.BLACKSTONE, Arrays.asList(
-                Material.POLISHED_BLACKSTONE_BRICKS,
-                Material.GILDED_BLACKSTONE,
-                Material.NETHERITE_BLOCK,
-                Material.POLISHED_BLACKSTONE_BRICKS,
-                Material.NETHERITE_BLOCK,
-                Material.GILDED_BLACKSTONE,
-                Material.CHISELED_POLISHED_BLACKSTONE
-        ));
-        MATERIAL_THEMES.put(Material.NETHERRACK, Arrays.asList(
-                Material.NETHER_BRICKS,
-                Material.MAGMA_BLOCK,
-                Material.NETHER_BRICKS,
-                Material.NETHER_BRICKS,
-                Material.NETHER_BRICKS,
-                Material.MAGMA_BLOCK,
-                Material.CHISELED_NETHER_BRICKS
-        ));
-        MATERIAL_THEMES.put(Material.RESIN_BLOCK, Arrays.asList(
-                Material.RESIN_BRICKS,
-                Material.HONEYCOMB_BLOCK,
-                Material.RESIN_BRICKS,
-                Material.RESIN_BRICKS,
-                Material.RESIN_BRICKS,
-                Material.HONEYCOMB_BLOCK,
-                Material.CHISELED_RESIN_BRICKS
+                Material.STONE_BRICKS,          // Base inferior
+                Material.SMOOTH_STONE,          // Pilar superior
+                Material.STONE_BRICKS,          // Marco inferior
+                Material.STONE_BRICKS,          // Base superior
+                Material.STONE_BRICKS,          // Marco superior
+                Material.SMOOTH_STONE,          // Pilar inferior
+                Material.CHISELED_STONE_BRICKS  // Centro/núcleo
         ));
     }
 
+    public static void loadThemes(Plugin plugin) {
+        File configFile = new File(plugin.getDataFolder(), "waystone_themes.yml");
+        if (!configFile.exists()) {
+            plugin.saveResource("waystone_themes.yml", false);
+        }
+        FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+
+        ConfigurationSection themesSection = config.getConfigurationSection("themes");
+        if (themesSection == null) {
+            TextHandler.get().logTranslated("waystone.no_themes_found");
+            return;
+        }
+
+        for (String key : themesSection.getKeys(false)) {
+            Material baseMaterial = Material.getMaterial(key.toUpperCase());
+            if (baseMaterial == null || !baseMaterial.isBlock()) {
+                TextHandler.get().logTranslated("waystone.invalid_theme_key", key);
+                continue;
+            }
+            List<String> materialNames = themesSection.getStringList(key);
+            if (materialNames.size() != 7) {
+                TextHandler.get().logTranslated("waystone.theme_invalid_size", key);
+                continue;
+            }
+            List<Material> materials = new ArrayList<>();
+            for (String name : materialNames) {
+                Material material = Material.getMaterial(name.toUpperCase());
+                if (material == null || !material.isBlock()) {
+                    TextHandler.get().logTranslated("waystone.invalid_block_material", name, key);
+                    materials.clear();
+                    break;
+                }
+                materials.add(material);
+            }
+            if (materials.size() == 7) {
+                MATERIAL_THEMES.put(baseMaterial, materials);
+            }
+        }
+    }
 
     public static boolean hasTheme(Material material) {
         return MATERIAL_THEMES.containsKey(material);
@@ -92,7 +92,6 @@ public class BlockDisplayUtils {
 
         return displays;
     }
-
 
     private static BlockDisplay createBlockDisplay(Location baseLoc, Material material,
                                                    float scaleX, float scaleY, float scaleZ,

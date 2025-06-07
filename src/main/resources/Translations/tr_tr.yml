@@ -208,6 +208,10 @@ waystone:
   add_player_prompt: "Eklenecek oyuncunun ismini girin:"
   name_shown: "Waystone'un ismi gösteriliyor."
   name_hidden: "Waystone'un ismi gizlendi."
+  no_themes_found: "Waystone teması bulunamadı. Varsayılan tema kullanılacak."
+  invalid_theme_key: "Geçersiz tema anahtarı '{0}'."
+  theme_invalid_size: "{0} için tema geçersiz sayıda malzemeye sahip. Beklenen 7."
+  invalid_block_material: "Temada {1} için geçersiz blok malzemesi '{0}'"
   gui:
     icon_invalid: "İkon için geçersiz öğe."
     icon_changed: "Waystone ikonu değiştirildi."

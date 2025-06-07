@@ -208,6 +208,10 @@ waystone:
   add_player_prompt: "Enter the name of the player to add:"
   name_shown: "The waystone hologram name is shown."
   name_hidden: "The waystone hologram name is hidden."
+  no_themes_found: "No waystone themes found in the configuration."
+  invalid_theme_key: "Invalid theme key: {0}"
+  theme_invalid_size: "Theme for {0} has an invalid number of materials. Expected 7."
+  invalid_block_material: "Invalid block material '{0}' in theme for {1}"
   gui:
     icon_invalid: "Invalid item for icon."
     icon_changed: "Waystone icon has been changed."

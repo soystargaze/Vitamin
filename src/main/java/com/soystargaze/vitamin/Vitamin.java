@@ -78,6 +78,7 @@ public class Vitamin extends JavaPlugin implements Listener {
         ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
+        BlockDisplayUtils.loadThemes(this);
         ConsoleUtils.displaySuccessMessage(this);
     }
 

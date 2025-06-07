@@ -208,6 +208,10 @@ waystone:
   add_player_prompt: "Geben Sie den Namen des hinzuzufügenden Spielers ein:"
   name_shown: "Der Wegstein-Hologrammname wird angezeigt."
   name_hidden: "Der Wegstein-Hologrammname wird versteckt."
+  no_themes_found: "Keine Themen gefunden. Bitte stellen Sie sicher, dass die Themen korrekt konfiguriert sind."
+  invalid_theme_key: "Ungültiger Themen-Schlüssel '{0}'. Bitte überprüfen Sie die Konfiguration."
+  theme_invalid_size: "Ungültige Themenkonfiguration für '{0}'. Die Größe muss 7 Blöcke umfassen."
+  invalid_block_material: "Ungültiges Blockmaterial '{0}' in Thema '{1}'. Bitte überprüfen Sie die Konfiguration."
   gui:
     icon_invalid: "Ungültiger Gegenstand für das Symbol."
     icon_changed: "Wegstein-Symbol wurde geändert."

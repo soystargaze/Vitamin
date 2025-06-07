@@ -208,6 +208,10 @@ waystone:
   add_player_prompt: "Wprowadź nazwę gracza do dodania:"
   name_shown: "Nazwa waystone jest widoczna."
   name_hidden: "Nazwa waystone jest ukryta."
+  no_themes_found: "Nie znaleziono dostępnych motywów."
+  invalid_theme_key: "Nieprawidłowy klucz motywu: {0}. Sprawdź konfigurację motywów."
+  theme_invalid_size: "Motyw dla {0} ma nieprawidłową liczbę materiałów. Oczekiwane 7."
+  invalid_block_material: "Nieprawidłowy materiał bloku '{0}' w motywie dla {1}"
   gui:
     icon_invalid: "Nieprawidłowy przedmiot dla ikony."
     icon_changed: "Ikona waystone została zmieniona."

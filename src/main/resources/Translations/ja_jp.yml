@@ -208,6 +208,10 @@ waystone:
   add_player_prompt: "追加するプレイヤーの名前を入力してください："
   name_shown: "ウェイストーンの名前は表示されています。"
   name_hidden: "ウェイストーンの名前は非表示です。"
+  no_themes_found: "ウェイストーンテーマが見つかりません。"
+  invalid_theme_key: "無効なウェイストーンテーマキー: {0}"
+  theme_invalid_size: "{0}のテーマは素材数が無効です。7を期待。」"
+  invalid_block_material: "{1} に対するテーマ内の無効なブロック素材 '{0}'"
   gui:
     icon_invalid: "アイコンに無効なアイテムです。"
     icon_changed: "ウェイストーンのアイコンが変更されました。"
