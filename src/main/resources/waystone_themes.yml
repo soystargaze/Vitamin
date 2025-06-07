@@ -10,6 +10,14 @@ themes:
     - STONE_BRICKS              # Top frame
     - SMOOTH_STONE              # Bottom pillar
     - CHISELED_STONE_BRICKS     # Decorative block/Center block
+  DIAMOND_BLOCK:
+    - BARRIER                   # ← Invisible theme, used for custom block displays
+    - BARRIER
+    - BARRIER
+    - BARRIER
+    - BARRIER
+    - BARRIER
+    - BARRIER
   SANDSTONE:
     - CUT_RED_SANDSTONE
     - SMOOTH_RED_SANDSTONE
