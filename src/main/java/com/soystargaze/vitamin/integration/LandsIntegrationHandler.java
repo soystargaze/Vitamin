@@ -60,4 +60,35 @@ public class LandsIntegrationHandler {
         }
         return true;
     }
+
+    // Waystone methods
+    public boolean canCreateWaystone(Player player, Location location) {
+        try {
+            LandWorld landWorld = landsApi.getWorld(location.getWorld());
+            if (landWorld != null) {
+                LandPlayer landPlayer = landsApi.getLandPlayer(player.getUniqueId());
+                if (landPlayer == null) {
+                    return false;
+                }
+                return landWorld.hasRoleFlag(
+                        landPlayer,
+                        location,
+                        Flags.BLOCK_PLACE,
+                        null,
+                        false
+                );
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean canUseWaystone(Player player, Location location) {
+        return canInteract(player, location);
+    }
+
+    public boolean canBreakWaystone(Player player, Location location) {
+        return canBreak(player, location, Material.BARRIER);
+    }
 }

@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "유효하지 않은 웨이스톤 테마 키입니다: {0}"
   theme_invalid_size: "{0}의 테마에 잘못된 재료 수가 있습니다. 예상되는 개수는 7입니다."
   invalid_block_material: "{1}의 테마에 잘못된 블록 재질 '{0}'이(가) 있습니다."
+  no_build_permission: "이 위치에 웨이스톤을 건설할 권한이 없습니다."
+  no_interact_permission: "이 웨이스톤과 상호작용할 권한이 없습니다."
+  no_break_permission: "이 웨이스톤을 파괴할 권한이 없습니다."
+  themes_reloaded: "웨이스톤 테마가 성공적으로 재로드되었습니다. {0}개의 테마가 로드되었습니다."
   gui:
     icon_invalid: "아이콘에 유효하지 않은 아이템입니다."
     icon_changed: "웨이스톤 아이콘이 변경되었습니다."

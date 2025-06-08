@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "Thème invalide : {0}. Veuillez vérifier la configuration."
   theme_invalid_size: "Le thème '{0}' doit contenir exactement 7 matériaux de blocs."
   invalid_block_material: "Matériau de bloc invalide dans le thème '{0}': {1}. Veuillez vérifier la configuration."
+  no_build_permission: "Vous n'avez pas la permission de construire ce waystone."
+  no_interact_permission: "Vous n'avez pas la permission d'interagir avec ce waystone."
+  no_break_permission: "Vous n'avez pas la permission de casser ce waystone."
+  themes_reloaded: "Thèmes rechargés avec succès. {0} thèmes chargés."
   gui:
     icon_invalid: "Objet invalide pour l'icône."
     icon_changed: "L'icône du waystone a été changée."

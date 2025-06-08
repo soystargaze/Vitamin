@@ -20,6 +20,7 @@ import java.util.*;
 public class BlockDisplayUtils {
 
     private static final Map<Material, List<Material>> MATERIAL_THEMES = new HashMap<>();
+    private static Plugin pluginInstance;
 
     static {
         MATERIAL_THEMES.put(Material.STONE, Arrays.asList(
@@ -34,10 +35,25 @@ public class BlockDisplayUtils {
     }
 
     public static void loadThemes(Plugin plugin) {
-        File configFile = new File(plugin.getDataFolder(), "waystone_themes.yml");
-        if (!configFile.exists()) {
-            plugin.saveResource("waystone_themes.yml", false);
+        pluginInstance = plugin;
+        reloadThemes();
+    }
+
+    public static void reloadThemes() {
+        if (pluginInstance == null) {
+            return;
         }
+
+        Map<Material, List<Material>> defaultTheme = new HashMap<>();
+        defaultTheme.put(Material.STONE, MATERIAL_THEMES.get(Material.STONE));
+        MATERIAL_THEMES.clear();
+        MATERIAL_THEMES.putAll(defaultTheme);
+
+        File configFile = new File(pluginInstance.getDataFolder(), "waystone_themes.yml");
+        if (!configFile.exists()) {
+            pluginInstance.saveResource("waystone_themes.yml", false);
+        }
+
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         ConfigurationSection themesSection = config.getConfigurationSection("themes");
@@ -46,6 +62,7 @@ public class BlockDisplayUtils {
             return;
         }
 
+        int loadedThemes = 0;
         for (String key : themesSection.getKeys(false)) {
             Material baseMaterial = Material.getMaterial(key.toUpperCase());
             if (baseMaterial == null || !baseMaterial.isBlock()) {
@@ -69,8 +86,11 @@ public class BlockDisplayUtils {
             }
             if (materials.size() == 7) {
                 MATERIAL_THEMES.put(baseMaterial, materials);
+                loadedThemes++;
             }
         }
+
+        TextHandler.get().logTranslated("waystone.themes_reloaded", loadedThemes);
     }
 
     public static boolean hasTheme(Material material) {

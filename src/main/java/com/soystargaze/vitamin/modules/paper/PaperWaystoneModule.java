@@ -1,6 +1,9 @@
 package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.integration.GriefPreventionIntegrationHandler;
+import com.soystargaze.vitamin.integration.LandsIntegrationHandler;
+import com.soystargaze.vitamin.integration.WorldGuardIntegrationHandler;
 import com.soystargaze.vitamin.modules.CancellableModule;
 import com.soystargaze.vitamin.utils.BlockDisplayUtils;
 import com.soystargaze.vitamin.utils.text.TextHandler;
@@ -10,6 +13,7 @@ import dev.triumphteam.gui.guis.ScrollingGui;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -51,7 +55,6 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.io.*;
 import java.net.URI;
@@ -121,6 +124,14 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
 
     private final Economy economy;
 
+    // Integration handlers
+    private final WorldGuardIntegrationHandler worldGuardHandler;
+    private final GriefPreventionIntegrationHandler griefPreventionHandler;
+    private final LandsIntegrationHandler landsHandler;
+    private final boolean hasWorldGuard;
+    private final boolean hasGriefPrevention;
+    private final boolean hasLands;
+
     private static final String WAYSTONE_CORE_IDENTIFIER = "vitamin_waystone";
 
     private final NamespacedKey waystoneCoreKey;
@@ -147,6 +158,15 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         this.plugin = plugin;
         this.waystoneCoreKey = new NamespacedKey(plugin, "vitamin_id");
         this.waystoneIdentifierKey = new NamespacedKey(plugin, "waystone_id");
+
+        // Initialize integration handlers
+        this.hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
+        this.hasGriefPrevention = Bukkit.getPluginManager().getPlugin("GriefPrevention") != null;
+        this.hasLands = Bukkit.getPluginManager().getPlugin("Lands") != null;
+
+        this.worldGuardHandler = hasWorldGuard ? new WorldGuardIntegrationHandler(plugin) : null;
+        this.griefPreventionHandler = hasGriefPrevention ? new GriefPreventionIntegrationHandler(plugin) : null;
+        this.landsHandler = hasLands ? new LandsIntegrationHandler(plugin) : null;
 
         this.onlyCreatorCanBreak = plugin.getConfig().getBoolean("waystone.only_creator_can_break", false);
         this.autoCreateTime = plugin.getConfig().getLong("waystone.auto_create_time", 30000L);
@@ -245,6 +265,73 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         registerWaystoneCoreRecipe();
         loadWaystones();
         startOptimizedTasks();
+    }
+
+    // Integration permission checks
+    private boolean canCreateWaystoneWithIntegrations(Player player, Location location) {
+        if (hasWorldGuard && worldGuardHandler != null) {
+            if (!worldGuardHandler.canCreateWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        if (hasGriefPrevention && griefPreventionHandler != null) {
+            if (!griefPreventionHandler.canCreateWaystone(player, location, null)) {
+                return false;
+            }
+        }
+
+        if (hasLands && landsHandler != null) {
+            if (!landsHandler.canCreateWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean canUseWaystoneWithIntegrations(Player player, Location location) {
+        if (hasWorldGuard && worldGuardHandler != null) {
+            if (!worldGuardHandler.canUseWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        if (hasGriefPrevention && griefPreventionHandler != null) {
+            if (!griefPreventionHandler.canUseWaystone(player, location, null)) {
+                return false;
+            }
+        }
+
+        if (hasLands && landsHandler != null) {
+            if (!landsHandler.canUseWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean canBreakWaystoneWithIntegrations(Player player, Location location) {
+        if (hasWorldGuard && worldGuardHandler != null) {
+            if (!worldGuardHandler.canBreakWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        if (hasGriefPrevention && griefPreventionHandler != null) {
+            if (!griefPreventionHandler.canBreakWaystone(player, location, null)) {
+                return false;
+            }
+        }
+
+        if (hasLands && landsHandler != null) {
+            if (!landsHandler.canBreakWaystone(player, location)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void clearWaystones() {
@@ -1738,6 +1825,13 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
                 return;
             }
 
+            // Check integration permissions
+            if (!canCreateWaystoneWithIntegrations(player, blockLocation)) {
+                TextHandler.get().sendMessage(player, "waystone.no_build_permission");
+                event.setCancelled(true);
+                return;
+            }
+
             UUID playerId = player.getUniqueId();
 
             ItemStack offHandItem = player.getInventory().getItemInOffHand();
@@ -1803,6 +1897,15 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
             openWaystoneEditGUI(player, targetWaystone);
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
+            }
+            return;
+        }
+
+        // Check integration permissions for usage
+        if (!canUseWaystoneWithIntegrations(player, waystoneLocation)) {
+            TextHandler.get().sendMessage(player, "waystone.no_interact_permission");
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
             }
             return;
         }
@@ -1875,6 +1978,15 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
             boolean isCreator = targetWaystone.getCreator().equals(playerId);
             boolean isAdmin = player.hasPermission("vitamin.module.waystone.admin");
             boolean isOp = player.isOp();
+
+            // Check integration permissions for breaking
+            if (!canBreakWaystoneWithIntegrations(player, waystoneLocation)) {
+                TextHandler.get().sendMessage(player, "waystone.no_break_permission");
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
+                }
+                return;
+            }
 
             if (onlyCreatorCanBreak && !isCreator) {
                 if (!(isAdmin && (isOp || targetWaystone.isAdminCreated()))) {

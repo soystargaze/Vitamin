@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "无效的主题键 '{0}'。请检查配置文件。"
   theme_invalid_size: "主题 '{0}' 的大小无效。必须包含 7 个有效的方块材料。"
   invalid_block_material: "主题 '{0}' 中的方块材料无效: {1}。请检查配置文件。"
+  no_build_permission: "您没有权限在此位置建造路标石。"
+  no_interact_permission: "您没有权限与此路标石交互。"
+  no_break_permission: "您没有权限破坏此路标石。"
+  themes_reloaded: "路标石主题已重新加载。{0} 个主题可用。"
   gui:
     icon_invalid: "图标的物品无效。"
     icon_changed: "路标石图标已更改。"

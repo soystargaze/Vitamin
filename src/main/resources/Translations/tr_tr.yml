@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "Geçersiz tema anahtarı '{0}'."
   theme_invalid_size: "{0} için tema geçersiz sayıda malzemeye sahip. Beklenen 7."
   invalid_block_material: "Temada {1} için geçersiz blok malzemesi '{0}'"
+  no_build_permission: "Bu alanda waystone inşa etme izniniz yok."
+  no_interact_permission: "Bu waystone ile etkileşim kurma izniniz yok."
+  no_break_permission: "Bu waystone'u kırma izniniz yok."
+  themes_reloaded: "Waystone temaları başarıyla yeniden yüklendi. {0} tema bulundu."
   gui:
     icon_invalid: "İkon için geçersiz öğe."
     icon_changed: "Waystone ikonu değiştirildi."

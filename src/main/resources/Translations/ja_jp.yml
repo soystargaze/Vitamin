@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "無効なウェイストーンテーマキー: {0}"
   theme_invalid_size: "{0}のテーマは素材数が無効です。7を期待。」"
   invalid_block_material: "{1} に対するテーマ内の無効なブロック素材 '{0}'"
+  no_build_permission: "このウェイストーンを建設する権限がありません。"
+  no_interact_permission: "このウェイストーンを操作する権限がありません。"
+  no_break_permission: "このウェイストーンを破壊する権限がありません。"
+  themes_reloaded: "ウェイストーンテーマが再読み込みされました。{0} 個のテーマが見つかりました。"
   gui:
     icon_invalid: "アイコンに無効なアイテムです。"
     icon_changed: "ウェイストーンのアイコンが変更されました。"

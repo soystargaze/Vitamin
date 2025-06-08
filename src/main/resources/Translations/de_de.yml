@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "Ungültiger Themen-Schlüssel '{0}'. Bitte überprüfen Sie die Konfiguration."
   theme_invalid_size: "Ungültige Themenkonfiguration für '{0}'. Die Größe muss 7 Blöcke umfassen."
   invalid_block_material: "Ungültiges Blockmaterial '{0}' in Thema '{1}'. Bitte überprüfen Sie die Konfiguration."
+  no_build_permission: "Sie haben keine Berechtigung, diesen Wegstein zu bauen."
+  no_interact_permission: "Sie haben keine Berechtigung, mit diesem Wegstein zu interagieren."
+  no_break_permission: "Sie haben keine Berechtigung, diesen Wegstein zu zerstören."
+  themes_reloaded: "Wegstein-Themen erfolgreich neu geladen. {0} Themen gefunden."
   gui:
     icon_invalid: "Ungültiger Gegenstand für das Symbol."
     icon_changed: "Wegstein-Symbol wurde geändert."

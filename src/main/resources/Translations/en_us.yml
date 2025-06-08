@@ -222,6 +222,10 @@ waystone:
   invalid_theme_key: "Invalid theme key: {0}"
   theme_invalid_size: "Theme for {0} has an invalid number of materials. Expected 7."
   invalid_block_material: "Invalid block material '{0}' in theme for {1}"
+  no_build_permission: "You do not have permission to build a waystone here."
+  no_interact_permission: "You do not have permission to interact with this waystone."
+  no_break_permission: "You do not have permission to break this waystone."
+  themes_reloaded: "Waystone themes reloaded successfully. {0} themes loaded."
   gui:
     icon_invalid: "Invalid item for icon."
     icon_changed: "Waystone icon has been changed."

@@ -85,4 +85,17 @@ public class GriefPreventionIntegrationHandler {
         return hasBuildPermission(player, location, event) &&
                 hasInventoryPermission(player, location, event);
     }
+
+    // Waystone methods
+    public boolean canCreateWaystone(Player player, Location location, Event event) {
+        return hasBuildPermission(player, location, event);
+    }
+
+    public boolean canUseWaystone(Player player, Location location, Event event) {
+        return canInteract(player, location, event);
+    }
+
+    public boolean canBreakWaystone(Player player, Location location, Event event) {
+        return hasBuildPermission(player, location, event);
+    }
 }
