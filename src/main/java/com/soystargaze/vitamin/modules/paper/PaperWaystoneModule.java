@@ -602,37 +602,30 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         Bukkit.getScheduler().runTaskLater(plugin, () -> openWaystoneEditGUI(player, waystone), 1L);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof Player player)) return;
+        Player player = (Player) event.getPlayer();
 
-        UUID playerId = player.getUniqueId();
+        if (changingIconWaystones.containsKey(player.getUniqueId())) {
+            String inventoryTitle = event.getView().getTitle();
+            String expectedTitle = LegacyComponentSerializer.legacySection().serialize(
+                    processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Icon"))
+            );
 
-        if (changingIconWaystones.containsKey(playerId)) {
-            String inventoryTitle = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
-            if (inventoryTitle.equals(iconChangeTitleStr)) {
-                ItemStack itemInSlot = event.getInventory().getItem(11);
-                if (itemInSlot != null && itemInSlot.getType() != Material.AIR) {
-                    ItemMeta meta = itemInSlot.getItemMeta();
-                    boolean isGuiItem = false;
-                    if (meta != null && meta.hasDisplayName()) {
-                        String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(meta.displayName()));
-                        if (displayName.equals("Confirm") || displayName.equals("Cancel") || displayName.equals(" ")) {
-                            isGuiItem = true;
-                        }
-                    }
-
-                    if (!isGuiItem) {
-                        HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(itemInSlot);
-                        for (ItemStack item : leftover.values()) {
-                            player.getWorld().dropItemNaturally(player.getLocation(), item);
-                        }
+            if (inventoryTitle.equals(expectedTitle)) {
+                ItemStack iconItem = event.getInventory().getItem(11);
+                if (iconItem != null && iconItem.getType() != Material.AIR) {
+                    HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(iconItem);
+                    for (ItemStack item : leftover.values()) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), item);
                     }
                 }
+
+                changingIconWaystones.remove(player.getUniqueId());
             }
-            changingIconWaystones.remove(playerId);
         }
     }
+
 
     private Material getMaterialSafely(String materialName, Material fallback) {
         try {
@@ -717,17 +710,25 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
                 ItemStack singleIconItem = iconItem.clone();
                 singleIconItem.setAmount(1);
 
-                handleIconConfirm(player, waystone, singleIconItem);
-
                 if (iconItem.getAmount() > 1) {
-                    iconItem.setAmount(iconItem.getAmount() - 1);
-                    gui.getInventory().setItem(11, iconItem);
-                } else {
-                    gui.getInventory().setItem(11, new ItemStack(Material.AIR));
+                    ItemStack remainingItems = iconItem.clone();
+                    remainingItems.setAmount(iconItem.getAmount() - 1);
+
+                    HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(remainingItems);
+                    for (ItemStack item : leftover.values()) {
+                        player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    }
                 }
+
+                gui.getInventory().setItem(11, new ItemStack(Material.AIR));
+
+                handleIconConfirm(player, waystone, singleIconItem);
             } else {
                 handleIconConfirm(player, waystone, null);
             }
+
+            player.closeInventory();
+            changingIconWaystones.remove(player.getUniqueId());
         }));
 
         // Cancel button
