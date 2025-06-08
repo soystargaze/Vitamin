@@ -76,6 +76,16 @@ commands:
     success: "<green>所有waystone已被清除。</green>"
     timeout: "<red>确认超时。请重试。</red>"
     error: "<red>清除waystone时发生错误。</red>"
+  give:
+    no_permission: "<red>您没有使用此命令的权限。"
+    module_disabled: "<red>Waystone模块已禁用。"
+    usage: "<yellow>用法: /vitamin give <all/player> waystone_core [数量]"
+    invalid_item: "<red>无效的物品。仅支持'waystone_core'。"
+    invalid_quantity: "<red>无效的数量。请指定一个正整数。"
+    player_not_found: "<red>未找到玩家'{0}'。"
+    given_to_all: "<green>已给予所有玩家{0}个Waystone核心。"
+    given_to_player: "<green>已给予玩家{1}{0}个Waystone核心。"
+    failed_to_create_item: "<red>创建Waystone核心物品失败。"
 
 database:
   already_initialized: "数据库已初始化。"

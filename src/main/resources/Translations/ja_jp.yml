@@ -76,6 +76,16 @@ commands:
     success: "<green>すべてのwaystoneがクリアされました。</green>"
     timeout: "<red>確認がタイムアウトしました。もう一度お試しください。</red>"
     error: "<red>waystoneのクリア中にエラーが発生しました。</red>"
+  give:
+    no_permission: "<red>このコマンドを使用する権限がありません。"
+    module_disabled: "<red>Waystoneモジュールは無効です。"
+    usage: "<yellow>使用法: /vitamin give <all/player> waystone_core [数量]"
+    invalid_item: "<red>無効なアイテムです。'waystone_core'のみがサポートされています。"
+    invalid_quantity: "<red>無効な数量です。正の整数を指定してください。"
+    player_not_found: "<red>プレイヤー'{0}'が見つかりません。"
+    given_to_all: "<green>すべてのプレイヤーに{0}個のWaystone Coreを付与しました。"
+    given_to_player: "<green>{1}に{0}個のWaystone Coreを付与しました。"
+    failed_to_create_item: "<red>Waystone Coreアイテムの作成に失敗しました。"
 
 database:
   already_initialized: "データベースは既に初期化されています。"

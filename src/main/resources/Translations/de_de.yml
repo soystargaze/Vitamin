@@ -76,6 +76,16 @@ commands:
     success: "<green>Alle Wegsteine wurden erfolgreich gelöscht.</green>"
     timeout: "<red>Die Bestätigung zum Löschen der Wegsteine ist abgelaufen. Bitte versuchen Sie es erneut.</red>"
     error: "<red>Fehler beim Löschen der Wegsteine.</red>"
+  give:
+    no_permission: "<red>Sie haben keine Berechtigung, diesen Befehl zu verwenden."
+    module_disabled: "<red>Das Waystone-Modul ist deaktiviert."
+    usage: "<yellow>Verwendung: /vitamin give <all/player> waystone_core [Menge]"
+    invalid_item: "<red>Ungültiger Gegenstand. Nur 'waystone_core' wird unterstützt."
+    invalid_quantity: "<red>Ungültige Menge. Bitte geben Sie eine positive Ganzzahl an."
+    player_not_found: "<red>Spieler '{0}' nicht gefunden."
+    given_to_all: "<green>{0} Waystone Core(s) an alle Spieler gegeben."
+    given_to_player: "<green>{0} Waystone Core(s) an {1} gegeben."
+    failed_to_create_item: "<red>Fehler beim Erstellen des Waystone Core-Gegenstands."
 
 database:
   already_initialized: "Die Datenbank wurde bereits initialisiert."

@@ -76,6 +76,16 @@ commands:
     success: "<green>Wszystkie waystone'y zostały wyczyszczone.</green>"
     timeout: "<red>Potwierdzenie wygasło. Spróbuj ponownie.</red>"
     error: "<red>Wystąpił błąd podczas czyszczenia waystone'ów.</red>"
+  give:
+    no_permission: "<red>Nie masz uprawnień do użycia tej komendy."
+    module_disabled: "<red>Moduł Waystone jest wyłączony."
+    usage: "<yellow>Użycie: /vitamin give <all/player> waystone_core [ilość]"
+    invalid_item: "<red>Nieprawidłowy przedmiot. Obsługiwany jest tylko 'waystone_core'."
+    invalid_quantity: "<red>Nieprawidłowa ilość. Proszę podać dodatnią liczbę całkowitą."
+    player_not_found: "<red>Nie znaleziono gracza '{0}'."
+    given_to_all: "<green>Dano {0} Rdzeń(ie) Waystone wszystkim graczom."
+    given_to_player: "<green>Dano {0} Rdzeń(ie) Waystone graczowi {1}."
+    failed_to_create_item: "<red>Nie udało się stworzyć przedmiotu Rdzeń Waystone."
 
 database:
   already_initialized: "Baza danych została już zainicjalizowana."

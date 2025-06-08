@@ -54,6 +54,7 @@ public class Vitamin extends JavaPlugin implements Listener {
         try {
             loadConfigurations();
             DatabaseHandler.initialize(this);
+            dev.triumphteam.gui.TriumphGui.init(this);
             TextHandler.get().logTranslated("plugin.separator");
 
             moduleManager = new ModuleManager(this);

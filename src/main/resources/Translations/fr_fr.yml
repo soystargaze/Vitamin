@@ -76,6 +76,16 @@ commands:
     success: "<green>Toutes les waystones ont été effacées.</green>"
     timeout: "<red>La confirmation a expiré. Veuillez réessayer.</red>"
     error: "<red>Une erreur s'est produite lors de l'effacement des waystones.</red>"
+  give:
+    no_permission: "<red>No tienes permiso para usar este comando."
+    module_disabled: "<red>El módulo Waystone está deshabilitado."
+    usage: "<yellow>Uso: /vitamin give <all/player> waystone_core [cantidad]"
+    invalid_item: "<red>Objeto inválido. Solo se admite 'waystone_core'."
+    invalid_quantity: "<red>Cantidad inválida. Por favor, especifica un entero positivo."
+    player_not_found: "<red>Jugador '{0}' no encontrado."
+    given_to_all: "<green>Se han dado {0} Núcleo(s) de Waystone a todos los jugadores."
+    given_to_player: "<green>Se han dado {0} Núcleo(s) de Waystone a {1}."
+    failed_to_create_item: "<red>Fallo al crear el objeto Núcleo de Waystone."
 
 database:
   already_initialized: "La base de données est déjà initialisée."

@@ -304,30 +304,38 @@ waystone:
 
   # Waystone GUIs configuration
   gui:
-    # Main Wasytone GUI settings
     discovered:
       title: "Discovered Waystones"
-      size: 54                            # Size of the waystone inventory GUI (must be a multiple of 9 between 9 and 54).
+      size: 54
       navigation:
-        enabled: true                     # Enable or disable navigation buttons (previous page, next page, close) in the inventory GUI.
-        previous_page:
-          material: "ARROW"
-          name: "<yellow>Previous Page"
+        scroll_up:
+          material: "PAPER"
+          name: "<yellow>Previous Waystones"
           lore:
-            - "<gray>Go to the previous page"
-          slot: 45
-        next_page:
-          material: "ARROW"
-          name: "<yellow>Next Page"
+            - "<gray>View previous waystones"
+        scroll_down:
+          material: "PAPER"
+          name: "<yellow>Next Waystones"
           lore:
-            - "<gray>Go to the next page"
-          slot: 53
+            - "<gray>View next waystones"
         close:
           material: "BARRIER"
           name: "<red>Close"
           lore:
-            - "<gray>Close the inventory"
-          slot: 49
+            - "<gray>Close this menu"
+      info_item:
+        material: "KNOWLEDGE_BOOK"
+        no_other_waystones:
+          name: "<gold>No Other Waystones Available"
+          lore:
+            - "<gray>You are currently at this waystone,"
+            - "<gray>so it's not shown in the list."
+            - "<yellow>Discover more waystones to travel!"
+        no_waystones:
+          name: "<gold>No Waystones Available"
+          lore:
+            - "<gray>You haven't discovered any waystones yet."
+            - "<yellow>Explore the world to find them!"
       item:
         location: "<gold>X: <white>%d<gold>, <gold>Y: <white>%d<gold>, <gold>Z: <white>%d"
         click_to_teleport: "<gold>Click <gray>to teleport"
@@ -335,7 +343,6 @@ waystone:
         global: "<blue>Global Waystone"
         discoverable: "<green>Discoverable Waystone"
         private: "<red>Private Waystone"
-        right_click_icon: "<gold>Right-click <gray>to set icon"
 
     # Edit Waystone GUI settings:
     edit:

@@ -76,6 +76,16 @@ commands:
     success: "<green>All waystones have been cleared.</green>"
     timeout: "<red>Confirmation timed out. Please try again.</red>"
     error: "<red>An error occurred while clearing waystones.</red>"
+  give:
+    no_permission: "<red>You don't have permission to use this command."
+    module_disabled: "<red>The Waystone module is disabled."
+    usage: "<yellow>Usage: /vitamin give <all/player> waystone_core [quantity]"
+    invalid_item: "<red>Invalid item. Only 'waystone_core' is supported."
+    invalid_quantity: "<red>Invalid quantity. Please specify a positive integer."
+    player_not_found: "<red>Player '{0}}' not found."
+    given_to_all: "<green>Given {0} Waystone Core(s) to all players."
+    given_to_player: "<green>Given {0} Waystone Core(s) to {0}."
+    failed_to_create_item: "<red>Failed to create Waystone Core item."
 
 database:
   already_initialized: "The database has already been initialized."

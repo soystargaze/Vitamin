@@ -3,6 +3,9 @@ package com.soystargaze.vitamin.modules.paper;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.BlockDisplayUtils;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.GuiItem;
+import dev.triumphteam.gui.guis.ScrollingGui;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -26,13 +29,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,7 +70,6 @@ public class PaperWaystoneModule implements Listener {
     private final ConcurrentHashMap<UUID, Location> playerTeleportLocations = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Waystone> editingWaystones = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, String> addingPlayerToWaystone = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, Integer> playerCurrentPage = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Waystone> changingIconWaystones = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, Cost> pendingCosts = new ConcurrentHashMap<>();
 
@@ -100,21 +100,23 @@ public class PaperWaystoneModule implements Listener {
     private final String waystoneRecipeShape3;
     private final Map<Character, Material> waystoneRecipeIngredients;
 
-    private final int inventorySize;
-    private final boolean navigationEnabled;
-    private final Material previousPageMaterial;
-    private final String previousPageName;
-    private final List<String> previousPageLore;
-    private final int previousPageSlot;
-    private final Material nextPageMaterial;
-    private final String nextPageName;
-    private final List<String> nextPageLore;
-    private final int nextPageSlot;
+    private final Material scrollUpMaterial;
+    private final String scrollUpName;
+    private final List<String> scrollUpLore;
+    private final Material scrollDownMaterial;
+    private final String scrollDownName;
+    private final List<String> scrollDownLore;
     private final Material closeMaterial;
     private final String closeName;
     private final List<String> closeLore;
-    private final int closeSlot;
     private final String iconChangeTitleStr;
+    private final int inventorySize;
+
+    private final Material infoItemMaterial;
+    private final String noOtherWaystonesName;
+    private final List<String> noOtherWaystonesLore;
+    private final String noWaystonesName;
+    private final List<String> noWaystonesLore;
 
     private final Economy economy;
 
@@ -122,7 +124,6 @@ public class PaperWaystoneModule implements Listener {
 
     private final NamespacedKey waystoneCoreKey;
     private final NamespacedKey waystoneIdentifierKey;
-    private final NamespacedKey guiItemKey;
     private static PaperWaystoneModule instance;
 
     private static class Cost {
@@ -142,7 +143,6 @@ public class PaperWaystoneModule implements Listener {
         this.plugin = plugin;
         this.waystoneCoreKey = new NamespacedKey(plugin, "vitamin_id");
         this.waystoneIdentifierKey = new NamespacedKey(plugin, "waystone_id");
-        this.guiItemKey = new NamespacedKey(plugin, "gui_item");
 
         this.onlyCreatorCanBreak = plugin.getConfig().getBoolean("waystone.only_creator_can_break", false);
         this.autoCreateTime = plugin.getConfig().getLong("waystone.auto_create_time", 30000L);
@@ -176,7 +176,7 @@ public class PaperWaystoneModule implements Listener {
         this.waystoneCoreLore = plugin.getConfig().getStringList("waystone.core.lore");
 
         if (waystoneCoreLore.isEmpty()) {
-            waystoneCoreLore.add("<gray>>A magical core that allows waystone creation.");
+            waystoneCoreLore.add("<gray>A magical core that allows waystone creation.");
             waystoneCoreLore.add("Place it to create a waystone.");
         }
 
@@ -187,29 +187,45 @@ public class PaperWaystoneModule implements Listener {
         this.waystoneRecipeIngredients = new HashMap<>();
         loadRecipeIngredients();
 
-        this.inventorySize = Math.min(54, Math.max(9, plugin.getConfig().getInt("waystone.gui.discovered.size", 54)));
-        this.navigationEnabled = plugin.getConfig().getBoolean("waystone.gui.discovered.navigation.enabled", true);
+        String scrollUpMaterialStr = plugin.getConfig().getString("waystone.gui.discovered.navigation.scroll_up.material", "PAPER");
+        this.scrollUpMaterial = getMaterialSafely(scrollUpMaterialStr, Material.PAPER);
+        this.scrollUpName = plugin.getConfig().getString("waystone.gui.discovered.navigation.scroll_up.name", "Previous Waystones");
+        this.scrollUpLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.scroll_up.lore");
 
-        String prevMaterial = plugin.getConfig().getString("waystone.gui.discovered.navigation.previous_page.material", "ARROW");
-        this.previousPageMaterial = getMaterialSafely(prevMaterial, Material.ARROW);
-        this.previousPageName = plugin.getConfig().getString("waystone.gui.discovered.navigation.previous_page.name", "Previous Page");
-        this.previousPageLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.previous_page.lore");
-        this.previousPageSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.previous_page.slot", 45);
-
-        String nextMaterial = plugin.getConfig().getString("waystone.gui.discovered.navigation.next_page.material", "ARROW");
-        this.nextPageMaterial = getMaterialSafely(nextMaterial, Material.ARROW);
-        this.nextPageName = plugin.getConfig().getString("waystone.gui.discovered.navigation.next_page.name", "Next Page");
-        this.nextPageLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.next_page.lore");
-        this.nextPageSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.next_page.slot", 53);
+        String scrollDownMaterialStr = plugin.getConfig().getString("waystone.gui.discovered.navigation.scroll_down.material", "PAPER");
+        this.scrollDownMaterial = getMaterialSafely(scrollDownMaterialStr, Material.PAPER);
+        this.scrollDownName = plugin.getConfig().getString("waystone.gui.discovered.navigation.scroll_down.name", "Next Waystones");
+        this.scrollDownLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.scroll_down.lore");
 
         String closeMaterialStr = plugin.getConfig().getString("waystone.gui.discovered.navigation.close.material", "BARRIER");
         this.closeMaterial = getMaterialSafely(closeMaterialStr, Material.BARRIER);
         this.closeName = plugin.getConfig().getString("waystone.gui.discovered.navigation.close.name", "Close");
         this.closeLore = plugin.getConfig().getStringList("waystone.gui.discovered.navigation.close.lore");
-        this.closeSlot = plugin.getConfig().getInt("waystone.gui.discovered.navigation.close.slot", 49);
 
         Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
         this.iconChangeTitleStr = PlainTextComponentSerializer.plainText().serialize(iconChangeTitle);
+
+        this.inventorySize = Math.min(54, Math.max(18, plugin.getConfig().getInt("waystone.gui.discovered.size", 54)));
+
+        String infoMaterialStr = plugin.getConfig().getString("waystone.gui.discovered.info_item.material", "KNOWLEDGE_BOOK");
+        this.infoItemMaterial = getMaterialSafely(infoMaterialStr, Material.KNOWLEDGE_BOOK);
+
+        this.noOtherWaystonesName = plugin.getConfig().getString("waystone.gui.discovered.info_item.no_other_waystones.name", "<gold>No Other Waystones Available");
+        this.noOtherWaystonesLore = plugin.getConfig().getStringList("waystone.gui.discovered.info_item.no_other_waystones.lore");
+
+        this.noWaystonesName = plugin.getConfig().getString("waystone.gui.discovered.info_item.no_waystones.name", "<gold>No Waystones Available");
+        this.noWaystonesLore = plugin.getConfig().getStringList("waystone.gui.discovered.info_item.no_waystones.lore");
+
+        if (noOtherWaystonesLore.isEmpty()) {
+            noOtherWaystonesLore.add("<gray>You are currently at this waystone,");
+            noOtherWaystonesLore.add("<gray>so it's not shown in the list.");
+            noOtherWaystonesLore.add("<yellow>Discover more waystones to travel!");
+        }
+
+        if (noWaystonesLore.isEmpty()) {
+            noWaystonesLore.add("<gray>You haven't discovered any waystones yet.");
+            noWaystonesLore.add("<yellow>Explore the world to find them!");
+        }
 
         if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
             this.economy = Bukkit.getServer().getServicesManager().getRegistration(Economy.class) != null ?
@@ -236,189 +252,9 @@ public class PaperWaystoneModule implements Listener {
         DatabaseHandler.clearWaystones();
     }
 
-    private ItemStack markAsGUIItem(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) return item;
-
-        ItemStack marked = item.clone();
-        ItemMeta meta = marked.getItemMeta();
-        if (meta != null) {
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(guiItemKey, PersistentDataType.STRING, "gui_item");
-            marked.setItemMeta(meta);
-        }
-        return marked;
-    }
-
-    private boolean isGUIItem(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) return false;
-
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return false;
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        return container.has(guiItemKey, PersistentDataType.STRING);
-    }
-
-    private boolean isWaystoneGUITitle(Component title) {
-        Component waystoneInventoryTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
-        Component editTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
-        Component playerManagementTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Manage Players"));
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
-
-        return title.equals(waystoneInventoryTitle) ||
-                title.equals(editTitle) ||
-                title.equals(playerManagementTitle) ||
-                title.equals(iconChangeTitle);
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-
-        Component viewTitle = event.getView().title();
-        String plainTitle = PlainTextComponentSerializer.plainText().serialize(viewTitle);
-
-        if (!isWaystoneGUITitle(viewTitle)) return;
-
-        if (plainTitle.equals(iconChangeTitleStr)) {
-            int slot = event.getSlot();
-            if (slot == 11) {
-                ItemStack cursor = event.getCursor();
-                if (isGUIItem(cursor)) {
-                    event.setCancelled(true);
-                }
-            } else if (slot == 13) {
-                event.setCancelled(true);
-                handleIconConfirm(event, player, changingIconWaystones.get(player.getUniqueId()));
-            } else if (slot == 15) {
-                event.setCancelled(true);
-                player.closeInventory();
-                changingIconWaystones.remove(player.getUniqueId());
-            } else {
-                if (event.getClickedInventory() == event.getView().getTopInventory()) {
-                    event.setCancelled(true);
-                }
-            }
-        } else {
-            event.setCancelled(true);
-            handleSpecificGUIClick(event, player, plainTitle);
-        }
-    }
-
-    private void handleSpecificGUIClick(InventoryClickEvent event, Player player, String plainTitle) {
-        String waystoneInventoryTitle = PlainTextComponentSerializer.plainText().serialize(
-                processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"))
-        );
-        String editTitle = PlainTextComponentSerializer.plainText().serialize(
-                processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"))
-        );
-        String playerManagementTitle = PlainTextComponentSerializer.plainText().serialize(
-                processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "Manage Players"))
-        );
-
-        if (plainTitle.equals(waystoneInventoryTitle)) {
-            handleWaystoneInventoryClick(event, player);
-        } else if (plainTitle.equals(editTitle)) {
-            handleEditGUIClick(event, player);
-        } else if (plainTitle.equals(playerManagementTitle)) {
-            handlePlayerManagementGUIClick(event, player);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onInventoryDrag(InventoryDragEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-
-        Component viewTitle = event.getView().title();
-        String viewTitleStr = PlainTextComponentSerializer.plainText().serialize(viewTitle);
-
-        if (!isWaystoneGUITitle(viewTitle)) return;
-
-        if (viewTitleStr.equals(iconChangeTitleStr)) {
-            boolean draggingOverAllowedSlot = false;
-            for (int slot : event.getRawSlots()) {
-                if (slot < event.getInventory().getSize()) {
-                    if (slot == 11) {
-                        draggingOverAllowedSlot = true;
-                    } else {
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            }
-            if (!draggingOverAllowedSlot) {
-                event.setCancelled(true);
-            }
-        } else {
-            event.setCancelled(true);
-        }
-
-        if (isGUIItem(event.getOldCursor())) {
-            event.setCancelled(true);
-            event.setCursor(null);
-        }
-    }
-
-    private void handleIconConfirm(InventoryClickEvent event, Player player, Waystone waystone) {
-        ItemStack iconItem = event.getInventory().getItem(11);
-        UUID playerId = player.getUniqueId();
-
-        if (iconItem != null && iconItem.getType() != Material.AIR) {
-            if (isGUIItem(iconItem)) {
-                TextHandler.get().sendMessage(player, "waystone.gui.icon_invalid");
-                return;
-            }
-
-            ItemStack iconItemCopy = iconItem.clone();
-            iconItemCopy.setAmount(1);
-
-            if (iconItem.getAmount() > 1) {
-                iconItem.setAmount(iconItem.getAmount() - 1);
-            } else {
-                event.getInventory().setItem(11, new ItemStack(Material.AIR));
-            }
-
-            String iconData = serializeItemStack(iconItemCopy);
-            waystone.setIconData(iconData);
-
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                    DatabaseHandler.updateWaystoneIcon(waystone.getId(), iconData)
-            );
-
-            TextHandler.get().sendMessage(player, "waystone.gui.icon_changed");
-
-            if (enableSounds) {
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
-            }
-        } else {
-            waystone.setIconData(null);
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
-                    DatabaseHandler.updateWaystoneIcon(waystone.getId(), null)
-            );
-
-            TextHandler.get().sendMessage(player, "waystone.gui.icon_reset");
-
-            if (enableSounds) {
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            }
-        }
-
-        player.closeInventory();
-        changingIconWaystones.remove(playerId);
-    }
-
-    private void handleEditGUIClick(InventoryClickEvent event, Player player) {
-        Waystone waystone = editingWaystones.get(player.getUniqueId());
-        if (waystone == null) {
-            player.closeInventory();
-            return;
-        }
-
-        ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || clicked.getType() == Material.WHITE_STAINED_GLASS_PANE) return;
-
-        switch (event.getSlot()) {
-            case 10:
+    private void handleEditGUIClick(int slot, Player player, Waystone waystone) {
+        switch (slot) {
+            case 9:
                 if (waystone.isGlobal()) {
                     waystone.setGlobal(false);
                     waystone.setDiscoverable(false);
@@ -435,20 +271,27 @@ public class PaperWaystoneModule implements Listener {
                 }
                 break;
 
-            case 12:
+            case 11:
                 player.closeInventory();
                 editingWaystones.remove(player.getUniqueId());
                 renamingWaystones.put(player.getUniqueId(), waystone);
                 TextHandler.get().sendMessage(player, "waystone.rename_prompt");
                 break;
 
-            case 14:
+            case 13:
+                openIconChangeGUI(player, waystone);
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.8f);
+                }
+                break;
+
+            case 15:
                 if (!waystone.isDiscoverable() && !waystone.isGlobal()) {
                     openPlayerManagementGUI(player, waystone);
                 }
                 break;
 
-            case 16:
+            case 17:
                 player.closeInventory();
                 editingWaystones.remove(player.getUniqueId());
 
@@ -495,29 +338,20 @@ public class PaperWaystoneModule implements Listener {
         }
     }
 
-    private void handlePlayerManagementGUIClick(InventoryClickEvent event, Player player) {
-        Waystone waystone = editingWaystones.get(player.getUniqueId());
-        if (waystone == null) {
-            player.closeInventory();
-            return;
-        }
-
-        ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || clicked.getType() == Material.BLACK_STAINED_GLASS_PANE) return;
-
-        if (event.getSlot() == 45) {
+    private void handlePlayerManagementClick(Player player, Waystone waystone, ItemStack clicked, int slot) {
+        if (slot == 45) {
             player.closeInventory();
             TextHandler.get().sendMessage(player, "waystone.add_player_prompt");
             addingPlayerToWaystone.put(player.getUniqueId(), "adding");
             return;
         }
 
-        if (event.getSlot() == 53) {
+        if (slot == 53) {
             openWaystoneEditGUI(player, waystone);
             return;
         }
 
-        if (clicked.getType() == Material.PLAYER_HEAD && event.getSlot() < 45) {
+        if (clicked != null && clicked.getType() == Material.PLAYER_HEAD && slot < 45) {
             ItemMeta meta = clicked.getItemMeta();
             if (meta != null && meta.lore() != null && !Objects.requireNonNull(meta.lore()).isEmpty()) {
                 List<Component> lore = meta.lore();
@@ -547,73 +381,28 @@ public class PaperWaystoneModule implements Listener {
         }
     }
 
-    private void handleWaystoneInventoryClick(InventoryClickEvent event, Player player) {
-        ItemStack clickedItem = event.getCurrentItem();
+    private void handleWaystoneInventoryClick(Player player, ItemStack clickedItem, ClickType clickType) {
         if (clickedItem == null || !clickedItem.hasItemMeta()) return;
 
-        int slot = event.getSlot();
         UUID playerId = player.getUniqueId();
-        int currentPage = playerCurrentPage.getOrDefault(playerId, 0);
-
-        if (navigationEnabled) {
-            if (slot == previousPageSlot && currentPage > 0) {
-                openWaystoneInventory(player, currentPage - 1);
-                if (enableSounds) {
-                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 1.0f);
-                }
-                return;
-            }
-
-            if (slot == nextPageSlot) {
-                List<Waystone> availableWaystones = waystones.values().stream()
-                        .filter(waystone -> waystone.isRegistered(playerId) && waystone.isPlayerAllowed(playerId))
-                        .collect(Collectors.toList());
-                int maxPages = calculateMaxPages(availableWaystones);
-
-                if (currentPage < maxPages - 1) {
-                    openWaystoneInventory(player, currentPage + 1);
-                    if (enableSounds) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 1.0f);
-                    }
-                }
-                return;
-            }
-
-            if (slot == closeSlot) {
-                player.closeInventory();
-                playerCurrentPage.remove(playerId);
-                if (enableSounds) {
-                    player.playSound(player.getLocation(), Sound.BLOCK_CHEST_CLOSE, SoundCategory.PLAYERS, 0.5f, 1.0f);
-                }
-                return;
-            }
-        }
 
         ItemMeta meta = clickedItem.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
         if (!container.has(waystoneIdentifierKey, PersistentDataType.STRING)) return;
 
         String waystoneIdStr = container.get(waystoneIdentifierKey, PersistentDataType.STRING);
-        assert waystoneIdStr != null;
+        if (waystoneIdStr == null) return;
+
         int waystoneId = Integer.parseInt(waystoneIdStr);
 
-        Waystone targetWaystone = waystones.values().stream().filter(waystone -> waystone.getId() == waystoneId).findFirst().orElse(null);
+        Waystone targetWaystone = waystones.values().stream()
+                .filter(waystone -> waystone.getId() == waystoneId)
+                .findFirst().orElse(null);
 
         if (targetWaystone == null) return;
 
-        if (event.getClick() == ClickType.RIGHT && targetWaystone.getCreator().equals(playerId)) {
+        if (clickType == ClickType.LEFT || clickType == ClickType.SHIFT_LEFT) {
             player.closeInventory();
-            playerCurrentPage.remove(playerId);
-            openIconChangeGUI(player, targetWaystone);
-            if (enableSounds) {
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.8f);
-            }
-            return;
-        }
-
-        if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT) {
-            player.closeInventory();
-            playerCurrentPage.remove(playerId);
 
             if (!canPlayerAffordWaystone(player)) {
                 TextHandler.get().sendMessage(player, "waystone.not_enough_resources", getCostMessage());
@@ -684,23 +473,70 @@ public class PaperWaystoneModule implements Listener {
         }
     }
 
-    @EventHandler
-    public void onInventoryClose(org.bukkit.event.inventory.InventoryCloseEvent event) {
+    private void handleIconConfirm(Player player, Waystone waystone, ItemStack iconItem) {
+        UUID playerId = player.getUniqueId();
+
+        if (iconItem != null && iconItem.getType() != Material.AIR) {
+            ItemStack iconItemCopy = iconItem.clone();
+            iconItemCopy.setAmount(1);
+
+            String iconData = serializeItemStack(iconItemCopy);
+            waystone.setIconData(iconData);
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    DatabaseHandler.updateWaystoneIcon(waystone.getId(), iconData)
+            );
+
+            TextHandler.get().sendMessage(player, "waystone.gui.icon_changed");
+
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.5f);
+            }
+        } else {
+            waystone.setIconData(null);
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                    DatabaseHandler.updateWaystoneIcon(waystone.getId(), null)
+            );
+
+            TextHandler.get().sendMessage(player, "waystone.gui.icon_reset");
+
+            if (enableSounds) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            }
+        }
+
+        player.closeInventory();
+        changingIconWaystones.remove(playerId);
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> openWaystoneEditGUI(player, waystone), 1L);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onInventoryClose(InventoryCloseEvent event) {
         if (!(event.getPlayer() instanceof Player player)) return;
 
         UUID playerId = player.getUniqueId();
-        Component viewTitle = event.getView().title();
 
-        if (!isWaystoneGUITitle(viewTitle)) return;
+        if (changingIconWaystones.containsKey(playerId)) {
+            String inventoryTitle = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
+            if (inventoryTitle.equals(iconChangeTitleStr)) {
+                ItemStack itemInSlot = event.getInventory().getItem(11);
+                if (itemInSlot != null && itemInSlot.getType() != Material.AIR) {
+                    ItemMeta meta = itemInSlot.getItemMeta();
+                    boolean isGuiItem = false;
+                    if (meta != null && meta.hasDisplayName()) {
+                        String displayName = PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(meta.displayName()));
+                        if (displayName.equals("Confirm") || displayName.equals("Cancel") || displayName.equals(" ")) {
+                            isGuiItem = true;
+                        }
+                    }
 
-        Component iconChangeTitle = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Waystone Icon"));
-
-        if (iconChangeTitle.equals(viewTitle)) {
-            ItemStack itemInSlot = event.getInventory().getItem(11);
-            if (itemInSlot != null && itemInSlot.getType() != Material.AIR && !isGUIItem(itemInSlot)) {
-                HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(itemInSlot);
-                for (ItemStack item : leftover.values()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    if (!isGuiItem) {
+                        HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(itemInSlot);
+                        for (ItemStack item : leftover.values()) {
+                            player.getWorld().dropItemNaturally(player.getLocation(), item);
+                        }
+                    }
                 }
             }
             changingIconWaystones.remove(playerId);
@@ -714,59 +550,6 @@ public class PaperWaystoneModule implements Listener {
             plugin.getLogger().warning("Invalid material: " + materialName + ", using " + fallback.name());
             return fallback;
         }
-    }
-
-    private int calculateMaxPages(List<Waystone> availableWaystones) {
-        if (!navigationEnabled) {
-            return 1;
-        }
-
-        int slotsForWaystones = inventorySize - 9;
-        if (slotsForWaystones <= 0) {
-            slotsForWaystones = inventorySize - 3;
-        }
-
-        return Math.max(1, (int) Math.ceil((double) availableWaystones.size() / slotsForWaystones));
-    }
-
-    private List<Waystone> getWaystonesForPage(List<Waystone> allWaystones, int page) {
-        int slotsForWaystones = navigationEnabled ? inventorySize - 9 : inventorySize;
-        if (slotsForWaystones <= 0) {
-            slotsForWaystones = inventorySize - 3;
-        }
-
-        int startIndex = page * slotsForWaystones;
-        int endIndex = Math.min(startIndex + slotsForWaystones, allWaystones.size());
-
-        if (startIndex >= allWaystones.size()) {
-            return new ArrayList<>();
-        }
-
-        return allWaystones.subList(startIndex, endIndex);
-    }
-
-    private ItemStack createNavigationItem(Material material, String name, List<String> lore) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-
-        if (meta != null) {
-            Component nameComponent = processColorCodes(name).decoration(TextDecoration.ITALIC, false);
-            meta.displayName(nameComponent);
-
-            if (lore != null && !lore.isEmpty()) {
-                List<Component> loreComponents = lore.stream()
-                        .map(line -> processColorCodes(line).decoration(TextDecoration.ITALIC, false))
-                        .collect(Collectors.toList());
-                meta.lore(loreComponents);
-            }
-
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(guiItemKey, PersistentDataType.STRING, "gui_item");
-
-            item.setItemMeta(meta);
-        }
-
-        return item;
     }
 
     private String serializeItemStack(ItemStack item) {
@@ -804,48 +587,92 @@ public class PaperWaystoneModule implements Listener {
         changingIconWaystones.put(player.getUniqueId(), waystone);
 
         Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.title", "Change Icon"));
-        Inventory gui = Bukkit.createInventory(null, 27, title);
 
-        ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
-        for (int i = 0; i < 27; i++) {
-            gui.setItem(i, glassPane);
-        }
+        Gui gui = Gui.gui()
+                .title(title)
+                .rows(3)
+                .create();
 
-        gui.setItem(11, null);
+        gui.disableAllInteractions();
+        gui.enableItemPlace();
 
+        GuiItem glassPane = createGlassPane(Material.WHITE_STAINED_GLASS_PANE);
+        gui.getFiller().fill(glassPane);
+
+        gui.setItem(11, new GuiItem(new ItemStack(Material.AIR)));
+
+        // Confirm button
         ItemStack confirmButton = new ItemStack(Material.LIME_DYE);
         ItemMeta confirmMeta = confirmButton.getItemMeta();
-        confirmMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.confirm.name", "Confirm"))
-                .decoration(TextDecoration.ITALIC, false));
-        List<Component> confirmLore = new ArrayList<>();
-        List<String> confirmLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.confirm.lore");
-        for (String loreLine : confirmLoreConfig) {
-            confirmLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
-        }
-        if (confirmLore.isEmpty()) {
-            confirmLore.add(processColorCodes("<gray>Click to use this item as icon").decoration(TextDecoration.ITALIC, false));
-        }
-        confirmMeta.lore(confirmLore);
-        confirmButton.setItemMeta(confirmMeta);
-        gui.setItem(13, markAsGUIItem(confirmButton));
+        if (confirmMeta != null) {
+            confirmMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.confirm.name", "Confirm"))
+                    .decoration(TextDecoration.ITALIC, false));
 
+            List<Component> confirmLore = new ArrayList<>();
+            List<String> confirmLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.confirm.lore");
+            for (String loreLine : confirmLoreConfig) {
+                confirmLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            if (confirmLore.isEmpty()) {
+                confirmLore.add(processColorCodes("Click to use this item as icon").decoration(TextDecoration.ITALIC, false));
+            }
+            confirmMeta.lore(confirmLore);
+            confirmButton.setItemMeta(confirmMeta);
+        }
+
+        gui.setItem(13, new GuiItem(confirmButton, (event) -> {
+            ItemStack iconItem = gui.getInventory().getItem(11);
+            if (iconItem != null && iconItem.getType() != Material.AIR) {
+                ItemStack singleIconItem = iconItem.clone();
+                singleIconItem.setAmount(1);
+
+                handleIconConfirm(player, waystone, singleIconItem);
+
+                if (iconItem.getAmount() > 1) {
+                    iconItem.setAmount(iconItem.getAmount() - 1);
+                    gui.getInventory().setItem(11, iconItem);
+                } else {
+                    gui.getInventory().setItem(11, new ItemStack(Material.AIR));
+                }
+            } else {
+                handleIconConfirm(player, waystone, null);
+            }
+        }));
+
+        // Cancel button
         ItemStack cancelButton = new ItemStack(Material.RED_DYE);
         ItemMeta cancelMeta = cancelButton.getItemMeta();
-        cancelMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.cancel.name", "Cancel"))
-                .decoration(TextDecoration.ITALIC, false));
-        List<Component> cancelLore = new ArrayList<>();
-        List<String> cancelLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.cancel.lore");
-        for (String loreLine : cancelLoreConfig) {
-            cancelLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
-        }
-        if (cancelLore.isEmpty()) {
-            cancelLore.add(processColorCodes("<gray>Click to cancel").decoration(TextDecoration.ITALIC, false));
-        }
-        cancelMeta.lore(cancelLore);
-        cancelButton.setItemMeta(cancelMeta);
-        gui.setItem(15, markAsGUIItem(cancelButton));
+        if (cancelMeta != null) {
+            cancelMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.change_icon.cancel.name", "Cancel"))
+                    .decoration(TextDecoration.ITALIC, false));
 
-        player.openInventory(gui);
+            List<Component> cancelLore = new ArrayList<>();
+            List<String> cancelLoreConfig = plugin.getConfig().getStringList("waystone.gui.change_icon.cancel.lore");
+            for (String loreLine : cancelLoreConfig) {
+                cancelLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            if (cancelLore.isEmpty()) {
+                cancelLore.add(processColorCodes("<gray>Click to cancel").decoration(TextDecoration.ITALIC, false));
+            }
+            cancelMeta.lore(cancelLore);
+            cancelButton.setItemMeta(cancelMeta);
+        }
+
+        gui.setItem(15, new GuiItem(cancelButton, (event) -> {
+            ItemStack iconItem = gui.getInventory().getItem(11);
+            if (iconItem != null && iconItem.getType() != Material.AIR) {
+                HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(iconItem);
+                for (ItemStack item : leftover.values()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                }
+            }
+
+            player.closeInventory();
+            changingIconWaystones.remove(player.getUniqueId());
+            Bukkit.getScheduler().runTaskLater(plugin, () -> openWaystoneEditGUI(player, waystone), 1L);
+        }));
+
+        gui.open(player);
 
         TextHandler.get().sendMessage(player, "waystone.gui.change_icon.instructions");
     }
@@ -870,6 +697,7 @@ public class PaperWaystoneModule implements Listener {
                             newSkullMeta.setOwnerProfile(originalSkullMeta.getOwnerProfile());
                         }
                     }
+                    item.setItemMeta(newMeta);
                 }
             } else {
                 item = new ItemStack(iconMaterial);
@@ -879,70 +707,52 @@ public class PaperWaystoneModule implements Listener {
         }
 
         ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            Component nameComponent = processColorCodes(waystone.getName())
+                    .decoration(TextDecoration.ITALIC, false);
+            meta.displayName(nameComponent);
 
-        Component nameComponent = processColorCodes(waystone.getName())
-                .decoration(TextDecoration.ITALIC, false);
-        meta.displayName(nameComponent);
+            List<Component> lore = new ArrayList<>();
 
-        List<Component> lore = new ArrayList<>();
+            String locationFormat = plugin.getConfig().getString("waystone.gui.discovered.item.location", "X: %d, Y: %d, Z: %d");
+            String locationString = String.format(locationFormat,
+                    waystone.getLocation().getBlockX(),
+                    waystone.getLocation().getBlockY(),
+                    waystone.getLocation().getBlockZ());
+            Component locationComponent = processColorCodes(locationString).decoration(TextDecoration.ITALIC, false);
+            lore.add(locationComponent);
 
-        String locationFormat = plugin.getConfig().getString("waystone.gui.discovered.item.location", "X: %d, Y: %d, Z: %d");
-        String locationString = String.format(locationFormat,
-                waystone.getLocation().getBlockX(),
-                waystone.getLocation().getBlockY(),
-                waystone.getLocation().getBlockZ());
-        Component locationComponent = processColorCodes(locationString).decoration(TextDecoration.ITALIC, false);
-        lore.add(locationComponent);
+            String clickString = plugin.getConfig().getString("waystone.gui.discovered.item.click_to_teleport", "Click to teleport");
+            Component clickComponent = processColorCodes(clickString).decoration(TextDecoration.ITALIC, false);
+            lore.add(clickComponent);
 
-        String clickString = plugin.getConfig().getString("waystone.gui.discovered.item.click_to_teleport", "Click to teleport");
-        Component clickComponent = processColorCodes(clickString).decoration(TextDecoration.ITALIC, false);
-        lore.add(clickComponent);
+            if (costEnabled && !costType.equals("none")) {
+                String costFormat = plugin.getConfig().getString("waystone.gui.discovered.item.cost", "Cost: %s");
+                String costMessage = getCostMessage();
+                String costString = String.format(costFormat, costMessage);
+                lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
+            }
 
-        if (costEnabled && !costType.equals("none")) {
-            String costFormat = plugin.getConfig().getString("waystone.gui.discovered.item.cost", "Cost: %s");
-            String costMessage = getCostMessage();
-            String costString = String.format(costFormat, costMessage);
-            lore.add(processColorCodes(costString).decoration(TextDecoration.ITALIC, false));
+            if (waystone.isGlobal()) {
+                String globalString = plugin.getConfig().getString("waystone.gui.discovered.item.global", "Global Waystone");
+                lore.add(processColorCodes(globalString).decoration(TextDecoration.ITALIC, false));
+            } else if (waystone.isDiscoverable()) {
+                String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.discoverable", "Discoverable Waystone");
+                lore.add(processColorCodes(publicString).decoration(TextDecoration.ITALIC, false));
+            } else {
+                String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
+                lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
+            }
+
+            meta.lore(lore);
+
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(waystoneIdentifierKey, PersistentDataType.STRING, String.valueOf(waystone.getId()));
+
+            item.setItemMeta(meta);
         }
-
-        if (waystone.isGlobal()) {
-            String globalString = plugin.getConfig().getString("waystone.gui.discovered.item.global", "Global Waystone");
-            lore.add(processColorCodes(globalString).decoration(TextDecoration.ITALIC, false));
-        } else if (waystone.isDiscoverable()) {
-            String publicString = plugin.getConfig().getString("waystone.gui.discovered.item.discoverable", "Discoverable Waystone");
-            lore.add(processColorCodes(publicString).decoration(TextDecoration.ITALIC, false));
-        } else {
-            String privateString = plugin.getConfig().getString("waystone.gui.discovered.item.private", "Private Waystone");
-            lore.add(processColorCodes(privateString).decoration(TextDecoration.ITALIC, false));
-        }
-
-        if (waystone.getCreator().equals(getPlayerUUIDFromContext())) {
-            String rightClickString = plugin.getConfig().getString("waystone.gui.discovered.item.right_click_icon", "Right-click to set icon");
-            lore.add(processColorCodes(rightClickString).decoration(TextDecoration.ITALIC, false));
-        }
-
-        lore.add(Component.text("§0§k" + waystone.getName(), NamedTextColor.BLACK)
-                .decoration(TextDecoration.OBFUSCATED, true));
-
-        meta.lore(lore);
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(waystoneIdentifierKey, PersistentDataType.STRING, waystone.getId() + "");
-        container.set(guiItemKey, PersistentDataType.STRING, "gui_item");
-
-        item.setItemMeta(meta);
 
         return item;
-    }
-
-    private UUID currentPlayerContext = null;
-
-    private UUID getPlayerUUIDFromContext() {
-        return currentPlayerContext;
-    }
-
-    private void setPlayerContext(UUID playerUUID) {
-        this.currentPlayerContext = playerUUID;
     }
 
     private void loadRecipeIngredients() {
@@ -1075,14 +885,8 @@ public class PaperWaystoneModule implements Listener {
                             .decoration(TextDecoration.ITALIC, false))
                     .toList();
 
-            LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
-            String legacyName = legacy.serialize(displayName);
-            List<String> legacyLore = loreComponents.stream()
-                    .map(legacy::serialize)
-                    .collect(Collectors.toList());
-
-            meta.setDisplayName(legacyName);
-            meta.setLore(legacyLore);
+            meta.displayName(displayName);
+            meta.lore(loreComponents);
 
             PersistentDataContainer container = meta.getPersistentDataContainer();
             container.set(waystoneCoreKey, PersistentDataType.STRING, WAYSTONE_CORE_IDENTIFIER);
@@ -1624,27 +1428,31 @@ public class PaperWaystoneModule implements Listener {
         });
     }
 
-    private ItemStack createGlassPane(Material glassType) {
+    private GuiItem createGlassPane(Material glassType) {
         ItemStack glass = new ItemStack(glassType);
         ItemMeta meta = glass.getItemMeta();
-        meta.displayName(Component.text(" "));
-        glass.setItemMeta(meta);
-        return glass;
+        if (meta != null) {
+            meta.displayName(Component.text(" "));
+            glass.setItemMeta(meta);
+        }
+        return new GuiItem(glass);
     }
 
     private void openWaystoneEditGUI(Player player, Waystone waystone) {
         editingWaystones.put(player.getUniqueId(), waystone);
 
         Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.edit.title", "Edit Waystone"));
-        Inventory gui = Bukkit.createInventory(null, 27, title);
 
-        ItemStack glassPane = markAsGUIItem(createGlassPane(Material.WHITE_STAINED_GLASS_PANE));
-        for (int i = 0; i < 27; i++) {
-            if (i != 10 && i != 12 && i != 14 && i != 16 && i !=4 && i != 22) {
-                gui.setItem(i, glassPane);
-            }
-        }
+        Gui gui = Gui.gui()
+                .title(title)
+                .rows(3)
+                .disableAllInteractions()
+                .create();
 
+        GuiItem glassPane = createGlassPane(Material.WHITE_STAINED_GLASS_PANE);
+        gui.getFiller().fill(glassPane);
+
+        // Visibility Item (slot 9)
         ItemStack visibilityItem;
         if (waystone.isGlobal()) {
             visibilityItem = new ItemStack(Material.BLUE_DYE);
@@ -1653,127 +1461,175 @@ public class PaperWaystoneModule implements Listener {
         } else {
             visibilityItem = new ItemStack(Material.RED_DYE);
         }
+
         ItemMeta visibilityMeta = visibilityItem.getItemMeta();
+        if (visibilityMeta != null) {
+            String visibilityNamePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.name" :
+                    waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.name" :
+                            "waystone.gui.edit.visibility.private.name";
+            String visibilityLorePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.lore" :
+                    waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.lore" :
+                            "waystone.gui.edit.visibility.private.lore";
 
-        String visibilityNamePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.name" :
-                waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.name" :
-                        "waystone.gui.edit.visibility.private.name";
-        String visibilityLorePath = waystone.isGlobal() ? "waystone.gui.edit.visibility.global.lore" :
-                waystone.isDiscoverable() ? "waystone.gui.edit.visibility.discoverable.lore" :
-                        "waystone.gui.edit.visibility.private.lore";
+            visibilityMeta.displayName(processColorCodes(plugin.getConfig().getString(visibilityNamePath,
+                    waystone.isGlobal() ? "Global Waystone" : waystone.isDiscoverable() ? "Discoverable Waystone" : "Private Waystone"))
+                    .decoration(TextDecoration.ITALIC, false));
 
-        visibilityMeta.displayName(processColorCodes(plugin.getConfig().getString(visibilityNamePath,
-                waystone.isGlobal() ? "Global Waystone" : waystone.isDiscoverable() ? "Discoverable Waystone" : "Private Waystone"))
-                .decoration(TextDecoration.ITALIC, false));
-
-        List<String> visibilityLoreConfig = plugin.getConfig().getStringList(visibilityLorePath);
-        List<Component> visibilityLore = new ArrayList<>();
-        for (String loreLine : visibilityLoreConfig) {
-            visibilityLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            List<String> visibilityLoreConfig = plugin.getConfig().getStringList(visibilityLorePath);
+            List<Component> visibilityLore = new ArrayList<>();
+            for (String loreLine : visibilityLoreConfig) {
+                visibilityLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            visibilityMeta.lore(visibilityLore);
+            visibilityItem.setItemMeta(visibilityMeta);
         }
-        visibilityMeta.lore(visibilityLore);
-        visibilityItem.setItemMeta(visibilityMeta);
-        gui.setItem(10, markAsGUIItem(visibilityItem));
 
+        gui.setItem(9, new GuiItem(visibilityItem, (event) -> handleEditGUIClick(9, player, waystone)));
+
+        // Rename Item (slot 11)
         ItemStack renameItem = new ItemStack(Material.NAME_TAG);
         ItemMeta renameMeta = renameItem.getItemMeta();
+        if (renameMeta != null) {
+            String renameName = plugin.getConfig().getString("waystone.gui.edit.rename.name", "Rename Waystone");
+            renameMeta.displayName(processColorCodes(renameName).decoration(TextDecoration.ITALIC, false));
 
-        String renameName = plugin.getConfig().getString("waystone.gui.edit.rename.name", "Rename Waystone");
-        renameMeta.displayName(processColorCodes(renameName).decoration(TextDecoration.ITALIC, false));
-
-        List<String> renameLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.rename.lore");
-        List<Component> renameLore = new ArrayList<>();
-        for (String loreLine : renameLoreConfig) {
-            String processedLine = loreLine.replace("{name}", waystone.getName());
-            renameLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
-        }
-        renameMeta.lore(renameLore);
-        renameItem.setItemMeta(renameMeta);
-        gui.setItem(12, markAsGUIItem(renameItem));
-
-        if (waystone.isDiscoverable() || waystone.isGlobal()) {
-            ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
-            ItemMeta playersMeta = playersItem.getItemMeta();
-
-            String playersName = plugin.getConfig().getString("waystone.gui.edit.visibility.discoverable.name", "All Players can use");
-            playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
-
-            playersItem.setItemMeta(playersMeta);
-            gui.setItem(14, markAsGUIItem(playersItem));
-        }
-
-        if (!waystone.isDiscoverable() && !waystone.isGlobal()) {
-            ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
-            ItemMeta playersMeta = playersItem.getItemMeta();
-
-            String playersName = plugin.getConfig().getString("waystone.gui.edit.manage_players.name", "Manage Players");
-            playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
-
-            List<String> playersLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.manage_players.lore");
-            List<Component> playersLore = new ArrayList<>();
-            for (String loreLine : playersLoreConfig) {
-                String processedLine = loreLine.replace("{count}", String.valueOf(waystone.getAllowedPlayers().size()));
-                playersLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
+            List<String> renameLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.rename.lore");
+            List<Component> renameLore = new ArrayList<>();
+            for (String loreLine : renameLoreConfig) {
+                String processedLine = loreLine.replace("{name}", waystone.getName());
+                renameLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
             }
-            playersMeta.lore(playersLore);
-            playersItem.setItemMeta(playersMeta);
-            gui.setItem(14, markAsGUIItem(playersItem));
+            renameMeta.lore(renameLore);
+            renameItem.setItemMeta(renameMeta);
         }
 
+        gui.setItem(11, new GuiItem(renameItem, (event) -> handleEditGUIClick(11, player, waystone)));
+
+        // Icon Item (slot 13)
+        ItemStack iconItem;
+        if (waystone.getIconData() != null) {
+            ItemStack customIcon = deserializeItemStack(waystone.getIconData());
+            if (customIcon != null) {
+                iconItem = customIcon.clone();
+            } else {
+                iconItem = new ItemStack(Material.PAINTING);
+            }
+        } else {
+            iconItem = new ItemStack(Material.PAINTING);
+        }
+
+        ItemMeta iconMeta = iconItem.getItemMeta();
+        if (iconMeta != null) {
+            iconMeta.displayName(processColorCodes(plugin.getConfig().getString("waystone.gui.edit.change_icon.name", "Change Icon"))
+                    .decoration(TextDecoration.ITALIC, false));
+
+            List<String> iconLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.change_icon.lore");
+            List<Component> iconLore = new ArrayList<>();
+            for (String loreLine : iconLoreConfig) {
+                iconLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            if (iconLore.isEmpty()) {
+                iconLore.add(processColorCodes("<gray>Click to change waystone icon").decoration(TextDecoration.ITALIC, false));
+            }
+            iconMeta.lore(iconLore);
+            iconItem.setItemMeta(iconMeta);
+        }
+
+        gui.setItem(13, new GuiItem(iconItem, (event) -> handleEditGUIClick(13, player, waystone)));
+
+        // Players Item (slot 15)
+        ItemStack playersItem = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta playersMeta = playersItem.getItemMeta();
+        if (playersMeta != null) {
+            if (waystone.isDiscoverable() || waystone.isGlobal()) {
+                String playersName = plugin.getConfig().getString("waystone.gui.edit.visibility.discoverable.name", "All Players can use");
+                playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
+            } else {
+                String playersName = plugin.getConfig().getString("waystone.gui.edit.manage_players.name", "Manage Players");
+                playersMeta.displayName(processColorCodes(playersName).decoration(TextDecoration.ITALIC, false));
+
+                List<String> playersLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.manage_players.lore");
+                List<Component> playersLore = new ArrayList<>();
+                for (String loreLine : playersLoreConfig) {
+                    String processedLine = loreLine.replace("{count}", String.valueOf(waystone.getAllowedPlayers().size()));
+                    playersLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
+                }
+                playersMeta.lore(playersLore);
+            }
+            playersItem.setItemMeta(playersMeta);
+        }
+
+        gui.setItem(15, new GuiItem(playersItem, (event) -> handleEditGUIClick(15, player, waystone)));
+
+        // Delete Item (slot 17)
         ItemStack deleteItem = new ItemStack(Material.TNT);
         ItemMeta deleteMeta = deleteItem.getItemMeta();
+        if (deleteMeta != null) {
+            String deleteName = plugin.getConfig().getString("waystone.gui.edit.delete.name", "Remove Waystone");
+            deleteMeta.displayName(processColorCodes(deleteName).decoration(TextDecoration.ITALIC, false));
 
-        String deleteName = plugin.getConfig().getString("waystone.gui.edit.delete.name", "Remove Waystone");
-        deleteMeta.displayName(processColorCodes(deleteName).decoration(TextDecoration.ITALIC, false));
-
-        List<String> deleteLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.delete.lore");
-        List<Component> deleteLore = new ArrayList<>();
-        for (String loreLine : deleteLoreConfig) {
-            deleteLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            List<String> deleteLoreConfig = plugin.getConfig().getStringList("waystone.gui.edit.delete.lore");
+            List<Component> deleteLore = new ArrayList<>();
+            for (String loreLine : deleteLoreConfig) {
+                deleteLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            deleteMeta.lore(deleteLore);
+            deleteItem.setItemMeta(deleteMeta);
         }
-        deleteMeta.lore(deleteLore);
-        deleteItem.setItemMeta(deleteMeta);
-        gui.setItem(16, markAsGUIItem(deleteItem));
 
+        gui.setItem(17, new GuiItem(deleteItem, (event) -> handleEditGUIClick(17, player, waystone)));
+
+        // Name Visibility Item (slot 4)
         ItemStack nameVisibilityItem = new ItemStack(waystone.isNameVisible() ? Material.ENDER_EYE : Material.BARRIER);
         ItemMeta nameVisibilityMeta = nameVisibilityItem.getItemMeta();
+        if (nameVisibilityMeta != null) {
+            String nameVisibilityName = waystone.isNameVisible() ?
+                    plugin.getConfig().getString("waystone.gui.edit.name_visible.visible.name", "Name Visible") :
+                    plugin.getConfig().getString("waystone.gui.edit.name_visible.hidden.name", "Name Hidden");
+            nameVisibilityMeta.displayName(processColorCodes(nameVisibilityName).decoration(TextDecoration.ITALIC, false));
 
-        String nameVisibilityName = waystone.isNameVisible() ?
-                plugin.getConfig().getString("waystone.gui.edit.name_visible.visible.name", "Name Visible") :
-                plugin.getConfig().getString("waystone.gui.edit.name_visible.hidden.name", "Name Hidden");
-        nameVisibilityMeta.displayName(processColorCodes(nameVisibilityName).decoration(TextDecoration.ITALIC, false));
-
-        List<String> nameVisibilityLoreConfig = plugin.getConfig().getStringList(waystone.isNameVisible() ?
-                "waystone.gui.edit.name_visible.visible.lore" : "waystone.gui.edit.name_visible.hidden.lore");
-        List<Component> nameVisibilityLore = new ArrayList<>();
-        for (String loreLine : nameVisibilityLoreConfig) {
-            nameVisibilityLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            List<String> nameVisibilityLoreConfig = plugin.getConfig().getStringList(waystone.isNameVisible() ?
+                    "waystone.gui.edit.name_visible.visible.lore" : "waystone.gui.edit.name_visible.hidden.lore");
+            List<Component> nameVisibilityLore = new ArrayList<>();
+            for (String loreLine : nameVisibilityLoreConfig) {
+                nameVisibilityLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            if (nameVisibilityLore.isEmpty()) {
+                nameVisibilityLore.add(processColorCodes(waystone.isNameVisible() ?
+                        "<gray>Click to hide waystone name" : "<gray>Click to show waystone name")
+                        .decoration(TextDecoration.ITALIC, false));
+            }
+            nameVisibilityMeta.lore(nameVisibilityLore);
+            nameVisibilityItem.setItemMeta(nameVisibilityMeta);
         }
-        if (nameVisibilityLore.isEmpty()) {
-            nameVisibilityLore.add(processColorCodes(waystone.isNameVisible() ?
-                    "<gray>Click to hide waystone name" : "<gray>Click to show waystone name")
-                    .decoration(TextDecoration.ITALIC, false));
-        }
-        nameVisibilityMeta.lore(nameVisibilityLore);
-        nameVisibilityItem.setItemMeta(nameVisibilityMeta);
-        gui.setItem(4, markAsGUIItem(nameVisibilityItem));
 
+        gui.setItem(4, new GuiItem(nameVisibilityItem, (event) -> handleEditGUIClick(4, player, waystone)));
+
+        // Close Item (slot 22)
         ItemStack closeItem = new ItemStack(Material.BARRIER);
         ItemMeta closeMeta = closeItem.getItemMeta();
+        if (closeMeta != null) {
+            String closeName = plugin.getConfig().getString("waystone.gui.edit.close.name", "<gray>Close");
+            closeMeta.displayName(processColorCodes(closeName).decoration(TextDecoration.ITALIC, false));
+            closeItem.setItemMeta(closeMeta);
+        }
 
-        String closeName = plugin.getConfig().getString("waystone.gui.edit.close.name", "<gray>Close");
-        closeMeta.displayName(processColorCodes(closeName).decoration(TextDecoration.ITALIC, false));
-        closeItem.setItemMeta(closeMeta);
-        gui.setItem(22, markAsGUIItem(closeItem));
+        gui.setItem(22, new GuiItem(closeItem, (event) -> handleEditGUIClick(22, player, waystone)));
 
-        player.openInventory(gui);
+        gui.open(player);
     }
 
     private void openPlayerManagementGUI(Player player, Waystone waystone) {
         Component title = processColorCodes(plugin.getConfig().getString("waystone.gui.player_management.title", "<dark_green>Manage Players"));
-        Inventory gui = Bukkit.createInventory(null, 54, title);
 
-        ItemStack glassPane = markAsGUIItem(createGlassPane(Material.BLACK_STAINED_GLASS_PANE));
+        Gui gui = Gui.gui()
+                .title(title)
+                .rows(6)
+                .disableAllInteractions()
+                .create();
+
+        GuiItem glassPane = createGlassPane(Material.BLACK_STAINED_GLASS_PANE);
+
         for (int i = 45; i < 54; i++) {
             if (i != 45 && i != 53) {
                 gui.setItem(i, glassPane);
@@ -1791,48 +1647,58 @@ public class PaperWaystoneModule implements Listener {
 
             ItemStack playerItem = new ItemStack(Material.PLAYER_HEAD);
             ItemMeta playerMeta = playerItem.getItemMeta();
+
             if (playerMeta instanceof SkullMeta skullMeta && allowedPlayer != null) {
                 skullMeta.setOwningPlayer(allowedPlayer);
             }
 
-            playerMeta.displayName(Component.text(playerName, NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
+            if (playerMeta != null) {
+                playerMeta.displayName(Component.text(playerName, NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false));
 
-            List<String> removeLoreConfig = plugin.getConfig().getStringList("waystone.gui.player_management.remove_player.lore");
-            List<Component> playerLore = new ArrayList<>();
-            for (String loreLine : removeLoreConfig) {
-                String processedLine = loreLine.replace("{uuid}", playerId.toString());
-                playerLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
+                List<String> removeLoreConfig = plugin.getConfig().getStringList("waystone.gui.player_management.remove_player.lore");
+                List<Component> playerLore = new ArrayList<>();
+                for (String loreLine : removeLoreConfig) {
+                    String processedLine = loreLine.replace("{uuid}", playerId.toString());
+                    playerLore.add(processColorCodes(processedLine).decoration(TextDecoration.ITALIC, false));
+                }
+                playerMeta.lore(playerLore);
+                playerItem.setItemMeta(playerMeta);
             }
-            playerMeta.lore(playerLore);
-            playerItem.setItemMeta(playerMeta);
 
-            gui.setItem(slot++, markAsGUIItem(playerItem));
+            final int currentSlot = slot;
+            gui.setItem(slot++, new GuiItem(playerItem, (event) -> handlePlayerManagementClick(player, waystone, playerItem, currentSlot)));
         }
 
+        // Add Item (slot 45)
         ItemStack addItem = new ItemStack(Material.EMERALD);
         ItemMeta addMeta = addItem.getItemMeta();
+        if (addMeta != null) {
+            String addName = plugin.getConfig().getString("waystone.gui.player_management.add_player.name", "Add Player");
+            addMeta.displayName(processColorCodes(addName).decoration(TextDecoration.ITALIC, false));
 
-        String addName = plugin.getConfig().getString("waystone.gui.player_management.add_player.name", "Add Player");
-        addMeta.displayName(processColorCodes(addName).decoration(TextDecoration.ITALIC, false));
-
-        List<String> addLoreConfig = plugin.getConfig().getStringList("waystone.gui.player_management.add_player.lore");
-        List<Component> addLore = new ArrayList<>();
-        for (String loreLine : addLoreConfig) {
-            addLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            List<String> addLoreConfig = plugin.getConfig().getStringList("waystone.gui.player_management.add_player.lore");
+            List<Component> addLore = new ArrayList<>();
+            for (String loreLine : addLoreConfig) {
+                addLore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+            }
+            addMeta.lore(addLore);
+            addItem.setItemMeta(addMeta);
         }
-        addMeta.lore(addLore);
-        addItem.setItemMeta(addMeta);
-        gui.setItem(45, markAsGUIItem(addItem));
 
+        gui.setItem(45, new GuiItem(addItem, (event) -> handlePlayerManagementClick(player, waystone, addItem, 45)));
+
+        // Back Item (slot 53)
         ItemStack backItem = new ItemStack(Material.ARROW);
         ItemMeta backMeta = backItem.getItemMeta();
+        if (backMeta != null) {
+            String backName = plugin.getConfig().getString("waystone.gui.player_management.back.name", "Back");
+            backMeta.displayName(processColorCodes(backName).decoration(TextDecoration.ITALIC, false));
+            backItem.setItemMeta(backMeta);
+        }
 
-        String backName = plugin.getConfig().getString("waystone.gui.player_management.back.name", "Back");
-        backMeta.displayName(processColorCodes(backName).decoration(TextDecoration.ITALIC, false));
-        backItem.setItemMeta(backMeta);
-        gui.setItem(53, markAsGUIItem(backItem));
+        gui.setItem(53, new GuiItem(backItem, (event) -> handlePlayerManagementClick(player, waystone, backItem, 53)));
 
-        player.openInventory(gui);
+        gui.open(player);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -2117,6 +1983,8 @@ public class PaperWaystoneModule implements Listener {
                 } else {
                     TextHandler.get().sendMessage(player, "waystone.renaming_canceled");
                 }
+
+                Bukkit.getScheduler().runTaskLater(plugin, () -> openWaystoneEditGUI(player, waystone), 1L);
             });
             return;
         }
@@ -2196,10 +2064,14 @@ public class PaperWaystoneModule implements Listener {
         Location loc = event.getBlock().getLocation();
 
         if (isPendingWaystoneCore(loc)) {
+            event.setCancelled(true);
+
             for (Map.Entry<UUID, PendingWaystone> entry : pendingWaystones.entrySet()) {
                 if (entry.getValue().location().equals(loc)) {
                     UUID playerId = entry.getKey();
                     pendingWaystones.remove(playerId);
+
+                    event.getBlock().setType(Material.AIR);
 
                     if (enableCreationEffects) {
                         playWaystoneDeactivateSound(loc);
@@ -2209,8 +2081,6 @@ public class PaperWaystoneModule implements Listener {
                     if (targetPlayer != null) {
                         TextHandler.get().sendMessage(targetPlayer, "waystone.creation_canceled");
                     }
-
-                    event.getBlock().getDrops().clear();
 
                     ItemStack waystoneCoreItem = createWaystoneCore();
                     loc.getWorld().dropItemNaturally(loc, waystoneCoreItem);
@@ -2226,6 +2096,7 @@ public class PaperWaystoneModule implements Listener {
             }
         }
     }
+
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
@@ -2319,7 +2190,6 @@ public class PaperWaystoneModule implements Listener {
         editingWaystones.remove(playerId);
         addingPlayerToWaystone.remove(playerId);
         playerTeleportLocations.remove(playerId);
-        playerCurrentPage.remove(playerId);
         changingIconWaystones.remove(playerId);
 
         if (pendingTeleports.containsKey(playerId)) {
@@ -2330,61 +2200,145 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private void openWaystoneInventory(Player player) {
-        openWaystoneInventory(player, 0);
-    }
-
-    private void openWaystoneInventory(Player player, int page) {
-        setPlayerContext(player.getUniqueId());
+        Location playerLocation = player.getLocation();
+        Waystone currentWaystone = getCurrentWaystone(playerLocation);
 
         Component titleComponent = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
 
         List<Waystone> availableWaystones = waystones.values().stream()
                 .filter(waystone -> (waystone.isGlobal() || waystone.isRegistered(player.getUniqueId())) &&
-                        waystone.isPlayerAllowed(player.getUniqueId()))
-                .collect(Collectors.toList());
+                        waystone.isPlayerAllowed(player.getUniqueId()) &&
+                        !waystone.equals(currentWaystone))
+                .toList();
 
-        int maxPages = calculateMaxPages(availableWaystones);
+        int rows = inventorySize / 9;
+        int pageSize = inventorySize - 9;
 
-        page = Math.max(0, Math.min(page, maxPages - 1));
-        playerCurrentPage.put(player.getUniqueId(), page);
+        ScrollingGui gui = Gui.scrolling()
+                .title(titleComponent)
+                .rows(rows)
+                .pageSize(pageSize)
+                .disableAllInteractions()
+                .create();
 
-        Inventory inv = Bukkit.createInventory(null, inventorySize, titleComponent);
-
-        List<Waystone> pageWaystones = getWaystonesForPage(availableWaystones, page);
-
-        int slot = 0;
-        int maxWaystoneSlots = navigationEnabled ? inventorySize - 9 : inventorySize;
-
-        for (Waystone waystone : pageWaystones) {
-            if (slot >= maxWaystoneSlots) break;
-
+        for (Waystone waystone : availableWaystones) {
             ItemStack item = createWaystoneItem(waystone);
-            inv.setItem(slot, item);
-            slot++;
+            gui.addItem(new GuiItem(item, (event) -> handleWaystoneInventoryClick(player, item, event.getClick())));
         }
 
-        if (navigationEnabled && maxPages > 1) {
-            if (page > 0 && previousPageSlot < inventorySize) {
-                ItemStack prevItem = createNavigationItem(previousPageMaterial, previousPageName, previousPageLore);
-                inv.setItem(previousPageSlot, prevItem);
-            }
+        int lastRowStartSlot = (rows - 1) * 9;
+        GuiItem glassPane = createGlassPane(Material.WHITE_STAINED_GLASS_PANE);
 
-            if (page < maxPages - 1 && nextPageSlot < inventorySize) {
-                ItemStack nextItem = createNavigationItem(nextPageMaterial, nextPageName, nextPageLore);
-                inv.setItem(nextPageSlot, nextItem);
-            }
-
-            if (closeSlot < inventorySize) {
-                ItemStack closeItem = createNavigationItem(closeMaterial, closeName, closeLore);
-                inv.setItem(closeSlot, closeItem);
-            }
+        for (int i = 0; i < 9; i++) {
+            gui.setItem(lastRowStartSlot + i, glassPane);
         }
 
-        Bukkit.getScheduler().runTask(plugin, () -> player.openInventory(inv));
+        if (availableWaystones.isEmpty()) {
+            ItemStack infoItem = createInfoItem(currentWaystone != null);
+            gui.setItem(lastRowStartSlot + 4, new GuiItem(infoItem));
+        } else {
+            if (availableWaystones.size() > pageSize) {
+                // Scroll Up button
+                ItemStack scrollUpItem = createNavigationItem(scrollUpMaterial, scrollUpName, scrollUpLore);
+                gui.setItem(lastRowStartSlot + 1, new GuiItem(scrollUpItem, (event) -> {
+                    gui.previous();
+                    if (enableSounds) {
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 1.2f);
+                    }
+                }));
+
+                // Scroll Down button
+                ItemStack scrollDownItem = createNavigationItem(scrollDownMaterial, scrollDownName, scrollDownLore);
+                gui.setItem(lastRowStartSlot + 7, new GuiItem(scrollDownItem, (event) -> {
+                    gui.next();
+                    if (enableSounds) {
+                        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, SoundCategory.PLAYERS, 0.5f, 0.8f);
+                    }
+                }));
+            }
+
+            // Close button
+            ItemStack closeItem = createNavigationItem(closeMaterial, closeName, closeLore);
+            gui.setItem(lastRowStartSlot + 4, new GuiItem(closeItem, (event) -> {
+                player.closeInventory();
+                if (enableSounds) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_CHEST_CLOSE, SoundCategory.PLAYERS, 0.5f, 1.0f);
+                }
+            }));
+        }
+
+        gui.open(player);
+    }
+
+    private Waystone getCurrentWaystone(Location playerLocation) {
+        return waystones.values().stream()
+                .filter(waystone -> {
+                    Location waystoneLocation = waystone.getLocation();
+                    return waystoneLocation.getWorld().equals(playerLocation.getWorld()) &&
+                            waystoneLocation.distanceSquared(playerLocation) <= 25;
+                })
+                .findFirst()
+                .orElse(null);
+    }
+
+    private ItemStack createInfoItem(boolean hasCurrentWaystone) {
+        ItemStack infoItem = new ItemStack(infoItemMaterial);
+        ItemMeta meta = infoItem.getItemMeta();
+
+        if (meta != null) {
+            if (hasCurrentWaystone) {
+                meta.displayName(processColorCodes(noOtherWaystonesName)
+                        .decoration(TextDecoration.ITALIC, false));
+
+                List<Component> lore = new ArrayList<>();
+                for (String loreLine : noOtherWaystonesLore) {
+                    lore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+                }
+                meta.lore(lore);
+            } else {
+                meta.displayName(processColorCodes(noWaystonesName)
+                        .decoration(TextDecoration.ITALIC, false));
+
+                List<Component> lore = new ArrayList<>();
+                for (String loreLine : noWaystonesLore) {
+                    lore.add(processColorCodes(loreLine).decoration(TextDecoration.ITALIC, false));
+                }
+                meta.lore(lore);
+            }
+
+            infoItem.setItemMeta(meta);
+        }
+
+        return infoItem;
+    }
+
+    private ItemStack createNavigationItem(Material material, String name, List<String> lore) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            Component nameComponent = processColorCodes(name).decoration(TextDecoration.ITALIC, false);
+            meta.displayName(nameComponent);
+
+            if (lore != null && !lore.isEmpty()) {
+                List<Component> loreComponents = lore.stream()
+                        .map(line -> processColorCodes(line).decoration(TextDecoration.ITALIC, false))
+                        .collect(Collectors.toList());
+                meta.lore(loreComponents);
+            }
+
+            item.setItemMeta(meta);
+        }
+
+        return item;
     }
 
     public static Component processColorCodesStatic(String input) {
         return instance != null ? instance.processColorCodes(input) : Component.text(input);
+    }
+
+    public ItemStack getWaystoneCoreItem() {
+        return createWaystoneCore();
     }
 
     private static class Waystone {
@@ -2467,7 +2421,6 @@ public class PaperWaystoneModule implements Listener {
                 }
             }
         }
-
 
         public Material getBaseMaterial() { return baseMaterial; }
     }

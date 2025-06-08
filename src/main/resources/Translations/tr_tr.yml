@@ -76,6 +76,16 @@ commands:
     success: "<green>Tüm waystone'lar temizlendi.</green>"
     timeout: "<red>Onay süresi doldu. Lütfen tekrar deneyin.</red>"
     error: "<red>Waystone'ları temizlerken bir hata oluştu.</red>"
+  give:
+    no_permission: "<red>Bu komutu kullanma izniniz yok."
+    module_disabled: "<red>Waystone modülü devre dışı."
+    usage: "<yellow>Kullanım: /vitamin give <all/player> waystone_core [miktar]"
+    invalid_item: "<red>Geçersiz öğe. Yalnızca 'waystone_core' desteklenmektedir."
+    invalid_quantity: "<red>Geçersiz miktar. Lütfen pozitif bir tam sayı belirtin."
+    player_not_found: "<red>'{0}' oyuncusu bulunamadı."
+    given_to_all: "<green>Tüm oyunculara {0} Waystone Çekirdeği verildi."
+    given_to_player: "<green>{1} oyuncusuna {0} Waystone Çekirdeği verildi."
+    failed_to_create_item: "<red>Waystone Çekirdeği öğesi oluşturulamadı。"
 
 database:
   already_initialized: "Veritabanı zaten başlatılmış."
