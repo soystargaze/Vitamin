@@ -1,6 +1,7 @@
 package com.soystargaze.vitamin.modules.paper;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.modules.CancellableModule;
 import com.soystargaze.vitamin.utils.BlockDisplayUtils;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import dev.triumphteam.gui.guis.Gui;
@@ -60,7 +61,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
-public class PaperWaystoneModule implements Listener {
+public class PaperWaystoneModule implements Listener, CancellableModule {
 
     private final JavaPlugin plugin;
     private final ConcurrentHashMap<Location, Waystone> waystones = new ConcurrentHashMap<>();
@@ -125,6 +126,9 @@ public class PaperWaystoneModule implements Listener {
     private final NamespacedKey waystoneCoreKey;
     private final NamespacedKey waystoneIdentifierKey;
     private static PaperWaystoneModule instance;
+
+    private BukkitTask waystoneUpdateTask;
+    private BukkitTask teleportParticlesTask;
 
     private static class Cost {
         String type;
@@ -1109,7 +1113,7 @@ public class PaperWaystoneModule implements Listener {
     }
 
     private void startOptimizedTasks() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+        waystoneUpdateTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             List<Map.Entry<Location, Waystone>> waystoneList = new ArrayList<>(waystones.entrySet());
             for (Map.Entry<Location, Waystone> entry : waystoneList) {
                 Location loc = entry.getKey();
@@ -1146,9 +1150,9 @@ public class PaperWaystoneModule implements Listener {
                     }
                 });
             }
-        }, 0L, holoRefreshRate), 200L);
+        }, 0L, holoRefreshRate);
 
-        Bukkit.getScheduler().runTaskTimer(plugin, () -> playerTeleportLocations.forEach((playerId, targetLocation) -> {
+        teleportParticlesTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> playerTeleportLocations.forEach((playerId, targetLocation) -> {
             Player player = Bukkit.getPlayer(playerId);
             if (player != null && targetLocation != null) {
                 if (enableParticles) {
@@ -2097,7 +2101,6 @@ public class PaperWaystoneModule implements Listener {
         }
     }
 
-
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
@@ -2339,6 +2342,18 @@ public class PaperWaystoneModule implements Listener {
 
     public ItemStack getWaystoneCoreItem() {
         return createWaystoneCore();
+    }
+
+    @Override
+    public void cancelTasks() {
+        if (waystoneUpdateTask != null) {
+            waystoneUpdateTask.cancel();
+            waystoneUpdateTask = null;
+        }
+        if (teleportParticlesTask != null) {
+            teleportParticlesTask.cancel();
+            teleportParticlesTask = null;
+        }
     }
 
     private static class Waystone {

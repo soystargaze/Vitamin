@@ -2,6 +2,7 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.modules.CancellableModule;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,18 +30,20 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class ArmorTrimModule implements Listener {
+public class ArmorTrimModule implements Listener, CancellableModule {
 
     private final Set<UUID> provokedPlayers = new HashSet<>();
     private final ArmorTrimManager trimManager;
+    private BukkitTask updateTask;
 
     public ArmorTrimModule() {
         trimManager = new ArmorTrimManager();
-        new BukkitRunnable() {
+        updateTask = new BukkitRunnable() {
             @Override
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -49,6 +52,14 @@ public class ArmorTrimModule implements Listener {
                 }
             }
         }.runTaskTimer(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Vitamin")), 0L, 20L);
+    }
+
+    @Override
+    public void cancelTasks() {
+        if (updateTask != null) {
+            updateTask.cancel();
+            updateTask = null;
+        }
     }
 
     @EventHandler

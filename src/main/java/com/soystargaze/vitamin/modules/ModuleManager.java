@@ -179,6 +179,11 @@ public class ModuleManager {
     }
 
     private void registerModules() {
+        for (Listener module : modules.values()) {
+            if (module instanceof CancellableModule) {
+                ((CancellableModule) module).cancelTasks();
+            }
+        }
         modules.clear();
         HandlerList.unregisterAll(plugin);
 

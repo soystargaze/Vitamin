@@ -2,6 +2,7 @@ package com.soystargaze.vitamin.modules.paper;
 
 import com.destroystokyo.paper.entity.Pathfinder;
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.modules.CancellableModule;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -10,9 +11,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.util.*;
 
-public class PaperVillagerTauntModule implements Listener {
+public class PaperVillagerTauntModule implements Listener, CancellableModule {
 
     private final Set<Player> playersHoldingEmerald = new HashSet<>();
     private final JavaPlugin plugin;
@@ -21,6 +24,9 @@ public class PaperVillagerTauntModule implements Listener {
     private final double PICKUP_DISTANCE = 1.5;
     private final double DETECTION_RADIUS = 10.0;
     private final double DETECTION_HEIGHT = 5.0;
+
+    private BukkitTask pathfindingTask;
+    private BukkitTask pickupCheckTask;
 
     public PaperVillagerTauntModule(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -50,7 +56,7 @@ public class PaperVillagerTauntModule implements Listener {
     }
 
     private void startVillagerPathfindingUpdate() {
-        new BukkitRunnable() {
+        pathfindingTask = new BukkitRunnable() {
             @Override
             public void run() {
                 for (Map.Entry<Villager, Entity> entry : villagerTargets.entrySet()) {
@@ -72,7 +78,7 @@ public class PaperVillagerTauntModule implements Listener {
     }
 
     private void startVillagerPickupCheck() {
-        new BukkitRunnable() {
+        pickupCheckTask = new BukkitRunnable() {
             @Override
             public void run() {
                 Iterator<Map.Entry<Villager, Entity>> iterator = villagerTargets.entrySet().iterator();
@@ -163,5 +169,17 @@ public class PaperVillagerTauntModule implements Listener {
                 Sound.ENTITY_VILLAGER_TRADE,
                 0.5f, 1.0f
         );
+    }
+
+    @Override
+    public void cancelTasks() {
+        if (pathfindingTask != null) {
+            pathfindingTask.cancel();
+            pathfindingTask = null;
+        }
+        if (pickupCheckTask != null) {
+            pickupCheckTask.cancel();
+            pickupCheckTask = null;
+        }
     }
 }
