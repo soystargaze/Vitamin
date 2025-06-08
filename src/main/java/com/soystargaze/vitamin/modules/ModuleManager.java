@@ -184,8 +184,12 @@ public class ModuleManager {
                 ((CancellableModule) module).cancelTasks();
             }
         }
+
+        for (Listener module : modules.values()) {
+            HandlerList.unregisterAll(module);
+        }
+
         modules.clear();
-        HandlerList.unregisterAll(plugin);
 
         for (ModuleDef def : DEFS) {
             Listener module = def.create(plugin, isPaper);
