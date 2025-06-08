@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "Sie haben keine Berechtigung, mit diesem Wegstein zu interagieren."
   no_break_permission: "Sie haben keine Berechtigung, diesen Wegstein zu zerstören."
   themes_reloaded: "Wegstein-Themen erfolgreich neu geladen. {0} Themen gefunden."
+  creation_in_progress: "Die Erstellung eines Waystones ist bereits im Gange. Bitte beenden oder abbrechen Sie sie zuerst."
+  upper_block_not_air: "Der obere Block muss Luft sein, um einen Waystone zu erstellen."
+  too_close_to_existing: "Kann keinen Waystone zu nah an einem bestehenden erstellen."
   gui:
     icon_invalid: "Ungültiger Gegenstand für das Symbol."
     icon_changed: "Wegstein-Symbol wurde geändert."

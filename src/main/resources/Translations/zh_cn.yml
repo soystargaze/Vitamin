@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "您没有权限与此路标石交互。"
   no_break_permission: "您没有权限破坏此路标石。"
   themes_reloaded: "路标石主题已重新加载。{0} 个主题可用。"
+  creation_in_progress: "Waystone的创建已经在进行中。请先完成或取消它。"
+  upper_block_not_air: "要创建Waystone，上方方块必须是空气。"
+  too_close_to_existing: "不能在离现有Waystone太近的地方创建Waystone。"
   gui:
     icon_invalid: "图标的物品无效。"
     icon_changed: "路标石图标已更改。"

@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "このウェイストーンを操作する権限がありません。"
   no_break_permission: "このウェイストーンを破壊する権限がありません。"
   themes_reloaded: "ウェイストーンテーマが再読み込みされました。{0} 個のテーマが見つかりました。"
+  creation_in_progress: "ウェイストーンの作成はすでに進行中です。まずそれを完了するかキャンセルしてください。"
+  upper_block_not_air: "ウェイストーンを作成するには、上部のブロックが空気である必要があります。"
+  too_close_to_existing: "既存のものに近すぎるウェイストーンは作成できません。"
   gui:
     icon_invalid: "アイコンに無効なアイテムです。"
     icon_changed: "ウェイストーンのアイコンが変更されました。"

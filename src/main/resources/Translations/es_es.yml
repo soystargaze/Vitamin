@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "No tienes permiso para interactuar con este waystone."
   no_break_permission: "No tienes permiso para romper este waystone."
   themes_reloaded: "Temas de waystone recargados correctamente. {0} temas disponibles."
+  creation_in_progress: "La creación del Waystone ya está en progreso. Por favor, termínala o cancélala primero."
+  upper_block_not_air: "El bloque superior debe ser aire para crear un Waystone."
+  too_close_to_existing: "No se puede crear un Waystone demasiado cerca de uno existente."
   gui:
     icon_invalid: "Objeto inválido para el icono."
     icon_changed: "El icono del waystone ha sido cambiado."

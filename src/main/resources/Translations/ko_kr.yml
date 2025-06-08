@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "이 웨이스톤과 상호작용할 권한이 없습니다."
   no_break_permission: "이 웨이스톤을 파괴할 권한이 없습니다."
   themes_reloaded: "웨이스톤 테마가 성공적으로 재로드되었습니다. {0}개의 테마가 로드되었습니다."
+  creation_in_progress: "웨이스톤 생성이 이미 진행 중입니다. 먼저 완료하거나 취소하십시오."
+  upper_block_not_air: "웨이스톤을 생성하려면 상단 블록이 공기여야 합니다."
+  too_close_to_existing: "기존 웨이스톤과 너무 가까운 곳에는 웨이스톤을 생성할 수 없습니다。"
   gui:
     icon_invalid: "아이콘에 유효하지 않은 아이템입니다."
     icon_changed: "웨이스톤 아이콘이 변경되었습니다."

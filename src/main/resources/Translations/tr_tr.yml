@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "Bu waystone ile etkileşim kurma izniniz yok."
   no_break_permission: "Bu waystone'u kırma izniniz yok."
   themes_reloaded: "Waystone temaları başarıyla yeniden yüklendi. {0} tema bulundu."
+  creation_in_progress: "Waystone oluşturma işlemi zaten devam ediyor. Lütfen önce onu bitirin veya iptal edin."
+  upper_block_not_air: "Waystone oluşturmak için üst blok hava olmalıdır."
+  too_close_to_existing: "Mevcut birine çok yakın Waystone oluşturamazsınız."
   gui:
     icon_invalid: "İkon için geçersiz öğe."
     icon_changed: "Waystone ikonu değiştirildi."

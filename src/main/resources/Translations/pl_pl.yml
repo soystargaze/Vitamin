@@ -226,6 +226,9 @@ waystone:
   no_interact_permission: "Nie masz uprawnień do interakcji z tym waystone."
   no_break_permission: "Nie masz uprawnień do niszczenia tego waystone."
   themes_reloaded: "Motywy waystone zostały przeładowane. {0} motywów dostępnych."
+  creation_in_progress: "Tworzenie Waystone jest już w toku. Proszę najpierw je zakończyć lub anulować."
+  upper_block_not_air: "Górny blok musi być powietrzem, aby utworzyć Waystone."
+  too_close_to_existing: "Nie można utworzyć Waystone zbyt blisko istniejącego."
   gui:
     icon_invalid: "Nieprawidłowy przedmiot dla ikony."
     icon_changed: "Ikona waystone została zmieniona."

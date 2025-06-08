@@ -121,6 +121,9 @@ public class WaystoneModule implements Listener, CancellableModule {
     private final String noWaystonesName;
     private final List<String> noWaystonesLore;
 
+    // Distance configuration
+    private final double minWaystoneDistanceSquared;
+
     private final Economy economy;
 
     // Integration handlers
@@ -180,6 +183,10 @@ public class WaystoneModule implements Listener, CancellableModule {
         this.enableSounds = plugin.getConfig().getBoolean("waystone.enable_sounds", true);
         this.enableCreationEffects = plugin.getConfig().getBoolean("waystone.enable_creation_effects", true);
         this.restrictedWorlds = plugin.getConfig().getStringList("waystone.restricted_worlds");
+
+        // Distance configuration for minimum distance between waystones
+        double minDistance = plugin.getConfig().getDouble("waystone.min_distance_between_waystones", 5.0);
+        this.minWaystoneDistanceSquared = minDistance * minDistance;
 
         this.costEnabled = plugin.getConfig().getBoolean("waystone.cost.enabled", false);
         this.costType = plugin.getConfig().getString("waystone.cost.type", "none");
@@ -331,6 +338,13 @@ public class WaystoneModule implements Listener, CancellableModule {
         }
 
         return true;
+    }
+
+    // Check if location is too close to existing waystones
+    private boolean isTooCloseToExistingWaystone(Location location) {
+        return waystones.keySet().stream()
+                .anyMatch(existingLocation -> existingLocation.getWorld().equals(location.getWorld()) &&
+                        existingLocation.distanceSquared(location) < minWaystoneDistanceSquared);
     }
 
     public void clearWaystones() {
@@ -514,6 +528,8 @@ public class WaystoneModule implements Listener, CancellableModule {
 
             playTeleportBeginSound(player);
             final Location destination = targetWaystone.getLocation().clone().add(1.5, 0.2, 1.5);
+            destination.setYaw(player.getLocation().getYaw());
+            destination.setPitch(0.0f);
             playerTeleportLocations.put(playerId, destination);
 
             BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -1874,8 +1890,31 @@ public class WaystoneModule implements Listener, CancellableModule {
                 return;
             }
 
+            // Cancel placement of another Core waystone if you are in the process of creating a waystone
+            if (pendingWaystones.containsKey(player.getUniqueId())) {
+                TextHandler.get().sendMessage(player, "waystone.creation_in_progress");
+                event.setCancelled(true);
+                return;
+            }
+
             if (waystones.containsKey(blockLocation)) {
                 TextHandler.get().sendMessage(player, "waystone.already_exists");
+                event.setCancelled(true);
+                return;
+            }
+
+            // Cancel creation if the upper block is not air
+            Location upperBlock = blockLocation.clone().add(0, 1, 0);
+            if (upperBlock.getBlock().getType() != Material.AIR) {
+                TextHandler.get().sendMessage(player, "waystone.upper_block_not_air");
+                event.setCancelled(true);
+                return;
+            }
+
+            // Prevent new waystones from being created within configured distance
+            if (isTooCloseToExistingWaystone(blockLocation)) {
+                double minDistance = Math.sqrt(minWaystoneDistanceSquared);
+                TextHandler.get().sendMessage(player, "waystone.too_close_to_existing", String.valueOf((int) minDistance));
                 event.setCancelled(true);
                 return;
             }
