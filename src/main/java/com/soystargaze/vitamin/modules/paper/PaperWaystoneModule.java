@@ -90,6 +90,7 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
     private final boolean enableSounds;
     private final boolean enableCreationEffects;
     private final List<String> restrictedWorlds;
+    private final int nameCharacterLimit;
 
     private final boolean costEnabled;
     private final String costType;
@@ -184,6 +185,7 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         this.enableSounds = plugin.getConfig().getBoolean("waystone.enable_sounds", true);
         this.enableCreationEffects = plugin.getConfig().getBoolean("waystone.enable_creation_effects", true);
         this.restrictedWorlds = plugin.getConfig().getStringList("waystone.restricted_worlds");
+        this.nameCharacterLimit = plugin.getConfig().getInt("waystone.name_character_limit", 16);
 
         // Distance configuration for minimum distance between waystones
         double minDistance = plugin.getConfig().getDouble("waystone.min_distance_between_waystones", 5.0);
@@ -272,6 +274,10 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         registerWaystoneCoreRecipe();
         loadWaystones();
         startOptimizedTasks();
+    }
+
+    private boolean isAdmin(Player player) {
+        return player.hasPermission("vitamin.module.waystone.admin");
     }
 
     // Integration permission checks
@@ -1932,7 +1938,7 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
         event.setCancelled(true);
         UUID playerId = player.getUniqueId();
 
-        if (player.isSneaking() && targetWaystone.getCreator().equals(playerId)) {
+        if (player.isSneaking() && (targetWaystone.getCreator().equals(playerId) || isAdmin(player))) {
             openWaystoneEditGUI(player, targetWaystone);
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, SoundCategory.PLAYERS, 1.0f, 1.5f);
@@ -1949,7 +1955,7 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
             return;
         }
 
-        if (!targetWaystone.isPlayerAllowed(playerId)) {
+        if (!targetWaystone.isPlayerAllowed(playerId) && !isAdmin(player)) {
             TextHandler.get().sendMessage(player, "waystone.no_permission");
             if (enableSounds) {
                 player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, SoundCategory.PLAYERS, 1.0f, 0.5f);
@@ -2108,6 +2114,15 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
             event.setCancelled(true);
             Component messageComponent = event.message();
             String newName = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
+
+            if (newName.length() > nameCharacterLimit) {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    TextHandler.get().sendMessage(player, "waystone.name_too_long", String.valueOf(nameCharacterLimit));
+                    TextHandler.get().sendMessage(player, "waystone.rename_prompt");
+                });
+                return;
+            }
+
             Waystone waystone = renamingWaystones.remove(playerId);
 
             Bukkit.getScheduler().runTask(plugin, () -> {
@@ -2163,6 +2178,14 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
 
             Component messageComponent = event.message();
             String name = PlainTextComponentSerializer.plainText().serialize(messageComponent).trim();
+
+            if (name.length() > nameCharacterLimit) {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    TextHandler.get().sendMessage(player, "waystone.name_too_long", String.valueOf(nameCharacterLimit));
+                    TextHandler.get().sendMessage(player, "waystone.enter_new_name");
+                });
+                return;
+            }
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (waystones.containsKey(loc)) {
@@ -2369,11 +2392,18 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
 
         Component titleComponent = processColorCodes(plugin.getConfig().getString("waystone.gui.discovered.title", "Discovered Waystones"));
 
-        List<Waystone> availableWaystones = waystones.values().stream()
-                .filter(waystone -> (waystone.isGlobal() || waystone.isRegistered(player.getUniqueId())) &&
-                        waystone.isPlayerAllowed(player.getUniqueId()) &&
-                        !waystone.equals(currentWaystone))
-                .toList();
+        List<Waystone> availableWaystones;
+        if (isAdmin(player)) {
+            availableWaystones = waystones.values().stream()
+                    .filter(waystone -> !waystone.equals(currentWaystone))
+                    .collect(Collectors.toList());
+        } else {
+            availableWaystones = waystones.values().stream()
+                    .filter(waystone -> (waystone.isGlobal() || waystone.isRegistered(player.getUniqueId())) &&
+                            waystone.isPlayerAllowed(player.getUniqueId()) &&
+                            !waystone.equals(currentWaystone))
+                    .collect(Collectors.toList());
+        }
 
         int rows = inventorySize / 9;
         int pageSize = inventorySize - 9;

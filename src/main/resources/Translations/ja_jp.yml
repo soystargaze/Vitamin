@@ -191,6 +191,7 @@ waystone:
   already_exists: "この場所にはすでにウェイストーンが存在します。"
   limit_reached: "ウェイストーンの上限 {0} に達しました。"
   enter_new_name: "新しいウェイストーンの名前を入力してください："
+  name_too_long: "ウェイストーンの名前は {0} 文字以下でなければなりません。"
   no_permission: "このウェイストーンを使用する権限がありません。"
   registered: "ウェイストーン {0} に登録しました。"
   teleported: "{0} にテレポートしました。"

@@ -255,6 +255,7 @@ waystone:
   only_creator_can_break: false           # If true, only the creator of the waystone can break it (unless overridden by admin permissions).
   auto_create_time: 30000                 # Time in milliseconds before a pending waystone is auto-created if the player doesn't name it.
   auto_create_distance_squared: 100.0     # Squared distance threshold; if the player moves beyond this distance from a pending waystone, it auto-creates.
+  name_character_limit: 16                # Maximum number of characters allowed in a waystone name.
   default_name: "Waystone"                # Default name for waystones when auto-created or if no name is provided.
   teleport_delay: 3                       # Delay in seconds before a player teleports to a waystone.
   cancel_teleport_on_move: true           # If true, teleportation is canceled if the player moves during the delay.
@@ -406,6 +407,7 @@ waystone:
         name: "<green>Confirm"
         lore:
           - "<gray>Click to use this item as icon"
+          - "<yellow>The item will be consumed!"
       cancel:
         name: "<red>Cancel"
         lore:

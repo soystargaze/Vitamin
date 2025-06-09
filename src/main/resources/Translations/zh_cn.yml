@@ -191,6 +191,7 @@ waystone:
   already_exists: "这个位置已经存在一个路标石。"
   limit_reached: "您已达到路标石上限 {0}。"
   enter_new_name: "为您的新的路标石输入一个名字："
+  name_too_long: "路标石名称过长。最大长度为 {0} 个字符。"
   no_permission: "您没有权限使用这个路标石。"
   registered: "您已注册到路标石 {0}。"
   teleported: "您已被传送到 {0}。"

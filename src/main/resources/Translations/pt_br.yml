@@ -191,6 +191,7 @@ waystone:
   already_exists: "Já existe um waystone nesta localização."
   limit_reached: "Você atingiu seu limite de waystones de {0}."
   enter_new_name: "Digite um nome para seu novo waystone:"
+  name_too_long: "O nome da waystone é muito longo. O comprimento máximo é de {0} caracteres."
   no_permission: "Você não tem permissão para usar este waystone."
   registered: "Você se registrou no waystone {0}."
   teleported: "Você foi teleportado para {0}."

@@ -191,6 +191,7 @@ waystone:
   already_exists: "Bu konumda zaten bir waystone var."
   limit_reached: "{0} waystone limitinize ulaştınız."
   enter_new_name: "Yeni waystone'unuz için bir isim girin:"
+  name_too_long: "Yol taşı adı çok uzun. Maksimum uzunluk {0} karakterdir."
   no_permission: "Bu waystone'u kullanma izniniz yok."
   registered: "Waystone {0}'a kaydoldunuz."
   teleported: "{0}'a ışınlandınız."
