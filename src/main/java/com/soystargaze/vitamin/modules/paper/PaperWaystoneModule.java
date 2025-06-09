@@ -2148,7 +2148,6 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
             event.setCancelled(true);
             PendingWaystone pending = pendingWaystones.get(playerId);
             Location loc = pending.location();
-
             if (!canCreateWaystone(player)) {
                 int limit = getPlayerWaystoneLimit(player);
                 TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
@@ -2179,6 +2178,17 @@ public class PaperWaystoneModule implements Listener, CancellableModule {
                 if (!canCreateWaystone(player)) {
                     int limit = getPlayerWaystoneLimit(player);
                     TextHandler.get().sendMessage(player, "waystone.limit_reached", String.valueOf(limit));
+                    dropWaystoneCoreFromPending(loc);
+
+                    if (enableCreationEffects) {
+                        playWaystoneDeactivateSound(loc);
+                    }
+                    return;
+                }
+
+                Location upperBlock = loc.clone().add(0, 1, 0);
+                if (upperBlock.getBlock().getType() != Material.AIR) {
+                    TextHandler.get().sendMessage(player, "waystone.upper_block_not_air");
                     dropWaystoneCoreFromPending(loc);
 
                     if (enableCreationEffects) {

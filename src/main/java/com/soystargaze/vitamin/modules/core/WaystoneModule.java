@@ -2247,6 +2247,17 @@ public class WaystoneModule implements Listener, CancellableModule {
                     return;
                 }
 
+                Location upperBlock = loc.clone().add(0, 1, 0);
+                if (upperBlock.getBlock().getType() != Material.AIR) {
+                    TextHandler.get().sendMessage(player, "waystone.upper_block_not_air");
+                    dropWaystoneCoreFromPending(loc);
+
+                    if (enableCreationEffects) {
+                        playWaystoneDeactivateSound(loc);
+                    }
+                    return;
+                }
+
                 removePendingWaystoneCore(loc);
 
                 Material baseMaterial = pending.baseMaterial();
