@@ -8,7 +8,6 @@ import com.soystargaze.vitamin.utils.updater.UpdateOnJoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -146,10 +145,6 @@ public class ModuleManager {
             new ModuleDef("module.wall_jump",
                     WallJumpModule::new,
                     PaperWallJumpModule::new
-            ),
-            new ModuleDef("module.waystone",
-                    WaystoneModule::new,
-                    PaperWaystoneModule::new
             )
     );
 
@@ -242,15 +237,5 @@ public class ModuleManager {
     public Listener getModule(String moduleName) {
         String key = moduleName.startsWith("module.") ? moduleName : "module." + moduleName;
         return modules.get(key);
-    }
-
-    public ItemStack getWaystoneCore() {
-        Listener module = getModule("module.waystone");
-        if (module instanceof WaystoneModule) {
-            return ((WaystoneModule) module).getWaystoneCoreItem();
-        } else if (module instanceof PaperWaystoneModule) {
-            return ((PaperWaystoneModule) module).getWaystoneCoreItem();
-        }
-        return null;
     }
 }

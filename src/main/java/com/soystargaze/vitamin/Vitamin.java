@@ -54,7 +54,7 @@ public class Vitamin extends JavaPlugin implements Listener {
         try {
             loadConfigurations();
             DatabaseHandler.initialize(this);
-            dev.triumphteam.gui.TriumphGui.init(this);
+            //dev.triumphteam.gui.TriumphGui.init(this);
             TextHandler.get().logTranslated("plugin.separator");
 
             moduleManager = new ModuleManager(this);
@@ -79,7 +79,6 @@ public class Vitamin extends JavaPlugin implements Listener {
         ConsoleUtils.displayAsciiArt(this);
 
         AsyncExecutor.initialize();
-        BlockDisplayUtils.loadThemes(this);
         ConsoleUtils.displaySuccessMessage(this);
     }
 

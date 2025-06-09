@@ -5,7 +5,6 @@ import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
 import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.BlockDisplayUtils;
 import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
 import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
 import net.kyori.adventure.text.Component;
@@ -42,7 +41,6 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         try {
             plugin.reloadConfig();
             ConfigHandler.reload();
-            reloadWaystoneThemes();
 
             ModuleManager moduleManager = plugin.getModuleManager();
             boolean customEnabled = plugin.getConfig().getBoolean("module.custom_recipes", true);
@@ -67,17 +65,6 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         }
         return true;
     }
-
-    private void reloadWaystoneThemes() {
-        try {
-            BlockDisplayUtils.reloadThemes();
-            TextHandler.get().logTranslated("commands.reload.success");
-        } catch (Exception e) {
-            TextHandler.get().logTranslated("commands.reload.error", e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
 
     @Override
     public List<String> onTabComplete(

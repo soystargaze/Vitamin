@@ -35,6 +35,3 @@ permissions:
   vitamin.use.restore:
     description: Allows use of the /vitamin restore command
     default: op
-  vitamin.use.clear:
-    description: Allows clearing all waystones.
-    default: op
