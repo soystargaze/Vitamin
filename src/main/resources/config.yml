@@ -118,7 +118,6 @@ module:
   vein_miner: false # Just works when the tool is enchanted with Efficiency V
   villager_follow_emeralds: false # Villagers follow you when you hold an emerald
   wall_jump: false # Shift to wall jump. You can climb up or slide down walls
-  waystone: false # Waystone teleportation system
   weather_effects: false # In the daytime, mobs have more babies and with the rain, crops grow faster.
 
 # Bone Meal Expansion settings
