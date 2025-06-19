@@ -72,6 +72,9 @@ commands:
     inventory_full: "<red>Envanteriniz dolu. Biraz yer açın ve tekrar deneyin.</red>"
 
 database:
+  migration:
+    success: "Veritabanı başarıyla güncellendi."
+    error: "Veritabanı güncellenirken bir hata oluştu: {0}"
   already_initialized: "Veritabanı zaten başlatılmış."
   init_error: "Veritabanı başlatılırken bir hata oluştu: {0}"
   sqlite:

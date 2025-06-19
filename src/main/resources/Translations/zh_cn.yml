@@ -72,6 +72,9 @@ commands:
     inventory_full: "<red>您的库存已满。请腾出一些空间并重试。</red>"
 
 database:
+  migration:
+    success: "数据库迁移成功。"
+    error: "数据库迁移时发生错误: {0}"
   already_initialized: "数据库已初始化。"
   init_error: "初始化数据库时发生错误: {0}"
   sqlite:

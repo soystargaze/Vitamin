@@ -72,6 +72,9 @@ commands:
     inventory_full: "<red>인벤토리가 가득 찼습니다. 공간을 확보하고 다시 시도해 주세요.</red>"
 
 database:
+  migration:
+    success: "데이터베이스 마이그레이션이 성공적으로 완료되었습니다."
+    error: "데이터베이스 마이그레이션 중 오류가 발생했습니다: {0}"
   already_initialized: "데이터베이스가 이미 초기화되었습니다."
   init_error: "데이터베이스 초기화 중 오류가 발생했습니다: {0}"
   sqlite:

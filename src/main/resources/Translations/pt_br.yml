@@ -72,6 +72,9 @@ commands:
     inventory_full: "<red>Seu inventário está cheio. Libere espaço e tente novamente.</red>"
 
 database:
+  migration:
+    success: "Migração do banco de dados concluída com sucesso."
+    error: "Ocorreu um erro ao migrar o banco de dados: {0}"
   already_initialized: "O banco de dados já foi inicializado."
   init_error: "Ocorreu um erro ao inicializar o banco de dados: {0}"
   sqlite:
