@@ -132,10 +132,11 @@ bone_meal_expansion:
 
 # Carry On settings
 carry_on:
-  max_weight: 100            # Weight is based on the max health of the mob
-  allow_player_pickup: false # Allow players to pick up other players (need permission: vitamin.module.carry_on.entity.player)
-  allow_lootin_pickup: false # Block Lootin chest pickup (only if Lootin plugin is on the server)
-  allow_stacking: false      # Allow stacking of players carrying other players
+  max_weight: 100                   # Weight is based on the max health of the mob
+  allow_player_pickup: false        # Allow players to pick up other players (need permission: vitamin.module.carry_on.entity.player)
+  allow_lootin_pickup: false        # Block Lootin chest pickup (only if Lootin plugin is on the server)
+  allow_stacking: false             # Allow stacking of players carrying other players
+  prevent_container_stacking: true  # Prevent stacking of containers inside other containers
 
 # Death Chest settings
 death_chest:

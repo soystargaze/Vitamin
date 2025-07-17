@@ -55,11 +55,13 @@ public class CarryOnModule implements Listener {
     private LootinIntegrationHandler lootinIntegration;
     private final boolean allowStacking;
     private GriefPreventionIntegrationHandler gpIntegration;
+    private final boolean preventContainerStacking;
 
     public CarryOnModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.maxCarryWeight = plugin.getConfig().getDouble("carry_on.max_weight", 100.0);
         this.allowStacking = plugin.getConfig().getBoolean("carry_on.allow_stacking", false);
+        this.preventContainerStacking = plugin.getConfig().getBoolean("carry_on.prevent_container_stacking", true);
         this.storedBlockKey = new NamespacedKey(plugin, "stored_block");
         this.chestIdKey = new NamespacedKey(plugin, "chest_id");
 
@@ -244,7 +246,6 @@ public class CarryOnModule implements Listener {
     public void onBlockPickup(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.carry_on") ||
-                !player.hasPermission("vitamin.module.carry_on.chest") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.carry_on")) {
             return;
         }
@@ -258,6 +259,14 @@ public class CarryOnModule implements Listener {
 
         Block block = event.getClickedBlock();
         if (block == null || !(block.getState() instanceof Container)) return;
+
+        String containerType = block.getType().name().toLowerCase();
+        String specificPerm = "vitamin.module.carry_on.container." + containerType;
+        if (!player.hasPermission(specificPerm)) {
+            TextHandler.get().sendMessage(player, "carry_on.no_permission_" + containerType);
+            event.setCancelled(true);
+            return;
+        }
 
         if (lootinIntegration != null && lootinIntegration.isLootinContainer(block.getState())) {
             boolean allow = plugin.getConfig().getBoolean("carry_on.allow_lootin_pickup", false);
@@ -413,9 +422,13 @@ public class CarryOnModule implements Listener {
     }
 
     private void pickupSingleContainer(Player player, Block block) {
-        UUID containerId = UUID.randomUUID();
         Container container = (Container) block.getState();
+        if (preventContainerStacking && !player.hasPermission("vitamin.module.carry_on.stacking_bypass") && hasNestedContainer(container.getInventory())) {
+            TextHandler.get().sendMessage(player, "carry_on.no_stacking_allowed");
+            return;
+        }
 
+        UUID containerId = UUID.randomUUID();
         saveContainerBackup(containerId, player, block);
         saveChestContents(containerId, container.getInventory());
 
@@ -442,87 +455,69 @@ public class CarryOnModule implements Listener {
     }
 
     private void pickupChestAsIndividual(Player player, Block block) {
-        UUID chestId = UUID.randomUUID();
-        Container container = (Container) block.getState();
-        Inventory chestInventory = container.getInventory();
+        Material originalType = block.getType();
+        Container originalState = (Container) block.getState();
+        Inventory chestInventory = originalState.getInventory();
 
+        boolean isDouble = isPartOfDoubleChest(block);
+        Block partner = null;
+        ItemStack[] otherContents = null;
+        ItemStack[] thisContents;
+
+        if (isDouble) {
+            partner = findCorrectDoubleChestPartner(block);
+            if (partner != null) {
+                DoubleChestInventory doubleInv = (DoubleChestInventory) chestInventory;
+                thisContents = extractIndividualChestContents(block, doubleInv);
+                otherContents = extractIndividualChestContents(partner, doubleInv);
+            } else {
+                thisContents = chestInventory.getContents();
+            }
+        } else {
+            thisContents = chestInventory.getContents();
+        }
+
+        if (preventContainerStacking && !player.hasPermission("vitamin.module.carry_on.stacking_bypass") && hasNestedContainer(thisContents)) {
+            TextHandler.get().sendMessage(player, "carry_on.no_stacking_allowed");
+            return;
+        }
+
+        UUID chestId = UUID.randomUUID();
         saveContainerBackup(chestId, player, block);
 
-        // 1: Create the ItemStack for the block before removing it
-        ItemStack blockItem = new ItemStack(block.getType());
+        ItemStack blockItem = new ItemStack(originalType);
         if (!(blockItem.getItemMeta() instanceof BlockStateMeta meta)) return;
 
-        // 2: Configure the BlockStateMeta with the block state and persistent data
-        Container tempContainer = (Container) block.getState();
-        meta.setBlockState(tempContainer);
-        meta.getPersistentDataContainer().set(storedBlockKey, PersistentDataType.STRING, block.getType().name());
+        meta.setBlockState(originalState);
+        meta.getPersistentDataContainer().set(storedBlockKey, PersistentDataType.STRING, originalType.name());
         meta.getPersistentDataContainer().set(chestIdKey, PersistentDataType.STRING, chestId.toString());
         blockItem.setItemMeta(meta);
 
-        String containerType = block.getType().name();
+        String containerType = originalType.name();
 
-        // 3: Type of chest
-        if (isPartOfDoubleChest(block)) {
-            // Is a double chest, find the correct partner
-            Block correctPartner = findCorrectDoubleChestPartner(block);
-            if (correctPartner != null) {
-                // Verification of inventories
-                Container partnerContainer = (Container) correctPartner.getState();
-                Inventory partnerInventory = partnerContainer.getInventory();
-
-                // CRITICAL: The inventories must MATCH for double chests
-                if (chestInventory.equals(partnerInventory) && chestInventory instanceof DoubleChestInventory) {
-                    DoubleChestInventory doubleInv = (DoubleChestInventory) chestInventory;
-
-                    // Extract the contents of this half
-                    ItemStack[] thisChestContents = extractIndividualChestContents(block, doubleInv);
-
-                    // Extract the contents of the other half
-                    ItemStack[] otherChestContents = extractIndividualChestContents(correctPartner, doubleInv);
-
-                    // Save the contents of this half
-                    saveChestContents(chestId, thisChestContents);
-
-                    // 4: Remove the block from the world
-                    block.setType(Material.AIR);
-
-                    // 5: Restore the contents of this half into the inventory
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        if (correctPartner.getType() == Material.CHEST ||
-                                correctPartner.getType() == Material.TRAPPED_CHEST) {
-
-                            Container otherContainer = (Container) correctPartner.getState();
-                            Inventory otherInventory = otherContainer.getInventory();
-
-                            otherInventory.clear();
-
-                            // Put the contents of the other half into the inventory
-                            for (int i = 0; i < Math.min(27, otherChestContents.length); i++) {
-                                if (otherChestContents[i] != null) {
-                                    otherInventory.setItem(i, otherChestContents[i]);
-                                }
-                            }
-                            otherContainer.update();
+        if (isDouble && partner != null) {
+            final Block finalPartner = partner;
+            final ItemStack[] finalOtherContents = otherContents;
+            saveChestContents(chestId, thisContents);
+            block.setType(Material.AIR);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (finalPartner.getType() == originalType) {
+                    Container otherContainer = (Container) finalPartner.getState();
+                    Inventory otherInventory = otherContainer.getInventory();
+                    otherInventory.clear();
+                    for (int i = 0; i < Math.min(27, finalOtherContents.length); i++) {
+                        if (finalOtherContents[i] != null) {
+                            otherInventory.setItem(i, finalOtherContents[i]);
                         }
-                    }, 2L);
-
-                } else {
-                    // Not the correct partner or inventories do not match
-                    saveChestContents(chestId, chestInventory);
-                    block.setType(Material.AIR);
+                    }
+                    otherContainer.update();
                 }
-            } else {
-                // Partner not found, treat as individual
-                saveChestContents(chestId, chestInventory);
-                block.setType(Material.AIR);
-            }
+            }, 2L);
         } else {
-            // Is a single chest, save its contents
             saveChestContents(chestId, chestInventory);
             block.setType(Material.AIR);
         }
 
-        // 6: Give the item to the player
         player.getInventory().addItem(blockItem);
         TextHandler.get().sendMessage(player, "carry_on.picked_up_chest");
         LogUtils.logContainerPickup(
@@ -572,22 +567,27 @@ public class CarryOnModule implements Listener {
         Container container = (Container) block.getState();
         Inventory blockInventory = container.getInventory();
 
+        // Just check the four cardinal directions
         BlockFace[] faces = {BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
         for (BlockFace face : faces) {
             Block relative = block.getRelative(face);
 
+            // Must be the same type of block
             if (relative.getType() != block.getType()) {
                 continue;
             }
 
+            // Must be a part of a double chest
             if (!isPartOfDoubleChest(relative)) {
                 continue;
             }
 
+            // Verification that they have the SAME inventory
             Container relativeContainer = (Container) relative.getState();
             Inventory relativeInventory = relativeContainer.getInventory();
 
+            // KEY: Double chests have the same inventory
             if (blockInventory == relativeInventory && blockInventory instanceof DoubleChestInventory) {
                 Chest blockChestData = (Chest) block.getBlockData();
                 Chest relativeChestData = (Chest) relative.getBlockData();
@@ -610,6 +610,7 @@ public class CarryOnModule implements Listener {
 
         Chest chestData = (Chest) block.getBlockData();
 
+        // DoubleChestInventory: slots 0-26 = left, slots 27-53 = right
         int startSlot = 0;
         if (chestData.getType() == Chest.Type.RIGHT) {
             startSlot = 27;
@@ -630,6 +631,15 @@ public class CarryOnModule implements Listener {
         block.setType(blockType);
         Container container = (Container) block.getState();
         container.setBlockData(meta.getBlockState().getBlockData());
+        container.update(true, false);
+
+        String chestIdStr = meta.getPersistentDataContainer().get(chestIdKey, PersistentDataType.STRING);
+        if (chestIdStr != null) {
+            UUID chestId = UUID.fromString(chestIdStr);
+            Inventory containerInventory = container.getInventory();
+            loadChestContents(chestId, containerInventory);
+        }
+
         container.update(true, false);
         TextHandler.get().sendMessage(player, "carry_on.placed_block");
         consumeItemInHand(player);
@@ -653,7 +663,6 @@ public class CarryOnModule implements Listener {
             UUID chestId = UUID.fromString(chestIdStr);
             Inventory chestInventory = container.getInventory();
             loadChestContents(chestId, chestInventory);
-            deleteChestContents(chestId);
         }
 
         container.update(true, false);
@@ -767,17 +776,6 @@ public class CarryOnModule implements Listener {
         }
     }
 
-    private void deleteChestContents(UUID chestId) {
-        String sql = "DELETE FROM chest_contents WHERE chest_id = ?";
-        try (Connection conn = DatabaseHandler.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, chestId.toString());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            TextHandler.get().logTranslated("database.chest.delete_error", e);
-        }
-    }
-
     private String serializeItemStack(ItemStack item) {
         YamlConfiguration config = new YamlConfiguration();
         config.set("item", item);
@@ -793,5 +791,25 @@ public class CarryOnModule implements Listener {
             TextHandler.get().logTranslated("database.chest.deserialize_error", e);
             return null;
         }
+    }
+
+    private boolean hasNestedContainer(Inventory inventory) {
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof BlockStateMeta meta &&
+                    meta.getPersistentDataContainer().has(storedBlockKey, PersistentDataType.STRING)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasNestedContainer(ItemStack[] contents) {
+        for (ItemStack item : contents) {
+            if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof BlockStateMeta meta &&
+                    meta.getPersistentDataContainer().has(storedBlockKey, PersistentDataType.STRING)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
