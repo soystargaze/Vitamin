@@ -108,6 +108,18 @@ Download the latest version of **Vitamin+** from [Modrinth](https://modrinth.com
 
 ---
 
+## 🔌 Plugin Integrations for Carry On Module
+
+Respects *[WorldGuard](https://dev.bukkit.org/projects/worldguard)*, *[Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/)*, *[GriefPrevention](https://modrinth.com/plugin/griefprevention)* and *[Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/)* protections.
+
+**WorldGuard Integration:**
+- Implemented two custom flags: `vitamin-carryon-container` and `vitamin-carryon-entity`.
+- These flags are set to `DENY` by default. To enable Carry On features in WorldGuard regions:
+  - **For protected regions:** Set the corresponding flag to `ALLOW` and ensure the user is a member of the region.
+  - **For the `__global__` region:** Set the flag to `ALLOW`; no membership is required.
+
+---
+
 ## **Step 4: Troubleshooting**
 - **The plugin does not load:** It is recommended to use **PaperMC 1.21.4**, the latest stable version. Also, ensure you are using Java 21 or higher.
 
@@ -148,8 +160,9 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.bone_meal_expansion` - Allows the use of the Bone Meal Expansion module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
-- `vitamin.module.carry_on.chest` - Allows the pickup of chests with the Carry On module.
+- `vitamin.module.carry_on.container.<container_type>` - Allows the pickup of specific container types with the Carry On module. Replace `<container_type>` with the type of container (e.g., `chest`, `furnace`, etc.).
 - `vitamin.module.carry_on.entity` - Allows the pickup of entities with the Carry On module.
+- `vitamin.module.carry_on.stacking_bypass` - Allows the pickup of containers nested inside other containers with the Carry On module.
 - `vitamin.module.crop_protection` - Allows the use of the Crop Protection module.
 - `vitamin.module.death_chest` - Allows the use of the Death Chest module.
 - `vitamin.module.death_map` - Allows the use of the Death Map module.
