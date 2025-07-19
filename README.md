@@ -160,6 +160,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 - `vitamin.module.armor_trim` - Allows the use of the Armor Trim module.
 - `vitamin.module.auto_tool` - Allows the use of the Auto Tool module.
 - `vitamin.module.bone_meal_expansion` - Allows the use of the Bone Meal Expansion module.
+- `vitamin.module.campfire_tweaks` - Allows the use of the Campfire Tweaks module.
 - `vitamin.module.carry_on` - Allows the use of the Carry On module.
 - `vitamin.module.carry_on.container.<container_type>` - Allows the pickup of specific container types with the Carry On module. Replace `<container_type>` with the type of container (e.g., `chest`, `furnace`, etc.).
 - `vitamin.module.carry_on.entity` - Allows the pickup of entities with the Carry On module.
