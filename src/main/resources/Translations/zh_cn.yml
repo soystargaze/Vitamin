@@ -121,6 +121,8 @@ xpbook:
   item_name: "含 {0} 经验的经验书"
   created: "已创建含 {0} 经验的经验书！"
   used: "使用经验书获得 {0} 经验！"
+  merged: "将XP书合并为{0} <green>XP<white>，丢失{1} <red>XP<white>。"
+  lore: "<gray>包含<gold>{0} <gray>XP"
 
 carry_on:
   cannot_pickup_players: "<red>你不能捡起玩家！</red>"

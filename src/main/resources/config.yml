@@ -192,6 +192,11 @@ repair:
   ingot_value: 0.27     # Percentage repaired with an ingot: 27%
   nugget_value: 0.03    # Percentage repaired with a nugget: 3%
 
+# Player XP to Books settings
+xpbooks:
+  max_per_book: 10000 # Maximum XP stored in a book
+  efficiency: 0.95    # Efficiency of XP transfer to books (0.95 = 95% efficiency)
+
 # Oxygen Bottle settings
 oxygen_bottle:
   restore_amount: 60   # Quantity of oxygen restored (20 ticks = 1 second)

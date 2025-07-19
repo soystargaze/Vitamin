@@ -121,6 +121,8 @@ xpbook:
   item_name: "{0} XP の XP ブック"
   created: "{0} XP の XP ブックが作成されました！"
   used: "XP ブックを使用して {0} XP を獲得！"
+  merged: "XPの本を{0} <green>XP<white>に統合、{1} <red>XP<white>を失いました。"
+  lore: "<gray><gold>{0} <gray>XPを含む"
 
 carry_on:
   cannot_pickup_players: "<red>プレイヤーを拾うことはできません！</red>"

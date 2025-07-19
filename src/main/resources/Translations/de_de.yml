@@ -121,6 +121,8 @@ xpbook:
   item_name: "XP-Buch mit {0} XP"
   created: "XP-Buch mit {0} XP erstellt!"
   used: "XP-Buch verwendet, um {0} XP zu erhalten!"
+  merged: "Zusammengeführte XP-Bücher in {0} <green>XP<white>, verloren {1} <red>XP<white>."
+  lore: "<gray>Enthält <gold>{0} <gray>XP"
 
 carry_on:
   cannot_pickup_players: "<red>Du kannst keine Spieler aufheben!</red>"

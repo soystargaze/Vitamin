@@ -121,6 +121,8 @@ xpbook:
   item_name: "{0} XP Kitabı"
   created: "{0} XP Kitabı oluşturuldu!"
   used: "XP Kitabı kullanılarak {0} XP kazanıldı!"
+  merged: "XP kitapları {0} <green>XP<white> olarak birleştirildi, {1} <red>XP<white> kaybedildi."
+  lore: "<gray><gold>{0} <gray>XP içerir"
 
 carry_on:
   cannot_pickup_players: "<red>Oyuncuları alamazsınız!</red>"
