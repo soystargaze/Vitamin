@@ -36,7 +36,6 @@ public class CampfireTweaksModule implements Listener, CancellableModule {
         this.plugin = plugin;
         loadConfig();
         taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::applyEffects, 0L, checkInterval);
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
     private void loadConfig() {
