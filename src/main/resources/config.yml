@@ -91,6 +91,7 @@ module:
   armor_trim: false # Armor trim gives special effects depending on the material (Active with Shift or Passive)
   auto_tool: false # Automatically switch to the correct tool when breaking blocks
   bone_meal_expansion: false # Bone meal can be used to grow special crops
+  campfire_tweaks: false # Campfires give regeneration and saturation when sitting on them
   carry_on: false # Shift + Right Click to pick up entities and containers
   crop_protection: false # Prevents crops from being trampled
   custom_recipes: false # Add custom recipes to the game
@@ -129,6 +130,14 @@ bone_meal_expansion:
     nether_wart: true
     pumpkin_stem: true  # Just works with the pumpkin stem
     melon_stem: true    # Just works with the melon stem
+
+# Campfire Tweaks settings
+campfire_tweaks:
+  regen_radius: 5                 # Radius of the regeneration effect
+  regen_level: 1                  # Regeneration level (1 = Regeneration I, 2 = Regeneration II)
+  regen_duration_ticks: 60        # Duration of the regeneration effect in ticks (20 ticks = 1 second)
+  check_interval_ticks: 80        # Check interval for regeneration effect in ticks
+  saturation_interval_ticks: 160  # Check interval for saturation effect in ticks
 
 # Carry On settings
 carry_on:

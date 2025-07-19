@@ -57,6 +57,10 @@ public class ModuleManager {
                     BoneMealExpansionModule::new,
                     null
             ),
+            new ModuleDef("module.campfire_tweaks",
+                    CampfireTweaksModule::new,
+                    null
+            ),
             new ModuleDef("module.carry_on",
                     CarryOnModule::new,
                     null
