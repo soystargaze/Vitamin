@@ -21,7 +21,7 @@
 
 ## 💊 Available Modules
 
-**Vitamin+** comes loaded with **31 great power-ups** to enhance your gameplay!
+**Vitamin+** comes loaded with **32 great power-ups** to enhance your gameplay!
 
 <details>
   <summary>Explore</summary>
@@ -43,6 +43,7 @@
   </details>
 - **Auto Tool:** Automatically switches to the best tool when breaking blocks or attacking entities.
 - **Bone Meal Expansion:** Use bone meal on crops that are not normally affected by it.
+- **Campfire Tweaks:** Campfires can now give regeneration and saturation effects in a radius configurable.
 - **Carry On:** Use `Shift + Right-Click (empty hand)` to carry entities and chests. Respects regions protected with [WorldGuard](https://dev.bukkit.org/projects/worldguard), [Lands](https://www.spigotmc.org/resources/lands-⭕-land-claim-plugin-✅-grief-prevention-protection-gui-management-nations-wars-1-21-support.53313/) or [GriefPrevention](https://www.spigotmc.org/resources/griefprevention.1884/) to work with members only, also respects `Lootin Chests` if [Lootin](https://www.spigotmc.org/resources/lootin-1-16-1-21-5-no-more-already-looted-chests.90453/) is in the server (can be disabled).
 - **Crop Protection:** Prevents crops from being trampled by players.
 - **Death Chest:** Automatically creates a chest with your items when you die if it finds a safe location (configurable).
