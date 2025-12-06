@@ -1,8 +1,7 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.TranslationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -11,6 +10,7 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -18,7 +18,6 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -28,9 +27,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Particle;
 import org.bukkit.Location;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +34,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public class ElevatorModule implements Listener {
 
     private final JavaPlugin plugin;
@@ -97,9 +92,7 @@ public class ElevatorModule implements Listener {
         ItemStack elevator = new ItemStack(shulkerColor);
         BlockStateMeta meta = (BlockStateMeta) elevator.getItemMeta();
         if (meta != null) {
-            Component nameComponent = LegacyTranslationHandler.getComponent("elevator.item_name");
-            String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
             meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
 
             ShulkerBox shulkerBox = (ShulkerBox) meta.getBlockState();
@@ -112,21 +105,13 @@ public class ElevatorModule implements Listener {
     }
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
+    public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.elevator") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
             return;
         }
-
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        if (to == null) return;
-
-        double yDiff = to.getY() - from.getY();
-        if (yDiff > 0.1 && !isPlayerOnGround(player)) {
-            teleportElevator(player, 1);
-        }
+        teleportElevator(player, 1);
     }
 
     @EventHandler
@@ -179,9 +164,7 @@ public class ElevatorModule implements Listener {
                     ItemStack drop = new ItemStack(block.getType());
                     BlockStateMeta meta = (BlockStateMeta) drop.getItemMeta();
                     if (meta != null) {
-                        Component nameComponent = LegacyTranslationHandler.getComponent("elevator.item_name");
-                        String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
-                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+                        meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
                         meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
                         drop.setItemMeta(meta);
 
@@ -206,7 +189,7 @@ public class ElevatorModule implements Listener {
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
                 if (notifiedPlayers.add(uuid)) {
-                    TextHandler.get().sendMessage(player,"elevator.cannot_open");
+                    player.sendMessage(TranslationHandler.getPlayerComponent("elevator.cannot_open"));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> notifiedPlayers.remove(uuid), 20L);
                 }
             }
@@ -257,12 +240,6 @@ public class ElevatorModule implements Listener {
         long currentTime = System.currentTimeMillis();
 
         return (currentTime - lastUse) < COOLDOWN_MILLIS;
-    }
-
-    private boolean isPlayerOnGround(Player player) {
-        Location loc = player.getLocation();
-        Block blockBelow = loc.subtract(0, 0.1, 0).getBlock();
-        return blockBelow.getType().isSolid();
     }
 
     private void teleportElevator(Player player, int direction) {

@@ -1,9 +1,8 @@
-// Updated PlayerXptoBooksModule.java
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.TranslationHandler;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
@@ -18,13 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public class PlayerXptoBooksModule implements Listener {
 
     private final NamespacedKey xpKey;
@@ -176,12 +171,8 @@ public class PlayerXptoBooksModule implements Listener {
         ItemMeta meta = xpBook.getItemMeta();
         if (meta != null) {
             meta.getPersistentDataContainer().set(xpKey, PersistentDataType.INTEGER, xpAmount);
-            Component nameComponent = LegacyTranslationHandler.getComponent("xpbook.item_name", xpAmount);
-            String name = LegacyComponentSerializer.legacyAmpersand().serialize(nameComponent);
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-            Component loreComponent = LegacyTranslationHandler.getComponent("xpbook.lore", xpAmount);
-            String lore = LegacyComponentSerializer.legacyAmpersand().serialize(loreComponent);
-            meta.setLore(List.of(ChatColor.translateAlternateColorCodes('&', lore)));
+            meta.displayName(TranslationHandler.getComponent("xpbook.item_name", xpAmount));
+            meta.lore(List.of(TranslationHandler.getComponent("xpbook.lore", xpAmount)));
             meta.addEnchant(Enchantment.UNBREAKING, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             xpBook.setItemMeta(meta);

@@ -1,7 +1,7 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import net.advancedplugins.ae.api.AEAPI;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -45,7 +45,7 @@ public class EnchantsBackModule implements Listener {
         boolean hasVanilla = !vanillaEnchants.isEmpty();
 
         boolean aeLoaded = plugin.getServer().getPluginManager().isPluginEnabled("AdvancedEnchantments");
-        Map<String, Integer> aeEnchants = aeLoaded ? AEAPI.getEnchantmentsOnItem(inputItem) : Map.of();
+        Map<String, Integer> aeEnchants = Map.of();
         boolean hasAE = !aeEnchants.isEmpty();
 
         if (!hasVanilla && !hasAE) return;
@@ -83,15 +83,7 @@ public class EnchantsBackModule implements Listener {
         }
 
         if (aeLoaded && processed < toProcess) {
-            for (Entry<String, Integer> aeEntry : aeEnchants.entrySet()) {
-                if (processed >= toProcess) break;
-                ItemStack aeBook = new ItemStack(Material.BOOK);
-                aeBook = AEAPI.applyEnchant(aeEntry.getKey(), aeEntry.getValue(), aeBook);
-                if (player.getInventory().addItem(aeBook).isEmpty()) {
-                    removeOneBook(player);
-                    processed++;
-                }
-            }
+            // Integration disabled due to missing API
         }
 
         player.updateInventory();

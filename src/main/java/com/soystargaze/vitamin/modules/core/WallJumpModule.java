@@ -8,11 +8,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -112,29 +112,20 @@ public class WallJumpModule implements Listener {
     }
 
     @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
+    public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
         if (!player.hasPermission("vitamin.module.wall_jump") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.wall_jump")) {
             return;
         }
-
         UUID playerId = player.getUniqueId();
         WallClimbState state = playerStates.get(playerId);
 
-        // Check if player is sticking to a wall and attempting to jump
         if (state != null && state.isStickingToWall && state.canWallJump) {
-            Location from = event.getFrom();
-            Location to = event.getTo();
-            if (to == null) return;
-
-            // Detect jump by checking upward movement (Y velocity)
-            double yDiff = to.getY() - from.getY();
-            if (yDiff > 0.1 && !isPlayerOnGround(player)) { // Threshold for jump detection
-                performWallJump(player, state.wallFace);
-                cancelTasks(state);
-                playerStates.remove(playerId);
-            }
+            performWallJump(player, state.wallFace);
+            cancelTasks(state);
+            playerStates.remove(playerId);
+            event.setCancelled(true);
         }
     }
 

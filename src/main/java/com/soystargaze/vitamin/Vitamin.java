@@ -167,7 +167,9 @@ public class Vitamin extends JavaPlugin implements Listener {
         int minor = Integer.parseInt(parts[1]);
         int patch = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
 
-        if (major == 1 && minor == 21 && patch >= 3) {
+        if (major == 1 && minor == 21 && patch >= 10) {
+            versionAdapter = new VersionAdapter_1_21_10();
+        } else if (major == 1 && minor == 21 && patch >= 3) {
             versionAdapter = new VersionAdapter_1_21_4();
         } else {
             versionAdapter = new VersionAdapter_1_21_1();

@@ -234,13 +234,19 @@ public class CustomRecipesModule implements Listener {
         Bukkit.addRecipe(grassBlockRecipe);
         registeredRecipes.add(grassBlockKey);
 
+        // Chain material logic
+        Material chain = Material.getMaterial("CHAIN");
+        if (chain == null) {
+            chain = Material.getMaterial("IRON_CHAIN");
+        }
+
         NamespacedKey nameTagKey = new NamespacedKey("vitamin", "nametag");
         Bukkit.removeRecipe(nameTagKey);
         ItemStack nameTag = new ItemStack(Material.NAME_TAG);
         ShapedRecipe nameTagRecipe = new ShapedRecipe(nameTagKey, nameTag);
         nameTagRecipe.shape(" C ", " P ");
         nameTagRecipe.setIngredient('P', Material.PAPER);
-        nameTagRecipe.setIngredient('C', Material.CHAIN);
+        nameTagRecipe.setIngredient('C', chain);
         Bukkit.addRecipe(nameTagRecipe);
         registeredRecipes.add(nameTagKey);
 
@@ -250,7 +256,7 @@ public class CustomRecipesModule implements Listener {
         ShapedRecipe saddleRecipe = new ShapedRecipe(saddleKey, saddle);
         saddleRecipe.shape("PPP", "C C");
         saddleRecipe.setIngredient('P', Material.LEATHER);
-        saddleRecipe.setIngredient('C', Material.CHAIN);
+        saddleRecipe.setIngredient('C', chain);
         Bukkit.addRecipe(saddleRecipe);
         registeredRecipes.add(saddleKey);
     }

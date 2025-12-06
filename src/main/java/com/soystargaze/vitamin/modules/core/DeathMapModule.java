@@ -1,12 +1,10 @@
 package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyLoggingUtils;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.MessageUtils;
+import com.soystargaze.vitamin.utils.text.TranslationHandler;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -28,26 +26,18 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.Color;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public class DeathMapModule implements Listener {
 
     private final JavaPlugin plugin;
-    private final String displayName;
-    private final List<String> lore;
+    private final Component displayName;
+    private final Component loreLine;
     private final Scale scale;
 
     public DeathMapModule(JavaPlugin plugin) {
-        this.plugin = plugin;
-
-        Component nameCmp = LegacyTranslationHandler.getComponent("death_map.map_item_name");
-        String rawName = LegacyComponentSerializer.legacyAmpersand().serialize(nameCmp);
-        this.displayName = ChatColor.translateAlternateColorCodes('&', rawName);
-
-        Component loreCmp = LegacyTranslationHandler.getComponent("death_map.map_item_lore");
-        String rawLore = LegacyComponentSerializer.legacyAmpersand().serialize(loreCmp);
-        this.lore = List.of(ChatColor.translateAlternateColorCodes('&', rawLore));
-
-        this.scale = Scale.valueOf(
+        this.plugin      = plugin;
+        this.displayName = TranslationHandler.getComponent("death_map.map_item_name");
+        this.loreLine    = TranslationHandler.getComponent("death_map.map_item_lore");
+        this.scale       = Scale.valueOf(
                 plugin.getConfig().getString("death_map.map-scale", "NORMAL").toUpperCase()
         );
 
@@ -64,7 +54,7 @@ public class DeathMapModule implements Listener {
                     view.addRenderer(createDeathRenderer());
                 }
             } catch (Throwable t) {
-                LegacyLoggingUtils.logTranslated("death_map.map_renderer_error", mapId);
+                MessageUtils.logTranslated("death_map.map_renderer_error", mapId);
             }
         }
     }
@@ -103,21 +93,21 @@ public class DeathMapModule implements Listener {
             ItemStack mapItem = new ItemStack(Material.FILLED_MAP, 1);
             MapMeta meta = (MapMeta) mapItem.getItemMeta();
             if (meta != null) {
+                meta.displayName(displayName);
+                meta.lore(List.of(loreLine));
                 meta.setMapView(view);
-                meta.setDisplayName(displayName);
-                meta.setLore(lore);
                 mapItem.setItemMeta(meta);
             }
             player.getInventory().addItem(mapItem);
 
-            LegacyLoggingUtils.sendMessage(
+            MessageUtils.sendMessage(
                     player,
                     "death_map.map_given",
                     deathLoc.getBlockX(),
                     deathLoc.getBlockY(),
                     deathLoc.getBlockZ()
             );
-            LegacyLoggingUtils.logTranslated(
+            MessageUtils.logTranslated(
                     "death_map.map_given",
                     deathLoc.getBlockX(),
                     deathLoc.getBlockY(),
@@ -146,15 +136,16 @@ public class DeathMapModule implements Listener {
                                @NotNull MapCanvas canvas,
                                @NotNull Player p) {
                 if (rendered) return;
-                int cx = 64, cy = 64;
-                Color black = new Color(0, 0, 0);
-                Color white = new Color(255, 255, 255);
 
+                int cx = 64, cy = 64;
+                java.awt.Color black = new java.awt.Color(0, 0, 0);
+                java.awt.Color white = new java.awt.Color(255, 255, 255);
 
                 for (int d = -2; d <= 2; d++) {
                     drawSquare(canvas, cx + d, cy + d, black);
                     drawSquare(canvas, cx + d, cy - d, black);
                 }
+
                 for (int d = -1; d <= 1; d++) {
                     canvas.setPixelColor(cx + d, cy + d, white);
                     canvas.setPixelColor(cx + d, cy - d, white);

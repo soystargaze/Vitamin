@@ -1,7 +1,6 @@
 package com.soystargaze.vitamin.modules;
 
 import com.soystargaze.vitamin.modules.core.*;
-import com.soystargaze.vitamin.modules.paper.*;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import com.soystargaze.vitamin.utils.updater.UpdateOnFullLoad;
 import com.soystargaze.vitamin.utils.updater.UpdateOnJoinListener;
@@ -18,163 +17,111 @@ import java.util.Map;
 public class ModuleManager {
 
     private static final List<ModuleDef> DEFS = List.of(
-            // —— Spigot-only (without Plugin) ——
             new ModuleDef("module.auto_tool",
-                    p -> new AutoToolModule(),
-                    null
+                    p -> new AutoToolModule()
             ),
             new ModuleDef("module.crop_protection",
-                    p -> new CropProtectionModule(),
-                    null
+                    p -> new CropProtectionModule()
             ),
             new ModuleDef("module.custom_recipes",
-                    p -> new CustomRecipesModule(),
-                    null
+                    p -> new CustomRecipesModule()
             ),
             new ModuleDef("module.armor_trim",
-                    p -> new ArmorTrimModule(),
-                    null
+                    p -> new ArmorTrimModule()
             ),
             new ModuleDef("module.invisible_item_frames",
-                    p -> new InvisibleItemFramesModule(),
-                    null
+                    p -> new InvisibleItemFramesModule()
             ),
             new ModuleDef("module.pet_protection",
-                    p -> new PetProtectionModule(),
-                    null
+                    p -> new PetProtectionModule()
             ),
             new ModuleDef("module.seed_replanter",
-                    p -> new ReplanterModule(),
-                    null
+                    p -> new ReplanterModule()
             ),
             new ModuleDef("module.totem_from_inventory",
-                    p -> new TotemFromInventoryModule(),
-                    null
+                    p -> new TotemFromInventoryModule()
             ),
-
-            // —— Spigot-only (with Plugin) ——
             new ModuleDef("module.bone_meal_expansion",
-                    BoneMealExpansionModule::new,
-                    null
+                    BoneMealExpansionModule::new
             ),
             new ModuleDef("module.campfire_tweaks",
-                    CampfireTweaksModule::new,
-                    null
+                    CampfireTweaksModule::new
             ),
             new ModuleDef("module.carry_on",
-                    CarryOnModule::new,
-                    null
+                    CarryOnModule::new
             ),
             new ModuleDef("module.death_chest",
-                    DeathChestModule::new,
-                    null
+                    DeathChestModule::new
             ),
             new ModuleDef("module.elytra_armor",
-                    ElytraArmorModule::new,
-                    null
+                    ElytraArmorModule::new
             ),
             new ModuleDef("module.enchants_back",
-                    EnchantsBackModule::new,
-                    null
+                    EnchantsBackModule::new
             ),
             new ModuleDef("module.fire_aspect_tools",
-                    FireAspectOnToolsModule::new,
-                    null
+                    FireAspectOnToolsModule::new
             ),
             new ModuleDef("module.leaf_decay",
-                    LeafDecayModule::new,
-                    null
+                    LeafDecayModule::new
             ),
             new ModuleDef("module.oxygen_bottle",
-                    OxygenBottleModule::new,
-                    null
+                    OxygenBottleModule::new
             ),
             new ModuleDef("module.repair",
-                    RepairModule::new,
-                    null
+                    RepairModule::new
             ),
             new ModuleDef("module.replayable_vault",
-                    ReplayableVaultModule::new,
-                    null),
+                    ReplayableVaultModule::new),
             new ModuleDef("module.silk_spawners",
-                    SilkSpawnersModule::new,
-                    null
+                    SilkSpawnersModule::new
             ),
             new ModuleDef("module.sponge_with_lava",
-                    SpongeWithLavaModule::new,
-                    null
+                    SpongeWithLavaModule::new
             ),
             new ModuleDef("module.void_totem",
-                    VoidTotemModule::new,
-                    null
+                    VoidTotemModule::new
             ),
             new ModuleDef("module.unlock_all_recipes",
-                    UnlockRecipesModule::new,
-                    null
+                    UnlockRecipesModule::new
             ),
             new ModuleDef("module.tree_vein_miner",
-                    VeinLogModule::new,
-                    null
+                    VeinLogModule::new
             ),
             new ModuleDef("module.vein_miner",
-                    VeinMinerModule::new,
-                    null
+                    VeinMinerModule::new
             ),
             new ModuleDef("module.weather_effects",
-                    WeatherEffectsModule::new,
-                    null
+                    WeatherEffectsModule::new
             ),
-
-            // —— Modules with Paper hooks ——
             new ModuleDef("module.death_map",
-                    DeathMapModule::new,
-                    PaperDeathMapModule::new
+                    DeathMapModule::new
             ),
             new ModuleDef("module.elevator",
-                    ElevatorModule::new,
-                    PaperElevatorModule::new
+                    ElevatorModule::new
             ),
             new ModuleDef("module.player_xp_to_books",
-                    PlayerXptoBooksModule::new,
-                    PaperPlayerXptoBooksModule::new
+                    PlayerXptoBooksModule::new
             ),
             new ModuleDef("module.tp_to_bed_with_compass",
-                    TpToBedModule::new,
-                    PaperTpToBedModule::new
+                    TpToBedModule::new
             ),
             new ModuleDef("module.villager_follow_emeralds",
-                    VillagerTauntModule::new,
-                    PaperVillagerTauntModule::new
+                    VillagerTauntModule::new
             ),
             new ModuleDef("module.wall_jump",
-                    WallJumpModule::new,
-                    PaperWallJumpModule::new
+                    WallJumpModule::new
             )
     );
 
     private final JavaPlugin plugin;
-    private final boolean isPaper;
     private final Map<String, Listener> modules = new HashMap<>();
     private final List<Listener> systemListeners = new ArrayList<>();
 
     public ModuleManager(JavaPlugin plugin) {
         this.plugin  = plugin;
-        this.isPaper = detectPaper();
         registerModules();
         registerSystemListeners();
-    }
-
-    private boolean detectPaper() {
-        try {
-            Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
-            TextHandler.get().logTranslated("plugin.paper_detected");
-            TextHandler.get().logTranslated("plugin.separator");
-            return true;
-        } catch (ClassNotFoundException e) {
-            TextHandler.get().logTranslated("plugin.paper_not_detected");
-            TextHandler.get().logTranslated("plugin.separator");
-            return false;
-        }
     }
 
     private void registerModules() {
@@ -191,7 +138,7 @@ public class ModuleManager {
         modules.clear();
 
         for (ModuleDef def : DEFS) {
-            Listener module = def.create(plugin, isPaper);
+            Listener module = def.create(plugin);
             addModule(def.configPath(), module);
         }
     }

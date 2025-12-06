@@ -7,13 +7,9 @@ import java.util.function.Function;
 
 public record ModuleDef(
         String configPath,
-        Function<JavaPlugin, Listener> coreFactory,
-        Function<JavaPlugin, Listener> paperFactory
+        Function<JavaPlugin, Listener> factory
 ) {
-    public Listener create(JavaPlugin plugin, boolean isPaper) {
-        if (isPaper && paperFactory != null) {
-            return paperFactory.apply(plugin);
-        }
-        return coreFactory.apply(plugin);
+    public Listener create(JavaPlugin plugin) {
+        return factory.apply(plugin);
     }
 }

@@ -8,5 +8,7 @@ public interface VersionAdapter {
 
     Attribute getMaxHPAttribute();
 
+    org.bukkit.Material getChainMaterial();
+
     void playSlideSound(Location location, String soundKey, float volume, float pitch);
 }

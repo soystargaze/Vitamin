@@ -38,6 +38,11 @@ public class VersionAdapter_1_21_1 implements VersionAdapter {
     }
 
     @Override
+    public org.bukkit.Material getChainMaterial() {
+        return org.bukkit.Material.valueOf("CHAIN");
+    }
+
+    @Override
     public void playSlideSound(Location location, String soundKey, float volume, float pitch) {
     }
 }

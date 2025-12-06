@@ -2,7 +2,7 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.TranslationHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,15 +15,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("deprecation")
 public class TpToBedModule implements Listener {
 
     private final Plugin plugin;
@@ -113,10 +108,7 @@ public class TpToBedModule implements Listener {
                 if (ticks % 20 == 0) {
                     int secondsLeft = (channelingTime - ticks) / 20;
                     if (secondsLeft > 0) {
-                        Component messageComponent = LegacyTranslationHandler.getPlayerMessage("tpcompass.channeling", secondsLeft);
-                        String message = LegacyComponentSerializer.legacyAmpersand().serialize(messageComponent);
-                        player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
-                                new TextComponent(ChatColor.translateAlternateColorCodes('&', message)));
+                        player.sendActionBar(TranslationHandler.getPlayerComponent("tpcompass.channeling", secondsLeft));
                     }
                 }
 

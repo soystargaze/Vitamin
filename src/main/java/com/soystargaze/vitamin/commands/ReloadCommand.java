@@ -5,8 +5,8 @@ import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.modules.core.CustomRecipesModule;
 import com.soystargaze.vitamin.utils.text.TextHandler;
-import com.soystargaze.vitamin.utils.text.modern.ModernTranslationHandler;
-import com.soystargaze.vitamin.utils.text.legacy.LegacyTranslationHandler;
+import com.soystargaze.vitamin.utils.text.TranslationHandler;
+
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -77,16 +77,9 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
     }
 
     private int reloadTranslations() {
-        String language = plugin.getConfig().getString("language", "en_us");
-        if (Bukkit.getServer().getName().equalsIgnoreCase("Paper")) {
-            ModernTranslationHandler.clearTranslations();
-            ModernTranslationHandler.loadTranslations(plugin, language);
-            return ModernTranslationHandler.getLoadedTranslationsCount();
-        } else {
-            LegacyTranslationHandler.clearTranslations();
-            LegacyTranslationHandler.loadTranslations(plugin, language);
-            return LegacyTranslationHandler.getLoadedTranslationsCount();
-        }
+        TranslationHandler.clearTranslations();
+        TranslationHandler.loadTranslations(Vitamin.getInstance(), ConfigHandler.getLanguage());
+        return TranslationHandler.getLoadedTranslationsCount();
     }
 
     private void sendToSender(CommandSender sender, String key, Object... args) {
