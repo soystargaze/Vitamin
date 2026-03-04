@@ -168,6 +168,10 @@ campfire_tweaks:
 death_chest:
   vertical_search: 30     # Vertical safe search distance
   horizontal_search: 50   # Horizontal safe search distance
+  protect_from_explosions: true # Protect death chests from being destroyed by explosions
+  remove_when_empty: true       # Automatically remove the chest when all items are taken
+  spawn_effects: true           # Play sound and particles when the chest is created
+  custom_name: "<gold>%player%'s Death Chest" # Custom name for the chest (visible when opened)
 
 # Death Map settings
 death_map:
