@@ -1,7 +1,6 @@
 package com.soystargaze.vitamin.utils;
 
 import com.soystargaze.vitamin.Vitamin;
-import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedWriter;
@@ -25,7 +24,7 @@ public class LogUtils {
             }
         }
 
-        logFile = new File(new File(dataFolder, "vitamin-carry-on-registry.log").getAbsolutePath());
+        logFile = new File(new File(dataFolder, "vitamin-audit.log").getAbsolutePath());
         if (!logFile.exists()) {
             try {
                 if (!logFile.createNewFile()) {
@@ -35,28 +34,6 @@ public class LogUtils {
                 plugin.getLogger().severe("Could not create log file: " + e.getMessage());
             }
         }
-    }
-
-    public static void logContainerPickup(String playerName, String containerType, String containerId, Location location) {
-        String locationStr = formatLocation(location);
-        log("CONTAINER_PICKUP", playerName, containerType, containerId, locationStr);
-    }
-
-    private static String formatLocation(Location location) {
-        return location.getWorld().getName() + ":" +
-                location.getBlockX() + "," +
-                location.getBlockY() + "," +
-                location.getBlockZ();
-    }
-
-    public static void logEntityPickup(String playerName, String entityType, Location location) {
-        String locationStr = formatLocation(location);
-        log("ENTITY_PICKUP", playerName, entityType, locationStr);
-    }
-
-    public static void logEntityDrop(String playerName, String entityType, Location location) {
-        String locationStr = formatLocation(location);
-        log("ENTITY_DROP", playerName, entityType, locationStr);
     }
 
     public static void logRestoration(String adminName, String containerType, String chestId) {

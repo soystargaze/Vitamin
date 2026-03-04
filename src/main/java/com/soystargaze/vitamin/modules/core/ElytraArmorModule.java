@@ -1,6 +1,5 @@
 package com.soystargaze.vitamin.modules.core;
 
-import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,8 +45,7 @@ public class ElytraArmorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elytra_armor")) {
             return;
         }
-        Attribute armorAttribute = Vitamin.getInstance().getVersionAdapter().getArmorAttribute();
-        AttributeInstance instance = player.getAttribute(armorAttribute);
+        AttributeInstance instance = player.getAttribute(Attribute.ARMOR);
         if (instance != null) {
             instance.setBaseValue(calculateTotalArmorFromEquipment(player));
         }
@@ -86,8 +84,7 @@ public class ElytraArmorModule implements Listener {
 
     private void updateArmorBonus(Player player) {
         ItemStack chestplate = player.getInventory().getChestplate();
-        Attribute armorAttribute = Vitamin.getInstance().getVersionAdapter().getArmorAttribute();
-        AttributeInstance instance = player.getAttribute(armorAttribute);
+        AttributeInstance instance = player.getAttribute(Attribute.ARMOR);
         if (instance == null) return;
 
         double baseArmorValue = calculateTotalArmorFromEquipment(player);
@@ -110,7 +107,7 @@ public class ElytraArmorModule implements Listener {
         if (item == null || item.getType() == Material.AIR) return 0;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return 0;
-        var modifiers = meta.getAttributeModifiers(Vitamin.getInstance().getVersionAdapter().getArmorAttribute());
+        var modifiers = meta.getAttributeModifiers(Attribute.ARMOR);
         if (modifiers == null) return 0;
         return modifiers.stream().mapToDouble(AttributeModifier::getAmount).sum();
     }

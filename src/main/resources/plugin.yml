@@ -6,11 +6,8 @@ load: STARTUP
 authors: [Stargaze (Eros Marí)]
 website: https://soystargaze.com
 softdepend:
-  - WorldGuard
-  - Lands
-  - Lootin
-  - GriefPrevention
   - Vault
+  - PlaceholderAPI
 commands:
   vitamin:
     description: Main command for Vitamin
@@ -35,3 +32,162 @@ permissions:
   vitamin.use.restore:
     description: Allows use of the /vitamin restore command
     default: op
+  vitamin.module.*:
+    description: Grants permission to use all modules
+    default: op
+  vitamin.module.armor_trim:
+    description: Allows the use of the Armor Trim module
+    default: true
+  vitamin.module.auto_tool:
+    description: Allows the use of the Auto Tool module
+    default: true
+  vitamin.module.bone_meal_expansion:
+    description: Allows the use of the Bone Meal Expansion module
+    default: true
+  vitamin.module.campfire_tweaks:
+    description: Allows the use of the Campfire Tweaks module
+    default: true
+  vitamin.module.crop_protection:
+    description: Allows the use of the Crop Protection module
+    default: true
+  vitamin.module.death_chest:
+    description: Allows the use of the Death Chest module
+    default: true
+  vitamin.module.death_map:
+    description: Allows the use of the Death Map module
+    default: true
+  vitamin.module.elevator:
+    description: Allows the use of the Elevator module
+    default: true
+  vitamin.module.elytra_armor:
+    description: Allows the use of the Elytra Armor module
+    default: true
+  vitamin.module.enchants_back:
+    description: Allows the use of the Enchants Back module
+    default: true
+  vitamin.module.fire_aspect_tools:
+    description: Allows the use of the Fire Aspect On Tools module
+    default: true
+  vitamin.module.invisible_item_frames:
+    description: Allows the use of the Invisible Item Frames module
+    default: true
+  vitamin.module.leaf_decay:
+    description: Allows the use of the Leaf Decay module
+    default: true
+  vitamin.module.oxygen_bottle:
+    description: Allows the use of the Oxygen Bottle module
+    default: true
+  vitamin.module.pet_protection:
+    description: Allows the use of the Pet Protection module
+    default: true
+  vitamin.module.xp_books:
+    description: Allows the use of the Player XP to Books module
+    default: true
+  vitamin.module.repair:
+    description: Allows the use of the Repair Tools module
+    default: true
+  vitamin.module.seed_replanter:
+    description: Allows the use of the Seed Replanter module
+    default: true
+  vitamin.module.replayable_vault:
+    description: Allows the use of the Replayable Vault module
+    default: true
+  vitamin.module.silk_spawners:
+    description: Allows the use of the Silk Spawners module
+    default: true
+  vitamin.module.sponge_with_lava:
+    description: Allows the use of the Sponge with Lava module
+    default: true
+  vitamin.module.totem_from_inventory:
+    description: Allows the use of the Totem from Inventory module
+    default: true
+  vitamin.module.void_totem:
+    description: Allows the use of the Void Totem module
+    default: true
+  vitamin.module.tp_compass:
+    description: Allows the use of the TP to Bed with Compass module
+    default: true
+  vitamin.module.unlock_all_recipes:
+    description: Allows the use of the Unlock All Recipes module
+    default: true
+  vitamin.module.tree_vein_miner:
+    description: Allows the use of the Tree Vein Miner module
+    default: true
+  vitamin.module.vein_miner:
+    description: Allows the use of the Vein Miner module
+    default: true
+  vitamin.module.villager_follow_emeralds:
+    description: Allows the use of the Villager Follow Emeralds module
+    default: true
+  vitamin.module.wall_jump:
+    description: Allows the use of the Wall Jump module
+    default: true
+  vitamin.module.weather_effects:
+    description: Allows the use of the Weather Effects module
+    default: true
+  vitamin.craft.*:
+    description: Grants permission to use all custom recipes
+    default: op
+  vitamin.craft.obsidian:
+    description: Allows the use of the Obsidian recipe
+    default: true
+  vitamin.craft.nether_star:
+    description: Allows the use of the Nether Star recipe
+    default: true
+  vitamin.craft.elytra:
+    description: Allows the use of the Elytra recipe
+    default: true
+  vitamin.craft.enchanted_golden_apple:
+    description: Allows the use of the Enchanted Golden Apple recipe
+    default: true
+  vitamin.craft.gilded_blackstone:
+    description: Allows the use of the Gilded Blackstone recipe
+    default: true
+  vitamin.craft.hearts_of_the_sea:
+    description: Allows the use of the Heart of the Sea recipe
+    default: true
+  vitamin.craft.iron_horse_armor:
+    description: Allows the use of the Iron Horse Armor recipe
+    default: true
+  vitamin.craft.golden_horse_armor:
+    description: Allows the use of the Golden Horse Armor recipe
+    default: true
+  vitamin.craft.diamond_horse_armor:
+    description: Allows the use of the Diamond Horse Armor recipe
+    default: true
+  vitamin.craft.calcite:
+    description: Allows the use of the Calcite recipe
+    default: true
+  vitamin.craft.deepslate:
+    description: Allows the use of the Deepslate recipe
+    default: true
+  vitamin.craft.cobbled_deepslate:
+    description: Allows the use of the Cobbled Deepslate recipe
+    default: true
+  vitamin.craft.tuff:
+    description: Allows the use of the Tuff recipe
+    default: true
+  vitamin.craft.dirt_path:
+    description: Allows the use of the Dirt Path recipe
+    default: true
+  vitamin.craft.reinforced_deepslate:
+    description: Allows the use of the Reinforced Deepslate recipe
+    default: true
+  vitamin.craft.lava_bucket:
+    description: Allows the use of the Lava Bucket recipe
+    default: true
+  vitamin.craft.trident:
+    description: Allows the use of the Trident recipe
+    default: true
+  vitamin.craft.totem_of_undying:
+    description: Allows the use of the Totem of Undying recipe
+    default: true
+  vitamin.craft.grass_block:
+    description: Allows the use of the Grass Block recipe
+    default: true
+  vitamin.craft.nametag:
+    description: Allows the use of the Name Tag recipe
+    default: true
+  vitamin.craft.saddle:
+    description: Allows the use of the Saddle recipe
+    default: true

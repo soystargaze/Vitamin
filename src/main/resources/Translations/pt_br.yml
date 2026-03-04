@@ -124,7 +124,6 @@ xpbook:
   merged: "Livros de XP mesclados em {0} <green>XP<white>, perdido {1} <red>XP<white>."
   lore: "<gray>Contém <gold>{0} <gray>XP"
 
-carry_on:
   cannot_pickup_players: "<red>Você não pode pegar jogadores!</red>"
   cannot_carry_while_carrying: "<red>Você não pode carregar uma entidade enquanto carrega outra!</red>"
   cannot_carry_while_being_carried: "<red>Você não pode carregar uma entidade enquanto está sendo carregado!</red>"

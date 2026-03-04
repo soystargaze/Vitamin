@@ -86,7 +86,7 @@ public class SilkSpawnersModule implements Listener {
             return;
         }
 
-        ItemStack item = event.getItemInHand();
+        ItemStack item = player.getInventory().getItemInMainHand();
         if (!item.hasItemMeta()) {
             return;
         }

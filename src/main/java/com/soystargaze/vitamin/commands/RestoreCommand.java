@@ -4,6 +4,7 @@ import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,11 +30,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"deprecation", "UnstableApiUsage"})
 public class RestoreCommand implements CommandExecutor, TabCompleter {
 
     private final JavaPlugin plugin;
     private final NamespacedKey restoreKey;
+    private final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.legacyAmpersand();
 
     public RestoreCommand(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -76,14 +77,15 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
         }
 
         String rawTitle = ConfigHandler.getString("gui.restore.title",
-                "&6Restore: %player% &7(%count% containers)");
-        String title = rawTitle
+                "<gold>Restore: %player% <gray>(%count% containers)");
+        String titleString = rawTitle
                 .replace("%player%", targetPlayerName)
                 .replace("%count%", String.valueOf(backups.size()));
-        title = org.bukkit.ChatColor.translateAlternateColorCodes('&', title);
+        
+        Component titleComponent = parseToComponent(titleString);
 
         int size = ConfigHandler.getInt("gui.restore.size", 54);
-        Inventory restoreInv = Bukkit.createInventory(null, size, title);
+        Inventory restoreInv = Bukkit.createInventory(null, size, titleComponent);
 
         String datePattern = ConfigHandler.getString("gui.restore.date-format",
                 "dd/MM/yyyy HH:mm");
@@ -108,59 +110,59 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
 
         String containerName = containerMaterial.name().toLowerCase().replace("_", " ");
         String displayNameFormat = ConfigHandler.getString("gui.restore.item.display-name",
-                "&e%container_name% &7#%short_id%");
-        String displayName = displayNameFormat
+                "<yellow>%container_name% <gray>#%short_id%");
+        String displayNameString = displayNameFormat
                 .replace("%container_name%", Character.toUpperCase(containerName.charAt(0)) + containerName.substring(1))
                 .replace("%short_id%", backup.chestId.substring(0, 8));
-        displayName = org.bukkit.ChatColor.translateAlternateColorCodes('&', displayName);
-        meta.setDisplayName(displayName);
+        
+        meta.displayName(parseToComponent(displayNameString));
 
         List<String> loreTemplate = ConfigHandler.getStringList("gui.restore.item.lore");
         if (loreTemplate.isEmpty()) {
             loreTemplate = Arrays.asList(
-                    "&7▸ ID: &f%short_id%...",
-                    "&7▸ Picked up: &f%pickup_date%",
-                    "&7▸ Location: &f%world% (%x%, %y%, %z%)",
-                    "&7▸ Restored: %restored_status%",
+                    "<gray>▸ ID: <white>%short_id%...",
+                    "<gray>▸ Picked up: <white>%pickup_date%",
+                    "<gray>▸ Location: <white>%world% (%x%, %y%, %z%)",
+                    "<gray>▸ Restored: %restored_status%",
                     "",
-                    "&7Contents preview:",
+                    "<gray>Contents preview:",
                     "%contents%",
                     "",
-                    "&e▶ Click to give a copy to your inventory"
+                    "<yellow>▶ Click to give a copy to your inventory"
             );
         }
 
-        List<String> lore = new ArrayList<>();
-        String restoredYes = ConfigHandler.getString("gui.restore.item.restored-yes", "&aYes");
-        String restoredNo = ConfigHandler.getString("gui.restore.item.restored-no", "&cNo");
+        List<Component> lore = new ArrayList<>();
+        String restoredYes = ConfigHandler.getString("gui.restore.item.restored-yes", "<green>Yes");
+        String restoredNo = ConfigHandler.getString("gui.restore.item.restored-no", "<red>No");
         String restoredText = backup.restored ? restoredYes : restoredNo;
 
         for (String line : loreTemplate) {
             if (line.contains("%contents%")) {
                 if (previewItems.isEmpty()) {
                     String emptyText = ConfigHandler.getString("gui.restore.item.contents.empty",
-                            "  &8• Empty");
-                    lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', emptyText));
+                            "  <dark_gray>• Empty");
+                    lore.add(parseToComponent(emptyText));
                 } else {
                     int maxPreview = ConfigHandler.getInt("gui.restore.item.contents.max-preview", 5);
                     String itemFormat = ConfigHandler.getConfig().getString("gui.restore.item.contents.item-format",
-                            "  &8• &f%amount%x &7%item_name%");
+                            "  <dark_gray>• <white>%amount%x <gray>%item_name%");
                     String moreItemsFormat = ConfigHandler.getString("gui.restore.item.contents.more-format",
-                            "  &8• ... and %remaining% more items");
+                            "  <dark_gray>• ... and %remaining% more items");
 
                     int shown = 0;
                     for (ItemStack item : previewItems) {
                         if (shown >= maxPreview) {
                             int remaining = previewItems.size() - maxPreview;
                             String moreLine = moreItemsFormat.replace("%remaining%", String.valueOf(remaining));
-                            lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', moreLine));
+                            lore.add(parseToComponent(moreLine));
                             break;
                         }
                         String itemName = getItemDisplayName(item);
                         String itemLine = itemFormat
                                 .replace("%amount%", String.valueOf(item.getAmount()))
                                 .replace("%item_name%", itemName);
-                        lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', itemLine));
+                        lore.add(parseToComponent(itemLine));
                         shown++;
                     }
                 }
@@ -173,16 +175,23 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
                         .replace("%y%", String.valueOf(backup.y))
                         .replace("%z%", String.valueOf(backup.z))
                         .replace("%restored_status%", restoredText);
-                lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', processedLine));
+                lore.add(parseToComponent(processedLine));
             }
         }
 
-        meta.setLore(lore);
-
+        meta.lore(lore);
         meta.getPersistentDataContainer().set(restoreKey, PersistentDataType.STRING, backup.chestId);
-
         displayItem.setItemMeta(meta);
         return displayItem;
+    }
+
+    private Component parseToComponent(String text) {
+        if (text == null) return Component.empty();
+        // Support both MiniMessage and Legacy color codes
+        if (text.contains("&") || text.contains("§")) {
+            return legacySerializer.deserialize(text);
+        }
+        return MiniMessage.miniMessage().deserialize(text);
     }
 
     private List<ItemStack> getContainerPreview(String chestId) {
@@ -210,9 +219,12 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
     }
 
     private String getItemDisplayName(ItemStack item) {
-        if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
-            String displayName = item.getItemMeta().getDisplayName();
-            return displayName.replaceAll("§[0-9a-fk-or]", "");
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null && meta.hasDisplayName()) {
+            Component name = meta.displayName();
+            if (name != null) {
+                return MiniMessage.miniMessage().serialize(name).replaceAll("<[^>]*>", "");
+            }
         }
         return item.getType().name().toLowerCase().replace("_", " ");
     }
@@ -283,10 +295,11 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
 
         String containerName = containerType.name().toLowerCase().replace("_", " ");
         String displayNameFormat = ConfigHandler.getString("gui.restore.restored-item.display-name",
-                "&6Restored %container_name%");
+                "<gold>Restored %container_name%");
         String displayName = displayNameFormat
                 .replace("%container_name%", Character.toUpperCase(containerName.charAt(0)) + containerName.substring(1));
-        meta.setDisplayName(org.bukkit.ChatColor.translateAlternateColorCodes('&', displayName));
+        
+        meta.displayName(parseToComponent(displayName));
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 ConfigHandler.getString("gui.restore.restored-item.date-format", "dd/MM/yyyy HH:mm"));
@@ -294,16 +307,16 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
         List<String> loreTemplate = ConfigHandler.getStringList("gui.restore.restored-item.lore");
         if (loreTemplate.isEmpty()) {
             loreTemplate = Arrays.asList(
-                    "&7▸ Original owner: &f%owner%",
-                    "&7▸ Backup ID: &f%short_id%...",
-                    "&7▸ Picked up: &f%pickup_date%",
-                    "&7▸ Original location: &f%world% (%x%, %y%, %z%)",
+                    "<gray>▸ Original owner: <white>%owner%",
+                    "<gray>▸ Backup ID: <white>%short_id%...",
+                    "<gray>▸ Picked up: <white>%pickup_date%",
+                    "<gray>▸ Original location: <white>%world% (%x%, %y%, %z%)",
                     "",
-                    "&e▶ This is a restored copy from backup"
+                    "<yellow>▶ This is a restored copy from backup"
             );
         }
 
-        List<String> lore = new ArrayList<>();
+        List<Component> lore = new ArrayList<>();
         for (String line : loreTemplate) {
             String processedLine = line
                     .replace("%owner%", backup.playerName)
@@ -313,9 +326,9 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
                     .replace("%x%", String.valueOf(backup.x))
                     .replace("%y%", String.valueOf(backup.y))
                     .replace("%z%", String.valueOf(backup.z));
-            lore.add(org.bukkit.ChatColor.translateAlternateColorCodes('&', processedLine));
+            lore.add(parseToComponent(processedLine));
         }
-        meta.setLore(lore);
+        meta.lore(lore);
 
         NamespacedKey chestIdKey = new NamespacedKey(plugin, "chest_id");
         NamespacedKey storedBlockKey = new NamespacedKey(plugin, "stored_block");
@@ -433,15 +446,11 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
             TextHandler.get().sendMessage(player, key, args);
         } else {
             Object msg = TextHandler.get().getMessage(key, args);
-            String legacyMessage;
-
             if (msg instanceof Component comp) {
-                legacyMessage = LegacyComponentSerializer.legacyAmpersand().serialize(comp);
+                sender.sendMessage(comp);
             } else {
-                legacyMessage = msg.toString();
+                sender.sendMessage(parseToComponent(msg.toString()));
             }
-
-            sender.sendMessage(legacyMessage);
         }
     }
 
@@ -456,4 +465,3 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
         public int x, y, z;
     }
 }
-

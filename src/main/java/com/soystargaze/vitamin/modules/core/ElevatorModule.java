@@ -133,7 +133,7 @@ public class ElevatorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
             return;
         }
-        ItemStack item = event.getItemInHand();
+        ItemStack item = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
 
         if (woolToShulkerMap.containsValue(block.getType())) {

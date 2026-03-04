@@ -47,9 +47,6 @@ public class ModuleManager {
             new ModuleDef("module.campfire_tweaks",
                     CampfireTweaksModule::new
             ),
-            new ModuleDef("module.carry_on",
-                    CarryOnModule::new
-            ),
             new ModuleDef("module.death_chest",
                     DeathChestModule::new
             ),

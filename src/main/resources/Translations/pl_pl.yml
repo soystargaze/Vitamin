@@ -124,7 +124,6 @@ xpbook:
   merged: "Połączono książki XP w {0} <green>XP<white>, utracono {1} <red>XP<white>."
   lore: "<gray>Zawiera <gold>{0} <gray>XP"
 
-carry_on:
   cannot_pickup_players: "<red>Nie możesz podnosić graczy!</red>"
   cannot_carry_while_carrying: "<red>Nie możesz nosić jednostki, gdy nosisz inną!</red>"
   cannot_carry_while_being_carried: "<red>Nie możesz nosić jednostki, gdy jesteś noszony!</red>"

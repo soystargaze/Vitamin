@@ -1,73 +1,50 @@
-# Vitamin+ Project Context
+# Vitamin+ (Vanilla Enhanced)
 
-## Overview
-**Vitamin+** is a modular Minecraft plugin designed to enhance vanilla gameplay for Spigot and PaperMC servers (targeting version 1.21+). It introduces various "power-ups" or mechanics—such as armor trims with effects, auto tools, crop protection, and more—while maintaining the vanilla feel.
+## Project Overview
+**Vitamin+** is a Minecraft plugin designed for **PaperMC** and **Spigot** (1.21+) that enhances vanilla gameplay with 32 modular "power-ups." Its primary goal is to provide new mechanics (e.g., auto-tools, armor trims, carry-on, vein mining) without breaking the core vanilla experience.
 
-The project is built using **Java 21** and **Gradle**, employing a module-based architecture where features can be individually enabled or disabled via configuration.
+### Main Technologies
+- **Language:** Java 21 (uses records, switch expressions, etc.)
+- **Build Tool:** Gradle (with `com.gradleup.shadow` for fat JAR generation)
+- **Frameworks/APIs:**
+  - [Paper API](https://papermc.io/) (1.21.10-R0.1-SNAPSHOT)
+  - [Adventure (Kyori)](https://docs.advntr.dev/) for rich text components and MiniMessage
+  - [HikariCP](https://github.com/brettwooldridge/HikariCP) for database connection pooling (SQLite, MySQL, MariaDB, PostgreSQL)
+  - [bStats](https://bstats.org/) for plugin metrics
+  - Soft dependencies: WorldGuard, Lands, Lootin, GriefPrevention, Vault, PlaceholderAPI, AdvancedEnchantments
 
-## Architecture & Key Components
+### Architecture
+- **Main Class:** `com.soystargaze.vitamin.Vitamin` (manages initialization, config, database, and modules)
+- **Module System:** Each feature is a self-contained `Listener` class in `com.soystargaze.vitamin.modules.core`.
+- **ModuleManager:** Handles instantiation and registration of modules based on `config.yml`.
+- **DatabaseHandler:** Manages persistent storage for player-specific module states, death locations, and more.
+- **TextHandler/TranslationHandler:** Manages multi-language support through YAML files in the `Translations/` folder.
+- **VersionAdapter:** Provides abstraction for different Minecraft versions (1.21.1, 1.21.4, 1.21.10).
 
-### Core Structure
-*   **Main Entry Point:** `com.soystargaze.vitamin.Vitamin` - Handles plugin lifecycle (enable/disable), configuration loading, and module initialization.
-*   **Modules System:**
-    *   Located in `com.soystargaze.vitamin.modules`.
-    *   Each feature is a separate module (e.g., `ArmorTrimModule`, `AutoToolModule`) inheriting from a common base (likely `ModuleDef` or similar).
-    *   Modules are registered and managed by `ModuleManager`.
-*   **Configuration:**
-    *   `config.yml`: Main configuration file controlling module states and settings.
-    *   `ConfigHandler.java`: Manages reading and writing to the config.
-*   **Localization:**
-    *   `Translations/`: Supports multiple languages (en_us, es_es, ja_jp, etc.).
-    *   `TextHandler.java`: Manages message retrieval and formatting (using Adventure API).
-
-### Key Technologies
-*   **Platform:** PaperMC / Spigot (API 1.21+).
-*   **Language:** Java 21.
-*   **Build System:** Gradle (with ShadowJar for uber-jar creation).
-*   **Libraries:**
-    *   `Adventure`: For modern text components and minimessage formatting.
-    *   `HikariCP`: For database connection pooling (if applicable).
-    *   `bStats`: For plugin metrics.
-    *   `RTag`: For tag/NBT handling.
-*   **Integrations (Soft Dependencies):**
-    *   WorldGuard, Lands, GriefPrevention (for claim protection).
-    *   Vault, PlaceholderAPI.
-    *   Lootin, AdvancedEnchantments.
-
-## Building & Running
-
-### Prerequisites
-*   JDK 21 or higher.
-*   Gradle (wrapper included).
-
+## Building and Running
 ### Build Commands
-*   **Build Plugin:**
-    ```bash
-    ./gradlew build
-    ```
-    or specifically for the shadow jar (includes dependencies):
-    ```bash
-    ./gradlew shadowJar
-    ```
-*   **Output:** The compiled `.jar` file will be located in `build/libs/`.
+- **Build Fat JAR:** `./gradlew shadowJar` (JAR will be in `build/libs/`)
+- **Clean Project:** `./gradlew clean`
+- **Full Build:** `./gradlew build` (depends on `shadowJar`)
+
+### Installation
+1.  Ensure you have **Java 21+** and a **PaperMC/Spigot 1.21+** server.
+2.  Drop the `Vitamin-X.Y.Z.jar` into the `plugins/` folder.
+3.  Restart the server to generate default configurations.
+4.  Configure `config.yml` as needed and use `/vitamin reload` to apply changes.
 
 ## Development Conventions
-*   **Modular Design:** New features should be implemented as self-contained modules extending the abstract module class.
-*   **Configuration:** Every module should have a toggle in `config.yml` and ideally permissions associated with it.
-*   **Style:** Standard Java naming conventions.
-*   **Translation:** All player-facing text should be translatable via the `Translations` files.
+- **Module Design:** New features should be implemented as a new class in `com.soystargaze.vitamin.modules.core` and registered in `ModuleManager.java` using `ModuleDef`.
+- **Permissions:** Every module should check for `vitamin.module.<name>` permission.
+- **Player-Specific Toggles:** Modules should respect player-specific state stored via `DatabaseHandler.isModuleEnabledForPlayer()`.
+- **Text & Colors:** Use `TextHandler.get().logTranslated()` or similar for messages. Prefer Kyori's MiniMessage for rich text formatting.
+- **Async Execution:** Use `AsyncExecutor` for non-blocking operations (e.g., database queries).
+- **Style:** Adhere to modern Java 21 idioms (e.g., records for data holders, switch expressions for mapping).
 
-## Directory Layout
-*   `src/main/java/com/soystargaze/vitamin/`: Source code.
-    *   `modules/`: Individual feature implementations.
-    *   `commands/`: Command handling logic.
-    *   `config/`: Configuration management.
-    *   `integration/`: Handlers for third-party plugins (WorldGuard, etc.).
-*   `src/main/resources/`:
-    *   `plugin.yml`: Plugin descriptor.
-    *   `config.yml`: Default configuration.
-    *   `Translations/`: Locale files.
-
-## Common Tasks
-*   **Adding a Module:** Create a new class in `modules/core/` (or `paper/` if Paper-specific), extend the base module class, and register it in `ModuleManager`. Add default config values in `config.yml`.
-*   **Updating Dependencies:** Check `build.gradle` for library versions.
+## Key Files
+- `src/main/resources/config.yml`: Central configuration for all modules and plugin settings.
+- `src/main/resources/plugin.yml`: Plugin metadata and command/permission definitions.
+- `src/main/java/com/soystargaze/vitamin/Vitamin.java`: Main entry point.
+- `src/main/java/com/soystargaze/vitamin/modules/ModuleManager.java`: Module registry.
+- `src/main/java/com/soystargaze/vitamin/database/DatabaseHandler.java`: Database logic.
+- `src/main/resources/Translations/`: Folder containing localized message files.

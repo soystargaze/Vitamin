@@ -1,6 +1,5 @@
 package com.soystargaze.vitamin.modules.core;
 
-import com.soystargaze.vitamin.Vitamin;
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -47,7 +46,6 @@ public class WallJumpModule implements Listener {
         BukkitRunnable slideTask;
         BukkitRunnable stickDelayTask;
         boolean canWallJump;
-        double initialY;
     }
 
     @EventHandler
@@ -95,7 +93,6 @@ public class WallJumpModule implements Listener {
 
     private void initializeWallClimb(Player player, WallClimbState state, BlockFace wallFace) {
         state.wallFace = wallFace;
-        state.initialY = player.getLocation().getY();
         state.canWallJump = true;
         cancelTasks(state);
         player.setVelocity(new Vector(0, 0, 0));
@@ -174,12 +171,9 @@ public class WallJumpModule implements Listener {
             }
         }
 
-        Vitamin.getInstance().getVersionAdapter().playSlideSound(
-                player.getLocation(),
-                slideSound,
-                0.2f,
-                1.2f
-        );
+        // Use Paper's modern playSound with String or Sound constant to avoid deprecation warnings
+        String soundKey = slideSound.toLowerCase().replace("_", ".");
+        player.playSound(player.getLocation(), soundKey, 0.2f, 1.2f);
     }
 
     private void keepPlayerAgainstWall(Player player, BlockFace face) {

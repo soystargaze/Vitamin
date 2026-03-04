@@ -136,7 +136,6 @@ death_map:
   map_given: "마지막 사망 위치인 {0}, {1}, {2}에 사망 지도가 생성되었습니다."
   map_renderer_error: "지도를 렌더링하는 중 오류가 발생했습니다: {0}"
 
-carry_on:
   cannot_pickup_players: "<red>플레이어를 집을 수 없습니다!</red>"
   cannot_carry_while_carrying: "<red>다른 엔티티를 들고 있는 동안 엔티티를 들 수 없습니다!</red>"
   cannot_carry_while_being_carried: "<red>들려 있는 동안 엔티티를 들 수 없습니다!</red>"

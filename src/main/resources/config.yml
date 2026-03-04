@@ -92,7 +92,6 @@ module:
   auto_tool: false # Automatically switch to the correct tool when breaking blocks
   bone_meal_expansion: false # Bone meal can be used to grow special crops
   campfire_tweaks: false # Campfires give regeneration and saturation when sitting on them
-  carry_on: false # Shift + Right Click to pick up entities and containers
   crop_protection: false # Prevents crops from being trampled
   custom_recipes: false # Add custom recipes to the game
   death_chest: false # Create a chest with your items when you die
@@ -138,14 +137,6 @@ campfire_tweaks:
   regen_duration_ticks: 60        # Duration of the regeneration effect in ticks (20 ticks = 1 second)
   check_interval_ticks: 80        # Check interval for regeneration effect in ticks
   saturation_interval_ticks: 160  # Check interval for saturation effect in ticks
-
-# Carry On settings
-carry_on:
-  max_weight: 100                   # Weight is based on the max health of the mob
-  allow_player_pickup: false        # Allow players to pick up other players (need permission: vitamin.module.carry_on.entity.player)
-  allow_lootin_pickup: false        # Block Lootin chest pickup (only if Lootin plugin is on the server)
-  allow_stacking: false             # Allow stacking of players carrying other players
-  prevent_container_stacking: true  # Prevent stacking of containers inside other containers
 
 # Death Chest settings
 death_chest:

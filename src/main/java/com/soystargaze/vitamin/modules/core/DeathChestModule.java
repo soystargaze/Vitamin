@@ -2,6 +2,7 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -114,7 +115,8 @@ public class DeathChestModule implements Listener {
         if (skullLoc.getBlock().getType() == Material.AIR) {
             skullLoc.getBlock().setType(Material.PLAYER_HEAD);
             Skull skull = (Skull) skullLoc.getBlock().getState();
-            skull.setOwningPlayer(player);
+            // Use modern Paper API: ResolvableProfile
+            skull.setProfile(ResolvableProfile.resolvableProfile(player.getPlayerProfile()));
             skull.update();
         }
 

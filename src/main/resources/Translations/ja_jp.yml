@@ -124,7 +124,6 @@ xpbook:
   merged: "XPの本を{0} <green>XP<white>に統合、{1} <red>XP<white>を失いました。"
   lore: "<gray><gold>{0} <gray>XPを含む"
 
-carry_on:
   cannot_pickup_players: "<red>プレイヤーを拾うことはできません！</red>"
   cannot_carry_while_carrying: "<red>別のエンティティを持ちながらエンティティを持つことはできません！</red>"
   cannot_carry_while_being_carried: "<red>運ばれている間はエンティティを持つことはできません！</red>"

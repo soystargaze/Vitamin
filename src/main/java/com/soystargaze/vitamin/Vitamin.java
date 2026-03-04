@@ -1,15 +1,11 @@
 package com.soystargaze.vitamin;
 
-import com.soystargaze.vitamin.adapter.VersionAdapter;
-import com.soystargaze.vitamin.adapter.*;
 import com.soystargaze.vitamin.commands.VitaminCommandManager;
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
-import com.soystargaze.vitamin.integration.WorldGuardFlags;
 import com.soystargaze.vitamin.modules.ModuleManager;
 import com.soystargaze.vitamin.utils.*;
 import com.soystargaze.vitamin.utils.text.*;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bstats.bukkit.Metrics;
@@ -21,7 +17,6 @@ public class Vitamin extends JavaPlugin implements Listener {
     private static Vitamin instance;
     private ModuleManager moduleManager;
     private VitaminCommandManager commandManager;
-    private VersionAdapter versionAdapter;
     private static final int BSTATS_PLUGIN_ID = 24855;
 
     @Override
@@ -29,11 +24,7 @@ public class Vitamin extends JavaPlugin implements Listener {
         instance = this;
 
         try {
-            setupVersionAdapter();
             initializePlugin();
-            if (getServer().getPluginManager().getPlugin("WorldGuard") != null) {
-                WorldGuardFlags.registerFlags(this);
-            }
         } catch (Exception e) {
             final String KEY = "plugin.enable_error";
             TextHandler.get().registerTemporaryTranslation(KEY, "Plugin cannot be enabled: {0}");
@@ -149,35 +140,6 @@ public class Vitamin extends JavaPlugin implements Listener {
             );
             TextHandler.get().logTranslated("bstats.error", e.getMessage());
         }
-    }
-
-    private void setupVersionAdapter() {
-        String raw = Bukkit.getBukkitVersion();
-        String versionPattern = ".*?(\\d+\\.\\d+(?:\\.\\d+)?).*";
-        String version = raw.replaceFirst(versionPattern, "$1");
-
-        if (version.equals(raw)) {
-            TextHandler.get().logTranslated("version.parse_error", raw);
-            versionAdapter = new VersionAdapter_1_21_1();
-            return;
-        }
-
-        String[] parts = version.split("\\.");
-        int major = Integer.parseInt(parts[0]);
-        int minor = Integer.parseInt(parts[1]);
-        int patch = parts.length > 2 ? Integer.parseInt(parts[2]) : 0;
-
-        if (major == 1 && minor == 21 && patch >= 10) {
-            versionAdapter = new VersionAdapter_1_21_10();
-        } else if (major == 1 && minor == 21 && patch >= 3) {
-            versionAdapter = new VersionAdapter_1_21_4();
-        } else {
-            versionAdapter = new VersionAdapter_1_21_1();
-        }
-    }
-
-    public VersionAdapter getVersionAdapter() {
-        return versionAdapter;
     }
 
     public static Vitamin getInstance() {

@@ -124,7 +124,6 @@ xpbook:
   merged: "Merged XP books into {0} <green>XP<white>, lost {1} <red>XP<white>."
   lore: "<gray>Contains <gold>{0} <gray>XP"
 
-carry_on:
   cannot_pickup_players: "<red>You cannot pick up players!</red>"
   cannot_carry_while_carrying: "<red>You cannot carry an entity while carrying another!</red>"
   cannot_carry_while_being_carried: "<red>You cannot carry an entity while being carried!</red>"

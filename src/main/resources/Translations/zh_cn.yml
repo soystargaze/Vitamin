@@ -124,7 +124,6 @@ xpbook:
   merged: "将XP书合并为{0} <green>XP<white>，丢失{1} <red>XP<white>。"
   lore: "<gray>包含<gold>{0} <gray>XP"
 
-carry_on:
   cannot_pickup_players: "<red>你不能捡起玩家！</red>"
   cannot_carry_while_carrying: "<red>你在携带另一个实体时不能携带实体！</red>"
   cannot_carry_while_being_carried: "<red>你在被携带时不能携带实体！</red>"
