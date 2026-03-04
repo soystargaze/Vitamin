@@ -11,7 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.view.AnvilView;
@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-@SuppressWarnings("ALL")
 public class FireAspectOnToolsModule implements Listener {
 
     private final JavaPlugin plugin;
@@ -60,35 +59,53 @@ public class FireAspectOnToolsModule implements Listener {
         return map;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareAnvil(PrepareAnvilEvent event) {
-        AnvilView anvilView = event.getView();
-        Inventory inventory = event.getInventory();
-        Player player = (Player) anvilView.getPlayer();
-        if (player == null) return;
-        if (!player.hasPermission("vitamin.module.fire_aspect_tools") ||
-                !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.fire_aspect_tools")) {
-            return;
-        }
+        ItemStack left = event.getInventory().getItem(0);
+        ItemStack right = event.getInventory().getItem(1);
 
-        ItemStack left = inventory.getItem(0);
-        ItemStack right = inventory.getItem(1);
+        if (left == null || right == null) return;
 
-        if (left == null) {
-            return;
-        }
+        boolean leftHasFire = left.containsEnchantment(Enchantment.FIRE_ASPECT);
+        boolean leftHasFortune = left.containsEnchantment(Enchantment.FORTUNE);
+        boolean leftHasSilk = left.containsEnchantment(Enchantment.SILK_TOUCH);
 
-        if (right != null && right.getType() == Material.ENCHANTED_BOOK) {
-            if (right.hasItemMeta() && right.getItemMeta() instanceof EnchantmentStorageMeta esm) {
-                if (esm.hasStoredEnchant(Enchantment.FIRE_ASPECT)) {
-                    int level = esm.getStoredEnchantLevel(Enchantment.FIRE_ASPECT);
-                    ItemStack result = left.clone();
-                    result.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, level);
-                    event.setResult(result);
+        // Case A: Right item is an Enchanted Book
+        if (right.getType() == Material.ENCHANTED_BOOK && right.getItemMeta() instanceof EnchantmentStorageMeta esm) {
+            
+            // Prohibit Fire Aspect if tool has Fortune or Silk Touch
+            if (esm.hasStoredEnchant(Enchantment.FIRE_ASPECT) && (leftHasFortune || leftHasSilk)) {
+                event.setResult(null);
+                return;
+            }
 
-                    int repairCost = (level == 2) ? 14 : 7;
-                    anvilView.setRepairCost(repairCost);
-                }
+            // Prohibit Fortune or Silk Touch if tool has Fire Aspect
+            if ((esm.hasStoredEnchant(Enchantment.FORTUNE) || esm.hasStoredEnchant(Enchantment.SILK_TOUCH)) && leftHasFire) {
+                event.setResult(null);
+                return;
+            }
+
+            // Custom logic to allow applying Fire Aspect book to valid tools
+            if (esm.hasStoredEnchant(Enchantment.FIRE_ASPECT) && isValidTool(left.getType())) {
+                int level = esm.getStoredEnchantLevel(Enchantment.FIRE_ASPECT);
+                ItemStack result = left.clone();
+                result.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, level);
+                event.setResult(result);
+                
+                AnvilView view = event.getView();
+                int cost = (level == 2) ? 10 : 5;
+                Bukkit.getScheduler().runTask(plugin, () -> view.setRepairCost(cost));
+            }
+        } 
+        // Case B: Combining two tools
+        else if (isValidTool(left.getType()) && left.getType() == right.getType()) {
+            boolean rightHasFire = right.containsEnchantment(Enchantment.FIRE_ASPECT);
+            boolean rightHasFortune = right.containsEnchantment(Enchantment.FORTUNE);
+            boolean rightHasSilk = right.containsEnchantment(Enchantment.SILK_TOUCH);
+
+            // If the combination would result in Fire Aspect + (Fortune or Silk Touch), block it
+            if ((leftHasFire || rightHasFire) && (leftHasFortune || rightHasFortune || leftHasSilk || rightHasSilk)) {
+                event.setResult(null);
             }
         }
     }
@@ -105,7 +122,8 @@ public class FireAspectOnToolsModule implements Listener {
         Material blockType = event.getBlock().getType();
         Location blockLocation = event.getBlock().getLocation();
 
-        if (!isValidBreak(blockType, tool)) {
+        int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
+        if (fireAspectLevel <= 0 || !smeltMap.containsKey(blockType)) {
             return;
         }
 
@@ -115,65 +133,39 @@ public class FireAspectOnToolsModule implements Listener {
         processedBlocks.add(blockLocation);
         Bukkit.getScheduler().runTaskLater(plugin, () -> processedBlocks.remove(blockLocation), 1L);
 
-        event.setDropItems(false);
-
-        int fireAspectLevel = tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
         if (fireAspectLevel == 1) {
             if (ThreadLocalRandom.current().nextDouble() < 0.4) {
                 processBlockDrop(event, tool);
-            } else {
-                dropNaturalItems(event, tool);
             }
-        } else if (fireAspectLevel >= 2) {
+        } else {
             processBlockDrop(event, tool);
         }
     }
 
-    private void dropNaturalItems(BlockBreakEvent event, ItemStack tool) {
-        Collection<ItemStack> naturalDrops = event.getBlock().getDrops(tool);
-        for (ItemStack drop : naturalDrops) {
-            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), drop);
-        }
-    }
-
     private void processBlockDrop(BlockBreakEvent event, ItemStack tool) {
-        int amount = calculateDropAmount(tool);
-        Material resultType = smeltMap.get(event.getBlock().getType());
-        if (resultType == null) {
-            dropNaturalItems(event, tool);
-            return;
-        }
-        ItemStack smeltedItem = new ItemStack(resultType, amount);
-        event.getBlock().getWorld().dropItemNaturally(
-                event.getBlock().getLocation(),
-                smeltedItem
-        );
-    }
+        Material blockType = event.getBlock().getType();
+        Material resultType = smeltMap.get(blockType);
+        if (resultType == null) return;
 
-    private int calculateDropAmount(ItemStack tool) {
-        int fortuneLevel = tool.getEnchantmentLevel(Enchantment.FORTUNE);
-        int dropAmount = 1;
-        if (fortuneLevel > 0) {
-            dropAmount += fortuneLevel;
-        }
-        return dropAmount;
-    }
+        Collection<ItemStack> naturalDrops = event.getBlock().getDrops(tool);
+        if (naturalDrops.isEmpty()) return;
 
-    private boolean isValidBreak(Material blockType, ItemStack tool) {
-        return smeltMap.containsKey(blockType)
-                && isValidTool(tool.getType())
-                && !tool.containsEnchantment(Enchantment.SILK_TOUCH)
-                && tool.getEnchantmentLevel(Enchantment.FIRE_ASPECT) > 0;
+        event.setDropItems(false);
+
+        for (ItemStack drop : naturalDrops) {
+            Material smelted = smeltMap.get(drop.getType());
+            if (smelted == null) {
+                smelted = resultType;
+            }
+            
+            ItemStack finalDrop = new ItemStack(smelted, drop.getAmount());
+            event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), finalDrop);
+        }
     }
 
     private boolean isValidTool(Material material) {
-        return switch (material) {
-            case WOODEN_PICKAXE, STONE_PICKAXE, IRON_PICKAXE, GOLDEN_PICKAXE, DIAMOND_PICKAXE, NETHERITE_PICKAXE,
-                 WOODEN_AXE, STONE_AXE, IRON_AXE, GOLDEN_AXE, DIAMOND_AXE, NETHERITE_AXE,
-                 WOODEN_SHOVEL, STONE_SHOVEL, IRON_SHOVEL, GOLDEN_SHOVEL, DIAMOND_SHOVEL, NETHERITE_SHOVEL,
-                 WOODEN_SWORD, STONE_SWORD, IRON_SWORD, GOLDEN_SWORD, DIAMOND_SWORD, NETHERITE_SWORD,
-                 WOODEN_HOE, STONE_HOE, IRON_HOE, GOLDEN_HOE, DIAMOND_HOE, NETHERITE_HOE -> true;
-            default -> false;
-        };
+        String name = material.name();
+        return name.endsWith("_PICKAXE") || name.endsWith("_AXE") || name.endsWith("_SHOVEL") || 
+               name.endsWith("_SWORD") || name.endsWith("_HOE");
     }
 }
