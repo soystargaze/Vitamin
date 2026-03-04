@@ -2,7 +2,10 @@ package com.soystargaze.vitamin.commands;
 
 import com.soystargaze.vitamin.config.ConfigHandler;
 import com.soystargaze.vitamin.database.DatabaseHandler;
+import com.soystargaze.vitamin.utils.LogUtils;
 import com.soystargaze.vitamin.utils.text.TextHandler;
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.GuiItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -15,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -84,24 +86,26 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
         
         Component titleComponent = parseToComponent(titleString);
 
-        int size = ConfigHandler.getInt("gui.restore.size", 54);
-        Inventory restoreInv = Bukkit.createInventory(null, size, titleComponent);
+        int rows = (int) Math.ceil(ConfigHandler.getInt("gui.restore.size", 54) / 9.0);
+        Gui gui = Gui.gui()
+                .title(titleComponent)
+                .rows(Math.max(1, Math.min(6, rows)))
+                .disableAllInteractions()
+                .create();
 
-        String datePattern = ConfigHandler.getString("gui.restore.date-format",
-                "dd/MM/yyyy HH:mm");
+        String datePattern = ConfigHandler.getString("gui.restore.date-format", "dd/MM/yyyy HH:mm");
         SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
 
-        for (int i = 0; i < Math.min(backups.size(), size); i++) {
-            ContainerBackup backup = backups.get(i);
-            ItemStack displayItem = createRestoreDisplayItem(backup, dateFormat);
-            restoreInv.setItem(i, displayItem);
+        for (ContainerBackup backup : backups) {
+            GuiItem guiItem = createRestoreGuiItem(admin, backup, dateFormat);
+            gui.addItem(guiItem);
         }
 
-        admin.openInventory(restoreInv);
+        gui.open(admin);
         TextHandler.get().sendMessage(admin, "commands.restore.opened", targetPlayerName, backups.size());
     }
 
-    private ItemStack createRestoreDisplayItem(ContainerBackup backup, SimpleDateFormat dateFormat) {
+    private GuiItem createRestoreGuiItem(Player admin, ContainerBackup backup, SimpleDateFormat dateFormat) {
         Material containerMaterial = Material.valueOf(backup.containerType);
         ItemStack displayItem = new ItemStack(containerMaterial);
         ItemMeta meta = displayItem.getItemMeta();
@@ -180,14 +184,32 @@ public class RestoreCommand implements CommandExecutor, TabCompleter {
         }
 
         meta.lore(lore);
-        meta.getPersistentDataContainer().set(restoreKey, PersistentDataType.STRING, backup.chestId);
         displayItem.setItemMeta(meta);
-        return displayItem;
+
+        return new GuiItem(displayItem, event -> {
+            ItemStack restoredContainer = createRestoreContainer(backup.chestId);
+            if (restoredContainer == null) {
+                TextHandler.get().sendMessage(admin, "commands.restore.error");
+                return;
+            }
+
+            if (admin.getInventory().firstEmpty() == -1) {
+                TextHandler.get().sendMessage(admin, "commands.restore.inventory_full");
+                return;
+            }
+
+            admin.getInventory().addItem(restoredContainer);
+
+            String name = displayItem.getType().name().toLowerCase().replace("_", " ");
+            TextHandler.get().sendMessage(admin, "commands.restore.success", name, backup.chestId.substring(0, 8));
+            LogUtils.logRestoration(admin.getName(), displayItem.getType().name(), backup.chestId);
+            
+            admin.closeInventory();
+        });
     }
 
     private Component parseToComponent(String text) {
         if (text == null) return Component.empty();
-        // Support both MiniMessage and Legacy color codes
         if (text.contains("&") || text.contains("§")) {
             return legacySerializer.deserialize(text);
         }

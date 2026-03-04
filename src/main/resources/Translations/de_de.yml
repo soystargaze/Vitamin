@@ -25,22 +25,7 @@ plugin:
   no_update_available: "<color:#FFA500>Keine Updates verfügbar.</color> Du verwendest die neueste Version."
   update_check_failed: "<color:#FFA500>Fehler beim Überprüfen auf Updates:</color> {0}"
   update_check_error: "<color:#FFA500>Fehler beim Überprüfen auf Updates:</color> {0}"
-  integration:
-    worldguard_detected: "WorldGuard erkannt für Modulinteraktionen."
-    lands_detected: "Lands erkannt für Modulinteraktionen."
-    lootin_detected: "Lootin erkannt für Modulinteraktionen."
-    griefprevention_detected: "GriefPrevention erkannt für Modulinteraktionen."
-    griefprevention_integration_success: "GriefPrevention-Integration für Modul erfolgreich."
-    griefprevention_integration_failed: "GriefPrevention-Integration für Module fehlgeschlagen: {0}"
-    griefprevention_error: "Fehler mit GriefPrevention: {0}"
-  worldguard:
-    entity_flag_registered: "Die 'vitamin-carryon-entity'-Flagge wurde erfolgreich registriert."
-    entity_flag_conflict_resolved: "Ein Konflikt mit der 'vitamin-carryon-entity'-Flagge wurde durch Verwendung der vorhandenen Flagge behoben."
-    entity_flag_conflict_error: "Es gab einen Konflikt mit der 'vitamin-carryon-entity'-Flagge, der nicht behoben werden konnte."
-    container_flag_registered: "Die 'vitamin-carryon-container'-Flagge wurde erfolgreich registriert."
-    container_flag_conflict_resolved: "Ein Konflikt mit der 'vitamin-carryon-container'-Flagge wurde durch Verwendung der vorhandenen Flagge behoben."
-    container_flag_conflict_error: "Es gab einen Konflikt mit der 'vitamin-carryon-container'-Flagge, der nicht behoben werden konnte."
-    
+
 items:
   registered: "Vitamin+-Gegenstände erfolgreich registriert."
 
@@ -63,6 +48,7 @@ commands:
     module_not_active: "Das Modul {0} ist nicht aktiv."
     no_module_permission: "Du hast keine Berechtigung, {0} zu verwenden."
     changed: "Modul {0} erfolgreich {1}."
+    no_available_modules: "Es sind keine Module für Sie zur Konfiguration verfügbar."
   restore:
     usage: "<red>Verwendung: /vitamin restore <player></red>"
     no_backups: "<red>Keine Backups für {0} gefunden.</red>"
@@ -79,7 +65,7 @@ database:
   init_error: "Beim Initialisieren der Datenbank ist ein Fehler aufgetreten: {0}"
   sqlite:
     error_directory: "Fehler beim Erstellen des SQLite-Datenbankverzeichnisses: "
-    success: "SQLite-Datenbank erfolgreich initialisiert."
+    success: "SQLite database initialized successfully."
   mysql:
     success: "MySQL-Datenbank erfolgreich initialisiert."
   mariadb:
@@ -123,36 +109,6 @@ xpbook:
   used: "XP-Buch verwendet, um {0} XP zu erhalten!"
   merged: "Zusammengeführte XP-Bücher in {0} <green>XP<white>, verloren {1} <red>XP<white>."
   lore: "<gray>Enthält <gold>{0} <gray>XP"
-
-  cannot_pickup_players: "<red>Du kannst keine Spieler aufheben!</red>"
-  cannot_carry_while_carrying: "<red>Du kannst keine Entität tragen, während du eine andere trägst!</red>"
-  cannot_carry_while_being_carried: "<red>Du kannst keine Entität tragen, während du getragen wirst!</red>"
-  cannot_carry_someone_carrying: "<red>Du kannst niemanden tragen, der bereits eine Entität trägt!</red>"
-  cannot_carry_someone_being_carried: "<red>Du kannst niemanden tragen, der getragen wird!</red>"
-  you_dismounted: "<red>Du bist vom Spieler abgestiegen.</red>"
-  no_permissions: "<red>Du hast keine Berechtigung, dies aufzuheben.</red>"
-  cannot_pickup_entity: "<red>Diese Entität kann nicht aufgehoben werden!</red>"
-  entity_too_heavy: "<red>Diese Entität ist zu schwer zum Tragen!</red>"
-  picked_up_entity: "<green>Du hast eine Entität aufgehoben (Gewicht: {0}/{1})</green>"
-  entity_dropped: "Du hast die Entität losgelassen."
-  picked_up_chest: "<green>Du hast eine <yellow>Truhe</yellow> aufgehoben.</green>"
-  picked_up_block: "<green>Du hast einen <yellow>Behälter</yellow> aufgehoben.</green>"
-  placed_block: "<gold>Du hast den Block platziert.</gold>"
-  placed_chest: "<green>Du hast eine Truhe platziert.</green>"
-  no_lootin_pickup: "<red>Du kannst diesen Lootin-Behälter nicht aufheben.</red>"
-  no_permission_barrel: "<red>Du hast keine Berechtigung, Fässer zu tragen."
-  no_permission_blast_furnace: "<red>Du hast keine Berechtigung, Schmelzöfen zu tragen."
-  no_permission_brewing_stand: "<red>Du hast keine Berechtigung, Braustände zu tragen."
-  no_permission_chest: "<red>Du hast keine Berechtigung, Truhen zu tragen."
-  no_permission_dispenser: "<red>Du hast keine Berechtigung, Werfer zu tragen."
-  no_permission_dropper: "<red>Du hast keine Berechtigung, Spender zu tragen."
-  no_permission_ender_chest: "<red>Du hast keine Berechtigung, Endertruhen zu tragen."
-  no_permission_furnace: "<red>Du hast keine Berechtigung, Öfen zu tragen."
-  no_permission_hopper: "<red>Du hast keine Berechtigung, Trichter zu tragen."
-  no_permission_shulker_box: "<red>Du hast keine Berechtigung, Shulker-Kisten zu tragen."
-  no_permission_smoker: "<red>Du hast keine Berechtigung, Räucheröfen zu tragen."
-  no_permission_trapped_chest: "<red>Du hast keine Berechtigung, Redstone-Truhen zu tragen."
-  no_stacking_allowed: "<red>Das Stapeln von Behältern ist deaktiviert."
 
 death_chest:
   location_not_found: "Kein sicherer Ort für die Todestruhe von {0} gefunden."

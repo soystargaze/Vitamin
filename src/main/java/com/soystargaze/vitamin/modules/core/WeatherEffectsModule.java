@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class WeatherEffectsModule implements Listener {
 
     private final JavaPlugin plugin;
+    private final long growthInterval;
 
     private static final Material[] CROPS = {
             Material.WHEAT,
@@ -26,6 +27,7 @@ public class WeatherEffectsModule implements Listener {
 
     public WeatherEffectsModule(JavaPlugin plugin) {
         this.plugin = plugin;
+        this.growthInterval = plugin.getConfig().getLong("weather_effects.growth_interval_ticks", 25000L);
         scheduleCropGrowthTask();
     }
 
@@ -64,7 +66,7 @@ public class WeatherEffectsModule implements Listener {
                     }
                 }
             }
-        }.runTaskTimer(plugin, 0L, 25000L);
+        }.runTaskTimer(plugin, 0L, growthInterval);
     }
 
     @EventHandler

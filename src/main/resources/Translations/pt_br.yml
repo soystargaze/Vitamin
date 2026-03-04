@@ -16,58 +16,44 @@ plugin:
   website: "site: {0}"
   enabled: "Vitamin+ ativado com sucesso."
   disabled: "Vitamin+ desativado com sucesso."
-  language_loaded: "Idioma carregado: {0}.yml ({1} traduções)"
+  language_loaded: "Idioma cargado: {0}.yml ({1} traduções)"
   enable_error: "Ocorreu um erro ao ativar o Vitamin+: {0}"
   version_detected: "Versão detectada: {0}"
   paper_detected: "<color:#FFA500>Paper detectado:</color> Usando ganchos do Paper para melhor desempenho."
   paper_not_detected: "<color:#FFA500>Spigot detectado:</color> Usando ganchos do núcleo."
-  update_available: "<color:#FFA500>Atualização disponível:</color> Baixe o Vitamin+ {0} em {1}"
+  update_available: "<color:#FFA500>Atualização disponible:</color> Baixe o Vitamin+ {0} em {1}"
   no_update_available: "<color:#FFA500>Nenhuma atualização disponível.</color> Você está usando a versão mais recente."
   update_check_failed: "<color:#FFA500>Falha ao verificar atualizações:</color> {0}"
   update_check_error: "<color:#FFA500>Erro ao verificar atualizações:</color> {0}"
-  integration:
-    worldguard_detected: "WorldGuard detectado para interações de módulo."
-    lands_detected: "Lands detectado para interações de módulo."
-    lootin_detected: "Lootin detectado para interações de módulo."
-    griefprevention_detected: "GriefPrevention detectado para interações de módulo."
-    griefprevention_integration_success: "Integração do GriefPrevention para módulo bem-sucedida."
-    griefprevention_integration_failed: "Integração do GriefPrevention para módulos falhou: {0}"
-    griefprevention_error: "Erro com GriefPrevention: {0}"
-  worldguard:
-    entity_flag_registered: "A bandeira 'vitamin-carryon-entity' foi registrada com sucesso."
-    entity_flag_conflict_resolved: "Um conflito com a bandeira 'vitamin-carryon-entity' foi resolvido usando a bandeira existente."
-    entity_flag_conflict_error: "Houve um conflito com a bandeira 'vitamin-carryon-entity' que não pôde ser resolvido."
-    container_flag_registered: "A bandeira 'vitamin-carryon-container' foi registrada com sucesso."
-    container_flag_conflict_resolved: "Um conflito com a bandeira 'vitamin-carryon-container' foi resolvido usando a bandeira existente."
-    container_flag_conflict_error: "Houve um conflito com a bandeira 'vitamin-carryon-container' que não pôde ser resolvido."
 
 items:
   registered: "Itens do Vitamin+ registrados com sucesso."
 
 events:
-  registered: "Eventos registrados com sucesso."
+  registered: "Eventos registrados con éxito."
 
 commands:
-  registered: "Comandos registrados com sucesso."
-  usage: "Uso: /Vitamin <args>"
+  registered: "Comandos registrados con éxito."
+  usage: "Uso: /vitamin <args>"
   reload:
     success: "Vitamin+ recarregado com sucesso."
     error: "Ocorreu um erro ao recarregar o Vitamin+."
   module:
-    usage: "Uso: /Vitamin módulo <módulo> <ativar|desativar>"
+    usage: "Uso: /vitamin módulo <módulo> <ativar|desativar>"
     not_found: "Módulo não encontrado: {0}"
     changed: "Módulo {0} {1} com sucesso."
   pmodule:
-    usage: "Uso: /Vitamin pmódulo <módulo> <ativar|desativar>"
+    usage: "Uso: /vitamin pmodule <módulo> <ativar|desativar>"
     player_only: "Este comando só pode ser executado por um jogador."
     module_not_active: "O módulo {0} não está ativo."
     no_module_permission: "Você não tem permissão para usar {0}."
     changed: "Módulo {0} {1} com sucesso."
+    no_available_modules: "Não há módulos disponíveis para você configurar."
   restore:
     usage: "<red>Uso: /vitamin restore <jogador></red>"
     no_backups: "<red>Nenhum backup de contêiner encontrado para o jogador {0}.</red>"
     opened: "<green>Interface de restauração aberta para {0}. Encontrados {1} contêineres.</green>"
-    success: "<green>{0} com ID {1} foi restaurado com sucesso para o seu inventário.</green>"
+    success: "<green>{0} con ID {1} foi restaurado com sucesso para o seu inventário.</green>"
     error: "<red>Erro ao criar o contêiner restaurado. Tente novamente.</red>"
     inventory_full: "<red>Seu inventário está cheio. Libere espaço e tente novamente.</red>"
 
@@ -76,7 +62,7 @@ database:
     success: "Migração do banco de dados concluída com sucesso."
     error: "Ocorreu um erro ao migrar o banco de dados: {0}"
   already_initialized: "O banco de dados já foi inicializado."
-  init_error: "Ocorreu um erro ao inicializar o banco de dados: {0}"
+  init_error: "Ocorreu un erro ao inicializar o banco de dados: {0}"
   sqlite:
     error_directory: "Falha ao criar o diretório do banco de dados SQLite: "
     success: "Banco de dados SQLite inicializado com sucesso."
@@ -99,7 +85,7 @@ database:
     save_error: "Ocorreu um erro ao salvar a localização da morte: {0}"
   chest:
     save_error: "Ocorreu um erro ao salvar o baú: {0}"
-    load_error: "Ocorreu um erro ao carregar o baú: {0}"
+    load_error: "Ocorreu un erro ao carregar o baú: {0}"
     delete_error: "Ocorreu um erro ao excluir o baú: {0}"
     deserialize_error: "Ocorreu um erro ao desserializar o baú: {0}"
   restore:
@@ -123,36 +109,6 @@ xpbook:
   used: "Livro de XP usado para conceder {0} XP!"
   merged: "Livros de XP mesclados em {0} <green>XP<white>, perdido {1} <red>XP<white>."
   lore: "<gray>Contém <gold>{0} <gray>XP"
-
-  cannot_pickup_players: "<red>Você não pode pegar jogadores!</red>"
-  cannot_carry_while_carrying: "<red>Você não pode carregar uma entidade enquanto carrega outra!</red>"
-  cannot_carry_while_being_carried: "<red>Você não pode carregar uma entidade enquanto está sendo carregado!</red>"
-  cannot_carry_someone_carrying: "<red>Você não pode carregar alguém que já está carregando uma entidade!</red>"
-  cannot_carry_someone_being_carried: "<red>Você não pode carregar alguém que está sendo carregado!</red>"
-  you_dismounted: "<red>Você desmontou do jogador.</red>"
-  no_permissions: "<red>Você não tem permissão para pegar isso.</red>"
-  cannot_pickup_entity: "<red>Esta entidade não pode ser pega!</red>"
-  entity_too_heavy: "<red>Esta entidade é muito pesada para carregar!</red>"
-  picked_up_entity: "<green>Você pegou uma entidade (Peso: {0}/{1})</green>"
-  entity_dropped: "Você soltou a entidade."
-  picked_up_chest: "<green>Você pegou um <yellow>Baú</yellow>.</green>"
-  picked_up_block: "<green>Você pegou um <yellow>Contêiner</yellow>.</green>"
-  placed_block: "<gold>Você colocou o bloco.</gold>"
-  placed_chest: "<green>Você colocou um baú.</green>"
-  no_lootin_pickup: "<red>Você não pode pegar este contêiner Lootin.</red>"
-  no_permission_barrel: "<red>Você não tem permissão para carregar barris."
-  no_permission_blast_furnace: "<red>Você não tem permissão para carregar altos-fornos."
-  no_permission_brewing_stand: "<red>Você não tem permissão para carregar suportes de poções."
-  no_permission_chest: "<red>Você não tem permissão para carregar baús."
-  no_permission_dispenser: "<red>Você não tem permissão para carregar ejetores."
-  no_permission_dropper: "<red>Você não tem permissão para carregar liberadores."
-  no_permission_ender_chest: "<red>Você não tem permissão para carregar baús do Ender."
-  no_permission_furnace: "<red>Você não tem permissão para carregar fornos."
-  no_permission_hopper: "<red>Você não tem permissão para carregar funis."
-  no_permission_shulker_box: "<red>Você não tem permissão para carregar caixas de shulker."
-  no_permission_smoker: "<red>Você não tem permissão para carregar defumadores."
-  no_permission_trapped_chest: "<red>Você não tem permissão para carregar baús com armadilha."
-  no_stacking_allowed: "<red>O empilhamento de contêineres está desativado."
 
 death_chest:
   location_not_found: "Nenhum local seguro encontrado para o baú de morte de {0}."
@@ -183,6 +139,6 @@ tpcompass:
 
 replayable_vault:
   first_use: "Você abriu o cofre. Você tem {0} usos adicionais restantes. Tempo restante: {1}."
-  remaining_uses: "Você abriu o cofre. Você tem {0} usos adicionais restantes."
+  remaining_uses: "Você abriu o cofre. Você tem {0} usos adicionales restantes."
   cooldown: "O cofre está em tempo de espera. Tempo restante: {0}."
   max_uses_reached: "Você atingiu o número máximo de aberturas para este cofre."

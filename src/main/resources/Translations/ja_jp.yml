@@ -25,22 +25,7 @@ plugin:
   no_update_available: "<color:#FFA500>アップデートなし。</color> 最新バージョンを使用中。"
   update_check_failed: "<color:#FFA500>アップデートの確認に失敗:</color> {0}"
   update_check_error: "<color:#FFA500>アップデート確認エラー:</color> {0}"
-  integration:
-    worldguard_detected: "WorldGuard 検出: モジュールの相互作用に使用。"
-    lands_detected: "Lands 検出: モジュールの相互作用に使用。"
-    lootin_detected: "Lootin 検出: モジュールの相互作用に使用。"
-    griefprevention_detected: "GriefPrevention 検出: モジュールの相互作用に使用。"
-    griefprevention_integration_success: "GriefPrevention の統合が成功しました。"
-    griefprevention_integration_failed: "GriefPrevention の統合に失敗: {0}"
-    griefprevention_error: "GriefPrevention エラー: {0}"
-  worldguard:
-    entity_flag_registered: "「vitamin-carryon-entity」フラグが正常に登録されました。"
-    entity_flag_conflict_resolved: "「vitamin-carryon-entity」フラグの競合が既存のフラグを使用して解決されました。"
-    entity_flag_conflict_error: "「vitamin-carryon-entity」フラグとの競合を解決できませんでした。"
-    container_flag_registered: "「vitamin-carryon-container」フラグが正常に登録されました。"
-    container_flag_conflict_resolved: "「vitamin-carryon-container」フラグの競合が既存のフラグを使用して解決されました。"
-    container_flag_conflict_error: "「vitamin-carryon-container」フラグとの競合を解決できませんでした。"
-    
+
 items:
   registered: "Vitamin+ のアイテムが正常に登録されました。"
 
@@ -63,6 +48,7 @@ commands:
     module_not_active: "モジュール {0} はアクティブではありません。"
     no_module_permission: "{0} を使用する権限がありません。"
     changed: "モジュール {0} が {1} に正常に変更されました。"
+    no_available_modules: "設定可能なモジュールがありません。"
   restore:
     usage: "<red>使用法: /vitamin restore <プレイヤー></red>"
     no_backups: "<red>プレイヤー {0} のコンテナバックアップが見つかりません。</red>"
@@ -123,36 +109,6 @@ xpbook:
   used: "XP ブックを使用して {0} XP を獲得！"
   merged: "XPの本を{0} <green>XP<white>に統合、{1} <red>XP<white>を失いました。"
   lore: "<gray><gold>{0} <gray>XPを含む"
-
-  cannot_pickup_players: "<red>プレイヤーを拾うことはできません！</red>"
-  cannot_carry_while_carrying: "<red>別のエンティティを持ちながらエンティティを持つことはできません！</red>"
-  cannot_carry_while_being_carried: "<red>運ばれている間はエンティティを持つことはできません！</red>"
-  cannot_carry_someone_carrying: "<red>すでにエンティティを持っている人を運ぶことはできません！</red>"
-  cannot_carry_someone_being_carried: "<red>運ばれている人を運ぶことはできません！</red>"
-  you_dismounted: "<red>プレイヤーから降りました。</red>"
-  no_permissions: "<red>これを拾う権限がありません。</red>"
-  cannot_pickup_entity: "<red>このエンティティは拾うことができません！</red>"
-  entity_too_heavy: "<red>このエンティティは重すぎて運べません！</red>"
-  picked_up_entity: "<green>エンティティを拾いました（重さ: {0}/{1}）</green>"
-  entity_dropped: "エンティティを解放しました。"
-  picked_up_chest: "<green><yellow>チェスト</yellow>を拾いました。</green>"
-  picked_up_block: "<green><yellow>コンテナ</yellow>を拾いました。</green>"
-  placed_block: "<gold>ブロックを配置しました。</gold>"
-  placed_chest: "<green>チェストを配置しました。</green>"
-  no_lootin_pickup: "<red>このルーティンコンテナを拾うことはできません。</red>"
-  no_permission_barrel: "<red>樽を運ぶ権限がありません。"
-  no_permission_blast_furnace: "<red>高炉を運ぶ権限がありません。"
-  no_permission_brewing_stand: "<red>醸造台を運ぶ権限がありません。"
-  no_permission_chest: "<red>チェストを運ぶ権限がありません。"
-  no_permission_dispenser: "<red>ディスペンサーを運ぶ権限がありません。"
-  no_permission_dropper: "<red>ドロッパーを運ぶ権限がありません。"
-  no_permission_ender_chest: "<red>エンダーチェストを運ぶ権限がありません。"
-  no_permission_furnace: "<red>かまどを運ぶ権限がありません。"
-  no_permission_hopper: "<red>ホッパーを運ぶ権限がありません。"
-  no_permission_shulker_box: "<red>シュルカーボックスを運ぶ権限がありません。"
-  no_permission_smoker: "<red>燻製器を運ぶ権限がありません。"
-  no_permission_trapped_chest: "<red>トラップチェストを運ぶ権限がありません。"
-  no_stacking_allowed: "<red>コンテナのスタックは無効です。"
 
 death_chest:
   location_not_found: "{0} のデスチェストのための安全な場所が見つかりませんでした。"

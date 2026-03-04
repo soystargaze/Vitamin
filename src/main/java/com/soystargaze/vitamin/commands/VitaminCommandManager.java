@@ -15,25 +15,14 @@ public class VitaminCommandManager {
 
     public void registerCommands() {
         vitaminCommand = new VitaminCommand(plugin);
-        RestoreCommand restoreCommand = vitaminCommand.getRestoreCommand();
 
         register("vitamin", vitaminCommand);
         register("vita", vitaminCommand);
         register("vi", vitaminCommand);
-
-        RestoreInventoryListener listener = new RestoreInventoryListener(plugin, restoreCommand);
-
-        plugin.getModuleManager().addSystemListener(listener);
     }
 
     public void reregisterListeners() {
-        if (vitaminCommand != null) {
-            RestoreCommand restoreCommand = vitaminCommand.getRestoreCommand();
-            if (restoreCommand != null) {
-                RestoreInventoryListener restoreListener = new RestoreInventoryListener(plugin, restoreCommand);
-                plugin.getModuleManager().addSystemListener(restoreListener);
-            }
-        }
+        // No system listeners to register currently
     }
 
     private void register(String name, CommandExecutor executor) {

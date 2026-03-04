@@ -25,21 +25,6 @@ plugin:
   no_update_available: "<color:#FFA500>Brak dostępnych aktualizacji.</color> Używasz najnowszej wersji."
   update_check_failed: "<color:#FFA500>Nie udało się sprawdzić aktualizacji:</color> {0}"
   update_check_error: "<color:#FFA500>Wystąpił błąd podczas sprawdzania aktualizacji:</color> {0}"
-  integration:
-    worldguard_detected: "Wykryto WorldGuard do interakcji modułów."
-    lands_detected: "Wykryto Lands do interakcji modułów."
-    lootin_detected: "Wykryto Lootin do interakcji modułów."
-    griefprevention_detected: "Wykryto GriefPrevention do interakcji modułów."
-    griefprevention_integration_success: "Integracja GriefPrevention dla modułów powiodła się."
-    griefprevention_integration_failed: "Integracja GriefPrevention dla modułów nie powiodła się: {0}"
-    griefprevention_error: "Wystąpił błąd z GriefPrevention: {0}"
-  worldguard:
-    entity_flag_registered: "Flaga 'vitamin-carryon-entity' została pomyślnie zarejestrowana."
-    entity_flag_conflict_resolved: "Konflikt z flagą 'vitamin-carryon-entity' został rozwiązany przy użyciu istniejącej flagi."
-    entity_flag_conflict_error: "Wystąpił konflikt z flagą 'vitamin-carryon-entity', którego nie udało się rozwiązać."
-    container_flag_registered: "Flaga 'vitamin-carryon-container' została pomyślnie zarejestrowana."
-    container_flag_conflict_resolved: "Konflikt z flagą 'vitamin-carryon-container' został rozwiązany przy użyciu istniejącej flagi."
-    container_flag_conflict_error: "Wystąpił konflikt z flagą 'vitamin-carryon-container', którego nie udało się rozwiązać."
 
 items:
   registered: "Pomyślnie zarejestrowano przedmioty Vitamin+."
@@ -63,6 +48,7 @@ commands:
     module_not_active: "Moduł {0} nie jest aktywny."
     no_module_permission: "Nie masz uprawnień do używania {0}."
     changed: "Moduł {0} został {1} pomyślnie."
+    no_available_modules: "Brak dostępnych modułów do konfiguracji."
   restore:
     usage: "<red>Użycie: /vitamin restore <gracz></red>"
     no_backups: "<red>Nie znaleziono kopii zapasowych kontenerów dla gracza {0}.</red>"
@@ -92,11 +78,11 @@ database:
   query_error: "Wystąpił błąd podczas wykonywania zapytania do bazy danych: {0}"
   update_error: "Wystąpił błąd podczas aktualizacji bazy danych: {0}"
   close:
-    success: "Połączenie z bazą danych zostało pomyślnie zamknięte."
+    success: "Połączenie con bazą danych zostało pomyślnie zamknięte."
   death_map:
     save_error: "Wystąpił błąd podczas zapisywania mapy śmierci: {0}"
   death_location:
-    save_error: "Wystąpił błąd podczas zapisywania lokalizacji śmierci: {0}"
+    save_error: "Wystąpił błąd durante la escritura de la localización de muerte: {0}"
   chest:
     save_error: "Wystąpił błąd podczas zapisywania skrzyni: {0}"
     load_error: "Wystąpił błąd podczas ładowania skrzyni: {0}"
@@ -123,36 +109,6 @@ xpbook:
   used: "Użyto księgi XP, aby dodać {0} XP!"
   merged: "Połączono książki XP w {0} <green>XP<white>, utracono {1} <red>XP<white>."
   lore: "<gray>Zawiera <gold>{0} <gray>XP"
-
-  cannot_pickup_players: "<red>Nie możesz podnosić graczy!</red>"
-  cannot_carry_while_carrying: "<red>Nie możesz nosić jednostki, gdy nosisz inną!</red>"
-  cannot_carry_while_being_carried: "<red>Nie możesz nosić jednostki, gdy jesteś noszony!</red>"
-  cannot_carry_someone_carrying: "<red>Nie możesz nosić kogoś, kto już nosi jednostkę!</red>"
-  cannot_carry_someone_being_carried: "<red>Nie możesz nosić kogoś, kto jest noszony!</red>"
-  you_dismounted: "<red>Zsiadłeś z gracza.</red>"
-  no_permissions: "<red>Nie masz uprawnień, aby to podnieść.</red>"
-  cannot_pickup_entity: "<red>Tej jednostki nie można podnieść!</red>"
-  entity_too_heavy: "<red>Ta jednostka jest za ciężka, aby ją nosić!</red>"
-  picked_up_entity: "<green>Podniosłeś jednostkę (Waga: {0}/{1})</green>"
-  entity_dropped: "Uwolniłeś jednostkę."
-  picked_up_chest: "<green>Podniosłeś <yellow>Skrzynię</yellow>.</green>"
-  picked_up_block: "<green>Podniosłeś <yellow>Pojemnik</yellow>.</green>"
-  placed_block: "<gold>Umieściłeś blok.</gold>"
-  placed_chest: "<green>Umieściłeś skrzynię.</green>"
-  no_lootin_pickup: "<red>Nie możesz podnieść tego pojemnika Lootin.</red>"
-  no_permission_barrel: "<red>Nie masz uprawnień do noszenia beczek."
-  no_permission_blast_furnace: "<red>Nie masz uprawnień do noszenia pieców hutniczych."
-  no_permission_brewing_stand: "<red>Nie masz uprawnień do noszenia stołów alchemicznych."
-  no_permission_chest: "<red>Nie masz uprawnień do noszenia skrzyń."
-  no_permission_dispenser: "<red>Nie masz uprawnień do noszenia dozowników."
-  no_permission_dropper: "<red>Nie masz uprawnień do noszenia podajników."
-  no_permission_ender_chest: "<red>Nie masz uprawnień do noszenia skrzyń Endu."
-  no_permission_furnace: "<red>Nie masz uprawnień do noszenia pieców."
-  no_permission_hopper: "<red>Nie masz uprawnień do noszenia lejów."
-  no_permission_shulker_box: "<red>Nie masz uprawnień do noszenia skrzyń shulkera."
-  no_permission_smoker: "<red>Nie masz uprawnień do noszenia wędzarni."
-  no_permission_trapped_chest: "<red>Nie masz uprawnień do noszenia skrzyń z pułapką."
-  no_stacking_allowed: "<red>Składanie pojemników jest wyłączone."
 
 death_chest:
   location_not_found: "Nie znaleziono bezpiecznego miejsca dla skrzyni śmierci gracza {0}."

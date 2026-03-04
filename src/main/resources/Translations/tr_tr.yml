@@ -25,21 +25,6 @@ plugin:
   no_update_available: "<color:#FFA500>Güncelleme yok.</color> En son sürümü kullanıyorsunuz."
   update_check_failed: "<color:#FFA500>Güncelleme kontrolü başarısız oldu:</color> {0}"
   update_check_error: "<color:#FFA500>Güncelleme kontrolü sırasında hata oluştu:</color> {0}"
-  integration:
-    worldguard_detected: "WorldGuard modül etkileşimleri için algılandı."
-    lands_detected: "Lands modül etkileşimleri için algılandı."
-    lootin_detected: "Lootin modül etkileşimleri için algılandı."
-    griefprevention_detected: "GriefPrevention modül etkileşimleri için algılandı."
-    griefprevention_integration_success: "GriefPrevention modül entegrasyonu başarıyla tamamlandı."
-    griefprevention_integration_failed: "GriefPrevention modül entegrasyonu başarısız oldu: {0}"
-    griefprevention_error: "GriefPrevention ile ilgili hata: {0}"
-  worldguard:
-    entity_flag_registered: "'vitamin-carryon-entity' bayrağı başarıyla kaydedildi."
-    entity_flag_conflict_resolved: "'vitamin-carryon-entity' bayrağıyla bir çakışma, mevcut bayrak kullanılarak çözüldü."
-    entity_flag_conflict_error: "'vitamin-carryon-entity' bayrağıyla çözülemeyen bir çakışma oluştu."
-    container_flag_registered: "'vitamin-carryon-container' bayrağı başarıyla kaydedildi."
-    container_flag_conflict_resolved: "'vitamin-carryon-container' bayrağıyla bir çakışma, mevcut bayrak kullanılarak çözüldü."
-    container_flag_conflict_error: "'vitamin-carryon-container' bayrağıyla çözülemeyen bir çakışma oluştu."
 
 items:
   registered: "Vitamin+ öğeleri başarıyla kaydedildi."
@@ -63,6 +48,7 @@ commands:
     module_not_active: "Modül {0} etkin değil."
     no_module_permission: "{0} komutunu kullanma izniniz yok."
     changed: "Modül {0} {1} başarıyla."
+    no_available_modules: "Yapılandırabileceğiniz herhangi bir modül bulunmuyor."
   restore:
     usage: "<red>Kullanım: /vitamin restore <oyuncu></red>"
     no_backups: "<red>{0} oyuncusu için konteyner yedeği bulunamadı.</red>"
@@ -110,8 +96,8 @@ database:
     create_error: "Geri yüklenen konteyner oluşturulurken hata: {0}"
 
 module:
-  enabled: "Module {0}: <green>enabled"
-  disabled: "Module {0}: <red>disabled"
+  enabled: "Modül {0}: <green>etkinleştirildi"
+  disabled: "Modül {0}: <red>devre dışı bırakıldı"
 
 elevator:
   item_name: "<gold>Asansör</gold>"
@@ -120,39 +106,9 @@ elevator:
 xpbook:
   item_name: "{0} XP Kitabı"
   created: "{0} XP Kitabı oluşturuldu!"
-  used: "XP Kitabı kullanılarak {0} XP kazanıldı!"
+  used: "{0} XP Kitabı kullanılarak {0} XP kazanıldı!"
   merged: "XP kitapları {0} <green>XP<white> olarak birleştirildi, {1} <red>XP<white> kaybedildi."
   lore: "<gray><gold>{0} <gray>XP içerir"
-
-  cannot_pickup_players: "<red>Oyuncuları alamazsınız!</red>"
-  cannot_carry_while_carrying: "<red>Başka bir varlık taşırken varlık taşıyamazsınız!</red>"
-  cannot_carry_while_being_carried: "<red>Taşınırken varlık taşıyamazsınız!</red>"
-  cannot_carry_someone_carrying: "<red>Zaten bir varlık taşıyan birini taşıyamazsınız!</red>"
-  cannot_carry_someone_being_carried: "<red>Taşınan birini taşıyamazsınız!</red>"
-  you_dismounted: "<red>Oyuncudan indiniz.</red>"
-  no_permissions: "<red>Bunu almak için izniniz yok.</red>"
-  cannot_pickup_entity: "<red>Bu varlık alınamaz!</red>"
-  entity_too_heavy: "<red>Bu varlık taşımak için çok ağır!</red>"
-  picked_up_entity: "<green>Bir varlık aldınız (Ağırlık: {0}/{1})</green>"
-  entity_dropped: "Varlığı bıraktınız."
-  picked_up_chest: "<green>Bir <yellow>Sandık</yellow> aldınız.</green>"
-  picked_up_block: "<green>Bir <yellow>Konteyner</yellow> aldınız.</green>"
-  placed_block: "<gold>Bloku yerleştirdiniz.</gold>"
-  placed_chest: "<green>Bir sandık yerleştirdiniz.</green>"
-  no_lootin_pickup: "<red>Bu Lootin konteynerini alamazsınız.</red>"
-  no_permission_barrel: "<red>Fıçı taşıma izniniz yok."
-  no_permission_blast_furnace: "<red>Yüksek fırın taşıma izniniz yok."
-  no_permission_brewing_stand: "<red>İksir masası taşıma izniniz yok."
-  no_permission_chest: "<red>Sandık taşıma izniniz yok."
-  no_permission_dispenser: "<red>Dağıtıcı taşıma izniniz yok."
-  no_permission_dropper: "<red>Bırakıcı taşıma izniniz yok."
-  no_permission_ender_chest: "<red>Ender sandığı taşıma izniniz yok."
-  no_permission_furnace: "<red>Fırın taşıma izniniz yok."
-  no_permission_hopper: "<red>Huni taşıma izniniz yok."
-  no_permission_shulker_box: "<red>Shulker kutusu taşıma izniniz yok."
-  no_permission_smoker: "<red>Fümeleyici taşıma izniniz yok."
-  no_permission_trapped_chest: "<red>Tuzaklı sandık taşıma izniniz yok."
-  no_stacking_allowed: "<red>Konteyner istifleme devre dışı."
 
 death_chest:
   location_not_found: "{0} oyuncusunun ölüm sandığı için güvenli bir yer bulunamadı."

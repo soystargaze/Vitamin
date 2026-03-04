@@ -5,8 +5,6 @@
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
 # Support: https://soystargaze.com/discord
-# Source: https://github.com/soystargaze/Vitamin
-# Version: 1.3.0
 
 # Plugin settings
 # Language of the plugin
@@ -53,38 +51,64 @@ settings:
 # GUI Configuration for Restore Command
 gui:
   restore:
-    title: "&6Restore: %player% &7(%count% containers)"
+    title: "<gold>Restore: %player% <gray>(%count% containers)"
     size: 54
     date-format: "dd/MM/yyyy HH:mm"
     item:
-      display-name: "&e%container_name% &7#%short_id%"
-      restored-yes: "&aYes"
-      restored-no: "&cNo"
+      display-name: "<yellow>%container_name% <gray>#%short_id%"
+      restored-yes: "<green>Yes"
+      restored-no: "<red>No"
       lore:
-        - "&7▸ ID: &f%short_id%..."
-        - "&7▸ Picked up: &f%pickup_date%"
-        - "&7▸ Location: &f%world% (%x%, %y%, %z%)"
-        - "&7▸ Restored: %restored_status%"
+        - "<gray>▸ ID: <white>%short_id%..."
+        - "<gray>▸ Picked up: <white>%pickup_date%"
+        - "<gray>▸ Location: <white>%world% (%x%, %y%, %z%)"
+        - "<gray>▸ Restored: %restored_status%"
         - ""
-        - "&7Contents preview:"
+        - "<gray>Contents preview:"
         - "%contents%"
         - ""
-        - "&e▶ Click to give a copy to your inventory"
+        - "<yellow>▶ Click to give a copy to your inventory"
       contents:
-        empty: "  &8• Empty"
-        item-format: "  &8• &f%amount%x &7%item_name%"
-        more-format: "  &8• ... and %remaining% more items"
+        empty: "  <dark_gray>• Empty"
+        item-format: "  <dark_gray>• <white>%amount%x <gray>%item_name%"
+        more-format: "  <dark_gray>• ... and %remaining% more items"
         max-preview: 5
     restored-item:
-      display-name: "&6Restored %container_name%"
+      display-name: "<gold>Restored %container_name%"
       date-format: "dd/MM/yyyy HH:mm"
       lore:
-        - "&7▸ Original owner: &f%owner%"
-        - "&7▸ Backup ID: &f%short_id%..."
-        - "&7▸ Picked up: &f%pickup_date%"
-        - "&7▸ Original location: &f%world% (%x%, %y%, %z%)"
+        - "<gray>▸ Original owner: <white>%owner%"
+        - "<gray>▸ Backup ID: <white>%short_id%..."
+        - "<gray>▸ Picked up: <white>%pickup_date%"
+        - "<gray>▸ Original location: <white>%world% (%x%, %y%, %z%)"
         - ""
-        - "&e▶ This is a restored copy from backup"
+        - "<yellow>▶ This is a restored copy from backup"
+  module_admin:
+    title: "<gradient:#FFA500:#FFFF00><bold>Vitamin+</bold></gradient> <gray>| <white>Module Admin"
+    enabled-item: LIME_CONCRETE
+    disabled-item: RED_CONCRETE
+    item:
+      display-name: "<gray>Module: %name%"
+      status-enabled: "<green>ENABLED"
+      status-disabled: "<red>DISABLED"
+      lore:
+        - ""
+        - "<gray>Global Status: %status%"
+        - ""
+        - "<yellow>▶ Click to toggle global state"
+  module_player:
+    title: "<gradient:#FFA500:#FFFF00><bold>Vitamin+</bold></gradient> <gray>| <white>Your Settings"
+    enabled-item: LIME_STAINED_GLASS_PANE
+    disabled-item: RED_STAINED_GLASS_PANE
+    item:
+      display-name: "<gray>Module: %name%"
+      status-on: "<green>ON"
+      status-off: "<red>OFF"
+      lore:
+        - ""
+        - "<gray>Personal Status: %status%"
+        - ""
+        - "<yellow>▶ Click to toggle"
 
 # Enable or disable modules
 module:
@@ -253,3 +277,6 @@ armor_trims:
 replayable_vault:
   cooldown: 3600000      # Cooldown in milliseconds (1 hour default)
   max_reactivations: 2   # Max additional openings beyond the first (total 3 openings, 1 initial + 2 reactivations)
+# Weather Effects settings
+  weather_effects:
+    growth_interval_ticks: 25000 # Interval in ticks for crop growth during rain (20 ticks = 1 second)
