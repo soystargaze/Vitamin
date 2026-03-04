@@ -2,7 +2,7 @@
 
 **Vitamin+** is your Minecraft power-up—boosting gameplay with new mechanics and seamless upgrades while keeping the vanilla charm. Level up your experience without changing the game you love!
 
-[![Discord](https://img.shields.io/discord/1079917552588816484?label=Discord&logo=discord&logoColor=white&color=FFA500&style=for-the-badge)](https://erosmari.com/discord)  ![Made with ❤️ by Stargaze](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20by%20stargaze-FFA500?style=for-the-badge)
+[![Discord](https://img.shields.io/discord/1369689692244803674?label=Discord&logo=discord&logoColor=white&color=FFA500&style=for-the-badge)](https://soystargaze.com/discord)  ![Made with ❤️ by Stargaze](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F%20by%20stargaze-FFA500?style=for-the-badge)
 
 ![Banner Logo](https://cdn.modrinth.com/data/wKw0THQX/images/2a588e8eda6a2dba50af9305e97d5f60679817b6.png)
 
@@ -114,7 +114,7 @@ Download the latest version of **Vitamin+** from [Modrinth](https://modrinth.com
 ---
 
 ## **Support & Contact**
-If you encounter issues or have questions, contact support on **[Discord](https://erosmari.com/discord)** or refer to the official plugin documentation.
+If you encounter issues or have questions, contact support on **[Discord](https://soystargaze.com/discord)** or refer to the official plugin documentation.
 
 </details>
 
@@ -207,7 +207,7 @@ If you encounter issues or have questions, contact support on **[Discord](https:
 
 ## 💬 Support & Contact
 
-If you have any questions or encounter issues, feel free to contact us on [Discord](https://erosmari.com/discord).
+If you have any questions or encounter issues, feel free to contact us on [Discord](https://soystargaze.com/discord).
 
 ---
 
