@@ -2,9 +2,9 @@ package com.soystargaze.vitamin.modules.core;
 
 import com.soystargaze.vitamin.database.DatabaseHandler;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -15,70 +15,66 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class RepairModule implements Listener {
 
     private final JavaPlugin plugin;
-    private final Map<UUID, Long> lastRepairTime = new HashMap<>();
-    private static final long REPAIR_COOLDOWN_MS = 500; // Prevenir clics rápidos
 
     public RepairModule(JavaPlugin plugin) {
         this.plugin = plugin;
     }
 
     private boolean isRepairableTool(ItemStack item) {
-        if (item == null) return false;
+        if (item == null || item.getType() == Material.AIR) return false;
         Material type = item.getType();
-        return type.name().endsWith("_SWORD") || type.name().endsWith("_PICKAXE")
-                || type.name().endsWith("_AXE") || type.name().endsWith("_SHOVEL")
-                || type.name().endsWith("_HOE");
+        String name = type.name();
+        return name.endsWith("_SWORD") || name.endsWith("_PICKAXE")
+                || name.endsWith("_AXE") || name.endsWith("_SHOVEL")
+                || name.endsWith("_HOE") || name.endsWith("_HELMET")
+                || name.endsWith("_CHESTPLATE") || name.endsWith("_LEGGINGS")
+                || name.endsWith("_BOOTS") || type == Material.ELYTRA || type == Material.TRIDENT;
     }
 
-    private Material getToolRepairMaterial(ItemStack tool) {
-        Material type = tool.getType();
-        if (type.name().startsWith("DIAMOND_")) {
-            return Material.DIAMOND;
-        } else if (type.name().startsWith("NETHERITE_")) {
-            return Material.NETHERITE_INGOT;
-        } else if (type.name().startsWith("IRON_")) {
-            return Material.IRON_INGOT;
-        } else if (type.name().startsWith("GOLD_")) {
-            return Material.GOLD_INGOT;
-        }
+    private Material getBaseRepairMaterial(Material toolType) {
+        String name = toolType.name();
+        if (name.startsWith("DIAMOND_")) return Material.DIAMOND;
+        if (name.startsWith("NETHERITE_")) return Material.NETHERITE_INGOT;
+        if (name.startsWith("IRON_")) return Material.IRON_INGOT;
+        if (name.startsWith("GOLDEN_")) return Material.GOLD_INGOT;
+        if (name.startsWith("STONE_") || name.equals("STONE_SWORD")) return Material.COBBLESTONE;
+        if (name.startsWith("WOODEN_")) return Material.OAK_PLANKS;
+        if (toolType == Material.ELYTRA) return Material.PHANTOM_MEMBRANE;
+        if (toolType == Material.TRIDENT) return Material.PRISMARINE_SHARD;
         return null;
     }
 
-    private boolean isValidRepairMaterial(ItemStack tool, Material material) {
-        Material baseMaterial = getToolRepairMaterial(tool);
-        if (material == baseMaterial) {
-            return true;
-        }
+    private boolean isValidRepairMaterial(Material toolType, Material repairMaterial) {
+        Material base = getBaseRepairMaterial(toolType);
+        if (base == null) return false;
+        if (repairMaterial == base) return true;
 
-        if (baseMaterial == Material.IRON_INGOT && material == Material.IRON_NUGGET) {
-            return true;
-        } else return baseMaterial == Material.GOLD_INGOT && material == Material.GOLD_NUGGET;
+        if (base == Material.IRON_INGOT && repairMaterial == Material.IRON_NUGGET) return true;
+        if (base == Material.GOLD_INGOT && repairMaterial == Material.GOLD_NUGGET) return true;
+
+        return false;
     }
 
-    private double getRepairValuePerMaterial(Material material) {
-        if (material == Material.DIAMOND) {
-            return plugin.getConfig().getDouble("repair.diamond_value", 0.4);
-        } else if (material == Material.NETHERITE_INGOT) {
-            return plugin.getConfig().getDouble("repair.netherite_value", 0.8);
-        } else if (material == Material.IRON_INGOT || material == Material.GOLD_INGOT) {
-            return plugin.getConfig().getDouble("repair.ingot_value", 0.27);
-        } else if (material == Material.IRON_NUGGET || material == Material.GOLD_NUGGET) {
-            return plugin.getConfig().getDouble("repair.nugget_value", 0.03);
-        }
-        return 0.0;
+    private double getRepairValue(Material material) {
+        return switch (material) {
+            case NETHERITE_INGOT -> plugin.getConfig().getDouble("repair.netherite_value", 0.8);
+            case DIAMOND -> plugin.getConfig().getDouble("repair.diamond_value", 0.4);
+            case IRON_INGOT, GOLD_INGOT -> plugin.getConfig().getDouble("repair.ingot_value", 0.27);
+            case IRON_NUGGET, GOLD_NUGGET -> plugin.getConfig().getDouble("repair.nugget_value", 0.03);
+            case PHANTOM_MEMBRANE -> plugin.getConfig().getDouble("repair.phantom_membrane_value", 0.25);
+            case PRISMARINE_SHARD -> plugin.getConfig().getDouble("repair.prismarine_shard_value", 0.25);
+            case COBBLESTONE -> plugin.getConfig().getDouble("repair.cobblestone_value", 0.20);
+            case OAK_PLANKS -> plugin.getConfig().getDouble("repair.planks_value", 0.20);
+            default -> 0.0;
+        };
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareCraft(PrepareItemCraftEvent event) {
-        HumanEntity human = event.getView().getPlayer();
-        if (!(human instanceof Player player)) return;
+        if (!(event.getView().getPlayer() instanceof Player player)) return;
 
         if (!player.hasPermission("vitamin.module.repair") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.repair")) {
@@ -86,141 +82,120 @@ public class RepairModule implements Listener {
         }
 
         CraftingInventory inv = event.getInventory();
-        if (inv.getMatrix().length != 4) return;
-
         ItemStack[] matrix = inv.getMatrix();
-
+        
         ItemStack tool = null;
-        Map<Material, Integer> repairMaterials = new HashMap<>();
+        ItemStack material = null;
 
         for (ItemStack item : matrix) {
             if (item == null || item.getType() == Material.AIR) continue;
 
             if (isRepairableTool(item)) {
-                if (tool != null) {
-                    return;
-                }
-                tool = item.clone();
-            } else if (tool != null && isValidRepairMaterial(tool, item.getType())) {
-                repairMaterials.put(item.getType(), repairMaterials.getOrDefault(item.getType(), 0) + item.getAmount());
+                if (tool != null) return;
+                tool = item;
+            } else {
+                if (material != null && material.getType() != item.getType()) return;
+                material = item;
             }
         }
 
-        if (tool == null || repairMaterials.isEmpty()) {
-            return;
-        }
+        if (tool == null || material == null) return;
+        if (!isValidRepairMaterial(tool.getType(), material.getType())) return;
 
         ItemMeta meta = tool.getItemMeta();
-        if (!(meta instanceof Damageable damageable)) return;
+        if (!(meta instanceof Damageable damageable) || damageable.getDamage() == 0) return;
 
         int maxDurability = tool.getType().getMaxDurability();
         int currentDamage = damageable.getDamage();
+        
+        double repairPercentPerItem = getRepairValue(material.getType());
+        int repairPerItem = (int) (maxDurability * repairPercentPerItem);
+        if (repairPerItem <= 0) repairPerItem = 1;
 
-        if (currentDamage <= 0) {
-            return;
-        }
+        // Calculate how many items are needed to reach 100% durability
+        int itemsNeeded = (int) Math.ceil((double) currentDamage / repairPerItem);
+        int itemsToUse = Math.min(itemsNeeded, material.getAmount());
 
-        int totalRepairAmount = 0;
-        for (Map.Entry<Material, Integer> entry : repairMaterials.entrySet()) {
-            double repairPerMaterial = maxDurability * getRepairValuePerMaterial(entry.getKey());
-            totalRepairAmount += (int)(entry.getValue() * repairPerMaterial);
-        }
+        ItemStack result = tool.clone();
+        Damageable resultMeta = (Damageable) result.getItemMeta();
+        resultMeta.setDamage(Math.max(0, currentDamage - (repairPerItem * itemsToUse)));
+        result.setItemMeta(resultMeta);
 
-        if (totalRepairAmount <= 0) {
-            return;
-        }
-
-        int newDamage = Math.max(0, currentDamage - totalRepairAmount);
-        damageable.setDamage(newDamage);
-        tool.setItemMeta(meta);
-        inv.setResult(tool);
+        inv.setResult(result);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-
-        if (event.getSlotType() != InventoryType.SlotType.RESULT ||
-                !(event.getView().getTopInventory() instanceof CraftingInventory craftingInv)) {
-            return;
-        }
-
-        ItemStack result = craftingInv.getResult();
-
-        if (result == null || !player.hasPermission("vitamin.module.repair") ||
+        if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
+        if (!(event.getInventory() instanceof CraftingInventory inv)) return;
+        
+        Player player = (Player) event.getWhoClicked();
+        if (!player.hasPermission("vitamin.module.repair") ||
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.repair")) {
             return;
         }
 
-        UUID playerUUID = player.getUniqueId();
-        long currentTime = System.currentTimeMillis();
-        if (lastRepairTime.containsKey(playerUUID)) {
-            long lastTime = lastRepairTime.get(playerUUID);
-            if (currentTime - lastTime < REPAIR_COOLDOWN_MS) {
-                return;
-            }
-        }
-        lastRepairTime.put(playerUUID, currentTime);
+        ItemStack result = inv.getResult();
+        if (result == null || result.getType() == Material.AIR) return;
 
-        ItemStack[] matrix = craftingInv.getMatrix();
-        ItemStack toolToRepair = null;
-        Map<Material, Integer> repairMaterials = new HashMap<>();
-
-        for (ItemStack item : matrix) {
-            if (item == null) continue;
-
-            if (isRepairableTool(item)) {
-                if (toolToRepair != null) return;
-                toolToRepair = item;
-            } else if (toolToRepair != null && isValidRepairMaterial(toolToRepair, item.getType())) {
-                repairMaterials.put(item.getType(), repairMaterials.getOrDefault(item.getType(), 0) + item.getAmount());
-            }
-        }
-
-        if (toolToRepair == null || repairMaterials.isEmpty()) return;
-
-        event.setCancelled(true);
-
-        ItemMeta meta = toolToRepair.getItemMeta();
-        if (!(meta instanceof Damageable damageable)) return;
-
-        int maxDurability = toolToRepair.getType().getMaxDurability();
-        int currentDamage = damageable.getDamage();
-
-        int totalRepairAmount = 0;
-        for (Map.Entry<Material, Integer> entry : repairMaterials.entrySet()) {
-            double repairPerMaterial = maxDurability * getRepairValuePerMaterial(entry.getKey());
-            totalRepairAmount += (int)(entry.getValue() * repairPerMaterial);
-        }
-
-        int actualRepairAmount = Math.min(totalRepairAmount, currentDamage);
-        double repairRatio = actualRepairAmount > 0 ? (double) actualRepairAmount / totalRepairAmount : 0;
-
-        ItemStack repairedTool = toolToRepair.clone();
-        ItemMeta repairedMeta = repairedTool.getItemMeta();
-        if (repairedMeta instanceof Damageable repairableMeta) {
-            repairableMeta.setDamage(Math.max(0, currentDamage - actualRepairAmount));
-            repairedTool.setItemMeta(repairedMeta);
-        }
+        ItemStack[] matrix = inv.getMatrix();
+        ItemStack tool = null;
+        ItemStack material = null;
+        int toolIndex = -1;
+        int materialIndex = -1;
 
         for (int i = 0; i < matrix.length; i++) {
-            craftingInv.setItem(i + 1, null);
-        }
+            ItemStack item = matrix[i];
+            if (item == null || item.getType() == Material.AIR) continue;
 
-        player.getInventory().addItem(repairedTool);
-
-        if (repairRatio < 1.0) {
-            for (Map.Entry<Material, Integer> entry : repairMaterials.entrySet()) {
-                int remainingAmount = (int) Math.floor(entry.getValue() * (1 - repairRatio));
-                if (remainingAmount > 0) {
-                    ItemStack leftoverMaterials = new ItemStack(entry.getKey(), remainingAmount);
-                    player.getInventory().addItem(leftoverMaterials);
-                }
+            if (isRepairableTool(item)) {
+                tool = item;
+                toolIndex = i;
+            } else {
+                material = item;
+                materialIndex = i;
             }
         }
+        
+        if (tool == null || material == null) return;
+        
+        event.setCancelled(true);
 
-        craftingInv.setResult(null);
+        Damageable toolMeta = (Damageable) tool.getItemMeta();
+        int currentDamage = toolMeta.getDamage();
+        int maxDurability = tool.getType().getMaxDurability();
+        
+        double repairPercentPerItem = getRepairValue(material.getType());
+        int repairPerItem = (int) (maxDurability * repairPercentPerItem);
+        if (repairPerItem <= 0) repairPerItem = 1;
 
+        int itemsNeeded = (int) Math.ceil((double) currentDamage / repairPerItem);
+        int itemsToUse = Math.min(itemsNeeded, material.getAmount());
+
+        // Update matrix: consume tool and used materials
+        inv.setItem(toolIndex + 1, null); 
+        
+        if (material.getAmount() > itemsToUse) {
+            ItemStack leftovers = material.clone();
+            leftovers.setAmount(material.getAmount() - itemsToUse);
+            inv.setItem(materialIndex + 1, leftovers);
+        } else {
+            inv.setItem(materialIndex + 1, null);
+        }
+
+        // Give the repaired item to the player (cursor)
+        event.setCurrentItem(null); // Clear result slot
+        if (event.getClick().isShiftClick()) {
+            if (player.getInventory().firstEmpty() == -1) {
+                player.getWorld().dropItemNaturally(player.getLocation(), result);
+            } else {
+                player.getInventory().addItem(result);
+            }
+        } else {
+            event.getWhoClicked().setItemOnCursor(result);
+        }
+        
+        inv.setResult(null);
         player.updateInventory();
     }
 }
