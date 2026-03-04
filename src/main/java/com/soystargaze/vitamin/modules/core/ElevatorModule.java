@@ -6,7 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.TileState;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +22,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,14 +41,28 @@ public class ElevatorModule implements Listener {
     private final Map<Material, Material> woolToShulkerMap = new HashMap<>();
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Set<UUID> notifiedPlayers = new java.util.HashSet<>();
+    
+    private final String mode;
+    private final Material customMaterial;
 
     private static final long COOLDOWN_MILLIS = 500;
 
     public ElevatorModule(JavaPlugin plugin) {
         this.plugin = plugin;
         this.keyElevator = new NamespacedKey(plugin, "elevator");
+        this.mode = plugin.getConfig().getString("elevator.recipe_mode", "legacy").toLowerCase();
+        
+        String matName = plugin.getConfig().getString("elevator.material", "IRON_BLOCK");
+        Material tempMat;
+        try {
+            tempMat = Material.valueOf(matName.toUpperCase());
+        } catch (Exception e) {
+            tempMat = Material.IRON_BLOCK;
+        }
+        this.customMaterial = tempMat;
+
         setupWoolToShulkerMap();
-        registerRecipe();
+        registerRecipes();
     }
 
     private void setupWoolToShulkerMap() {
@@ -70,35 +84,62 @@ public class ElevatorModule implements Listener {
         woolToShulkerMap.put(Material.BLACK_WOOL, Material.BLACK_SHULKER_BOX);
     }
 
-    private void registerRecipe() {
-        woolToShulkerMap.forEach((woolColor, shulkerColor) -> {
-            String colorName = woolColor.name().toLowerCase().replace("_wool", "");
-            NamespacedKey recipeKey = new NamespacedKey(plugin, "elevator_" + colorName);
+    private void registerRecipes() {
+        if (mode.equals("legacy")) {
+            woolToShulkerMap.forEach((woolColor, shulkerColor) -> {
+                String colorName = woolColor.name().toLowerCase().replace("_wool", "");
+                NamespacedKey recipeKey = new NamespacedKey(plugin, "elevator_" + colorName);
+                Bukkit.removeRecipe(recipeKey);
 
+                ItemStack elevator = createElevatorItem(shulkerColor);
+                ShapedRecipe recipe = new ShapedRecipe(recipeKey, elevator);
+                recipe.shape("LLL", "LEL", "LLL");
+                recipe.setIngredient('L', woolColor);
+                recipe.setIngredient('E', Material.ENDER_PEARL);
+                Bukkit.addRecipe(recipe);
+            });
+        } else {
+            NamespacedKey recipeKey = new NamespacedKey(plugin, "elevator_custom");
             Bukkit.removeRecipe(recipeKey);
 
-            ItemStack elevator = createElevatorItem(shulkerColor);
-
+            ItemStack elevator = createElevatorItem(customMaterial);
             ShapedRecipe recipe = new ShapedRecipe(recipeKey, elevator);
-            recipe.shape("LLL", "LEL", "LLL");
-            recipe.setIngredient('L', woolColor);
-            recipe.setIngredient('E', Material.ENDER_PEARL);
+            
+            List<String> shape = plugin.getConfig().getStringList("elevator.custom_recipe.shape");
+            if (shape.size() == 3) {
+                recipe.shape(shape.toArray(new String[0]));
+            } else {
+                recipe.shape("MMM", "MEM", "MMM");
+            }
+
+            ConfigurationSection ingredients = plugin.getConfig().getConfigurationSection("elevator.custom_recipe.ingredients");
+            if (ingredients != null) {
+                for (String key : ingredients.getKeys(false)) {
+                    if (key.length() != 1) continue;
+                    String matName = ingredients.getString(key);
+                    if (matName == null) continue;
+                    try {
+                        Material mat = Material.valueOf(matName.toUpperCase());
+                        recipe.setIngredient(key.charAt(0), mat);
+                    } catch (Exception e) {
+                        plugin.getLogger().warning("Invalid material in elevator recipe: " + matName);
+                    }
+                }
+            } else {
+                recipe.setIngredient('M', customMaterial);
+                recipe.setIngredient('E', Material.ENDER_PEARL);
+            }
 
             Bukkit.addRecipe(recipe);
-        });
+        }
     }
 
-    private ItemStack createElevatorItem(Material shulkerColor) {
-        ItemStack elevator = new ItemStack(shulkerColor);
-        BlockStateMeta meta = (BlockStateMeta) elevator.getItemMeta();
+    private ItemStack createElevatorItem(Material material) {
+        ItemStack elevator = new ItemStack(material);
+        ItemMeta meta = elevator.getItemMeta();
         if (meta != null) {
             meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
             meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
-
-            ShulkerBox shulkerBox = (ShulkerBox) meta.getBlockState();
-            shulkerBox.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
-            meta.setBlockState(shulkerBox);
-
             elevator.setItemMeta(meta);
         }
         return elevator;
@@ -133,17 +174,18 @@ public class ElevatorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
             return;
         }
+        
         ItemStack item = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
 
-        if (woolToShulkerMap.containsValue(block.getType())) {
+        if (isPotentialElevatorBlock(block.getType())) {
             ItemMeta meta = item.getItemMeta();
             if (meta == null) return;
 
             if (meta.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
-                if (block.getState() instanceof ShulkerBox shulkerBox) {
-                    shulkerBox.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
-                    shulkerBox.update();
+                if (block.getState() instanceof TileState state) {
+                    state.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
+                    state.update();
                 }
             }
         }
@@ -158,20 +200,13 @@ public class ElevatorModule implements Listener {
         }
         Block block = event.getBlock();
 
-        if (woolToShulkerMap.containsValue(block.getType())) {
-            if (block.getState() instanceof ShulkerBox shulkerBox) {
-                if (shulkerBox.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
-                    ItemStack drop = new ItemStack(block.getType());
-                    BlockStateMeta meta = (BlockStateMeta) drop.getItemMeta();
-                    if (meta != null) {
-                        meta.displayName(TranslationHandler.getComponent("elevator.item_name"));
-                        meta.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
-                        drop.setItemMeta(meta);
-
-                        event.setCancelled(true);
-                        block.setType(Material.AIR);
-                        block.getWorld().dropItemNaturally(block.getLocation(), drop);
-                    }
+        if (isPotentialElevatorBlock(block.getType())) {
+            if (block.getState() instanceof TileState state) {
+                if (state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
+                    ItemStack drop = createElevatorItem(block.getType());
+                    event.setCancelled(true);
+                    block.setType(Material.AIR);
+                    block.getWorld().dropItemNaturally(block.getLocation(), drop);
                 }
             }
         }
@@ -184,8 +219,8 @@ public class ElevatorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
             return;
         }
-        if (event.getInventory().getHolder() instanceof ShulkerBox shulkerBox) {
-            if (shulkerBox.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
+        if (event.getInventory().getHolder() instanceof TileState state) {
+            if (state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
                 if (notifiedPlayers.add(uuid)) {
@@ -224,11 +259,19 @@ public class ElevatorModule implements Listener {
         blocks.removeIf(this::isElevator);
     }
 
-    private boolean isElevator(Block block) {
-        if (!woolToShulkerMap.containsValue(block.getType())) return false;
+    private boolean isPotentialElevatorBlock(Material material) {
+        if (mode.equals("legacy")) {
+            return woolToShulkerMap.containsValue(material);
+        } else {
+            return material == customMaterial;
+        }
+    }
 
-        if (block.getState() instanceof ShulkerBox shulkerBox) {
-            return shulkerBox.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE);
+    private boolean isElevator(Block block) {
+        if (!isPotentialElevatorBlock(block.getType())) return false;
+
+        if (block.getState() instanceof TileState state) {
+            return state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE);
         }
         return false;
     }

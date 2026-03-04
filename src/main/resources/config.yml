@@ -5,6 +5,8 @@
 #    \_/  |_|\__\__,_|_| |_| |_|_|_| |_| |_|
 
 # Support: https://soystargaze.com/discord
+# Source: https://github.com/soystargaze/Vitamin
+# Version: 1.3.0
 
 # Plugin settings
 # Language of the plugin
@@ -135,7 +137,7 @@ module:
   silk_spawners: false # Mine spawners with a silk touch pickaxe to get the spawner
   sponge_with_lava: false # Sponges can absorb lava
   totem_from_inventory: false # The totem of undying works from the inventory too
-  void_totem: false # The totem of undying works in the void
+  void_totem: false # The totem of undying activates when falling into the void
   tp_to_bed_with_compass: false # Right-click with a compass to teleport to your respawn point
   unlock_all_recipes: false # Unlocks all recipes when you join the server
   tree_vein_miner: false # Just works when the tool is enchanted with Efficiency V
@@ -277,6 +279,23 @@ armor_trims:
 replayable_vault:
   cooldown: 3600000      # Cooldown in milliseconds (1 hour default)
   max_reactivations: 2   # Max additional openings beyond the first (total 3 openings, 1 initial + 2 reactivations)
+
 # Weather Effects settings
-  weather_effects:
-    growth_interval_ticks: 25000 # Interval in ticks for crop growth during rain (20 ticks = 1 second)
+weather_effects:
+  growth_interval_ticks: 25000 # Interval in ticks for crop growth during rain (20 ticks = 1 second)
+
+# Elevator settings
+elevator:
+  # Mode: legacy (Original shulker boxes) or custom (Configurable material)
+  recipe_mode: "legacy"
+  # Custom material (This MUST match the resulting item from the custom recipe below)
+  material: IRON_BLOCK
+  # Custom recipe configuration (Only used if mode is 'custom')
+  custom_recipe:
+    shape:
+      - "MMM"
+      - "MEM"
+      - "MMM"
+    ingredients:
+      M: IRON_BLOCK
+      E: ENDER_PEARL
