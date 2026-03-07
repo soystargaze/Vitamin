@@ -7,6 +7,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -200,6 +201,17 @@ public class DatabaseHandler {
             """;
             stmt.executeUpdate(createVaultReactivations);
 
+            String createElevators = """
+            CREATE TABLE IF NOT EXISTS elevators (
+              world VARCHAR(100) NOT NULL,
+              x INT NOT NULL,
+              y INT NOT NULL,
+              z INT NOT NULL,
+              PRIMARY KEY (world, x, y, z)
+            );
+            """;
+            stmt.executeUpdate(createElevators);
+
             TextHandler.get().logTranslated("database.tables.success");
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.tables.error", e);
@@ -258,6 +270,13 @@ public class DatabaseHandler {
                     "player_id", "VARCHAR(36)",
                     "opening_count", "INT",
                     "last_opening_time", "BIGINT"
+            )));
+
+            expectedStructures.put("elevators", new HashMap<>(Map.of(
+                    "world", "VARCHAR(100)",
+                    "x", "INT",
+                    "y", "INT",
+                    "z", "INT"
             )));
 
             for (String tableName : expectedStructures.keySet()) {
@@ -456,6 +475,48 @@ public class DatabaseHandler {
             ps.executeUpdate();
         } catch (SQLException e) {
             TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void addElevator(Block block) {
+        String sql = "REPLACE INTO elevators (world, x, y, z) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, block.getWorld().getName());
+            ps.setInt(2, block.getX());
+            ps.setInt(3, block.getY());
+            ps.setInt(4, block.getZ());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static void removeElevator(Block block) {
+        String sql = "DELETE FROM elevators WHERE world = ? AND x = ? AND y = ? AND z = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, block.getWorld().getName());
+            ps.setInt(2, block.getX());
+            ps.setInt(3, block.getY());
+            ps.setInt(4, block.getZ());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.update_error", e);
+        }
+    }
+
+    public static boolean isElevator(Block block) {
+        String sql = "SELECT 1 FROM elevators WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, block.getWorld().getName());
+            ps.setInt(2, block.getX());
+            ps.setInt(3, block.getY());
+            ps.setInt(4, block.getZ());
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            TextHandler.get().logTranslated("database.query_error", e);
+            return false;
         }
     }
 

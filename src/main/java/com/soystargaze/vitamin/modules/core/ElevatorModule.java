@@ -29,10 +29,10 @@ import org.bukkit.Particle;
 import org.bukkit.Location;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.List;
 
 public class ElevatorModule implements Listener {
 
@@ -41,7 +41,7 @@ public class ElevatorModule implements Listener {
     private final Map<Material, Material> woolToShulkerMap = new HashMap<>();
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Set<UUID> notifiedPlayers = new java.util.HashSet<>();
-    
+
     private final String mode;
     private final Material customMaterial;
 
@@ -51,7 +51,7 @@ public class ElevatorModule implements Listener {
         this.plugin = plugin;
         this.keyElevator = new NamespacedKey(plugin, "elevator");
         this.mode = plugin.getConfig().getString("elevator.recipe_mode", "legacy").toLowerCase();
-        
+
         String matName = plugin.getConfig().getString("elevator.material", "IRON_BLOCK");
         Material tempMat;
         try {
@@ -104,7 +104,7 @@ public class ElevatorModule implements Listener {
 
             ItemStack elevator = createElevatorItem(customMaterial);
             ShapedRecipe recipe = new ShapedRecipe(recipeKey, elevator);
-            
+
             List<String> shape = plugin.getConfig().getStringList("elevator.custom_recipe.shape");
             if (shape.size() == 3) {
                 recipe.shape(shape.toArray(new String[0]));
@@ -174,15 +174,14 @@ public class ElevatorModule implements Listener {
                 !DatabaseHandler.isModuleEnabledForPlayer(player.getUniqueId(), "module.elevator")) {
             return;
         }
-        
+
         ItemStack item = player.getInventory().getItemInMainHand();
         Block block = event.getBlock();
 
         if (isPotentialElevatorBlock(block.getType())) {
             ItemMeta meta = item.getItemMeta();
-            if (meta == null) return;
-
-            if (meta.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
+            if (meta != null && meta.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
+                DatabaseHandler.addElevator(block);
                 if (block.getState() instanceof TileState state) {
                     state.getPersistentDataContainer().set(keyElevator, PersistentDataType.BYTE, (byte) 1);
                     state.update();
@@ -200,15 +199,12 @@ public class ElevatorModule implements Listener {
         }
         Block block = event.getBlock();
 
-        if (isPotentialElevatorBlock(block.getType())) {
-            if (block.getState() instanceof TileState state) {
-                if (state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
-                    ItemStack drop = createElevatorItem(block.getType());
-                    event.setCancelled(true);
-                    block.setType(Material.AIR);
-                    block.getWorld().dropItemNaturally(block.getLocation(), drop);
-                }
-            }
+        if (isElevator(block)) {
+            DatabaseHandler.removeElevator(block);
+            ItemStack drop = createElevatorItem(block.getType());
+            event.setCancelled(true);
+            block.setType(Material.AIR);
+            block.getWorld().dropItemNaturally(block.getLocation(), drop);
         }
     }
 
@@ -220,7 +216,7 @@ public class ElevatorModule implements Listener {
             return;
         }
         if (event.getInventory().getHolder() instanceof TileState state) {
-            if (state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE)) {
+            if (isElevator(state.getBlock())) {
                 event.setCancelled(true);
                 UUID uuid = player.getUniqueId();
                 if (notifiedPlayers.add(uuid)) {
@@ -256,7 +252,13 @@ public class ElevatorModule implements Listener {
     }
 
     private void protectElevatorsFromExplosion(List<Block> blocks) {
-        blocks.removeIf(this::isElevator);
+        blocks.removeIf(block -> {
+            if (isElevator(block)) {
+                DatabaseHandler.removeElevator(block);
+                return true;
+            }
+            return false;
+        });
     }
 
     private boolean isPotentialElevatorBlock(Material material) {
@@ -270,6 +272,9 @@ public class ElevatorModule implements Listener {
     private boolean isElevator(Block block) {
         if (!isPotentialElevatorBlock(block.getType())) return false;
 
+        if (DatabaseHandler.isElevator(block)) return true;
+
+        // Legacy fallback
         if (block.getState() instanceof TileState state) {
             return state.getPersistentDataContainer().has(keyElevator, PersistentDataType.BYTE);
         }
@@ -278,17 +283,12 @@ public class ElevatorModule implements Listener {
 
     private boolean isOnCooldown(Player player) {
         if (!cooldowns.containsKey(player.getUniqueId())) return false;
-
         long lastUse = cooldowns.get(player.getUniqueId());
-        long currentTime = System.currentTimeMillis();
-
-        return (currentTime - lastUse) < COOLDOWN_MILLIS;
+        return (System.currentTimeMillis() - lastUse) < COOLDOWN_MILLIS;
     }
 
     private void teleportElevator(Player player, int direction) {
-        if (isOnCooldown(player)) {
-            return;
-        }
+        if (isOnCooldown(player)) return;
 
         Block currentBlock = player.getLocation().getBlock().getRelative(0, -1, 0);
         if (!isElevator(currentBlock)) return;
